@@ -1,0 +1,20 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia New
+{% endblock %}
+
+{% block body %}
+<form action="{% url 'encyclopedia:new_entry' %}" method="post" class="p-3">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="title">Title : </label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ title }}" placeholder="Title">
+    </div>
+    <div class="form-group">
+        <label for="markdown">Content in MarkDown format : </label>
+        <textarea class="form-control" id="markdown" name="markdown" rows="20">{{ markdown }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+<div class="container-fluid bg-secondary">
+    <section class="d-flex flex-row flex-wrap justify-content-between">
+    	<div class="card col-lg-3 mb-1 px-2 bg-secondary">
+    	    {% if form %}
+        		<form method="post"  enctype="multipart/form-data" >
+        			{% csrf_token %}
+                	<div class="card my-2">
+                	    <div class="card-header d-flex flex-row justify-content-between">
+                	        <strong>Edit location</strong>
+                	        {{ location.owner.username }}
+                	   </div>
+                	   <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>owner:</td><td>{{ form.owner }}</td>
+                                </tr>
+                                <tr>
+                                    <td>name:</td><td>{{ form.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>lat:</td><td>{{ form.latitude }}</td>
+                                </tr>
+                                <tr>
+                                    <td>lng:</td><td>{{ form.longitude }}</td>
+                                </tr>
+                                <tr>
+                                    <td>address:</td><td>{{ form.address }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Please use 60x60 .png</td>
+                                </tr>
+                                <tr>
+                                    <td>image:</td><td>{{ form.image }}</td>
+                                </tr>
+                            </table>
+                			<input class="btn btn-primary" type="submit" value="SAVE">
+                		</div>
+                	</div>
+        		</form>
+        	{% endif %}
+
+        	{% for location in object_list %}
+            	<div class="card my-2">
+            	    <div class="card-header d-flex flex-row justify-content-between">
+            	        <strong>{{ location.name }}</strong>
+            	        {{ location.owner.username }}
+            	        <a type="button" class="btn btn-outline-success btn-sm"  href="{% url 'meeting:location_update' location.id %}">📝 Edit</a>
+            	        <a type="button" class="btn btn-outline-danger btn-sm"  href="{% url 'meeting:location_delete' location.id %}" onclick="return confirm('Are you sure?');">❌ Delete</a>
+            	   </div>
+            	   <div class="card-body">
+                        <table>
+                            <tr>
+                                <td>
+            		                {% if location.image %}
+            		                    <img src="{{ location.image.url }}"  style="width: 60px; height: 60px;">
+            		                {% else %}
+            		                    No image
+            		                {% endif %}
+                                </td>
+                                <td class="pl-3">
+                                    [{{ location.latitude|floatformat:4 }}, {{ location.longitude|floatformat:4 }}]
+                                    <br>
+                                    address : {{ location.address }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+        	    </div>
+    	    {% endfor %}
+    	</div>
+
+        <div class="card col-lg-9 mb-1 px-0 bg-secondary">
+            <div class=" card my-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+            		<button type="button" class="btn btn-outline-primary btn-sm" id="where"><i class='fab fa-creative-commons-by' style='font-size:24px;color:red'></i> Where am I?</button>
+                    <a class="btn btn-outline-primary btn-sm" href="{% url 'meeting:location_create' %}"><i class='fas fa-map-marker-alt' style='font-size:24px;color:red'></i> New location</a>
+            		<button type="button" class="btn btn-outline-primary btn-sm" id="users"><i class='fas fa-user-friends' style='font-size:24px;color:red'></i> Where are all?</button>
+                </div>
+        		<div class="my-2" style="width: 100%; height: 70vh;" id="mapContainer"></div>
+    		</div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { setCurrent('locations'); });
+    </script>
+    <script src="{% static 'meeting/location_list.js' %}"></script>
+{% endblock %}

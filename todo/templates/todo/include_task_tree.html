@@ -1,0 +1,7 @@
+{% include "todo/include_task_modal.html" %}
+
+<div class="w3-padding">
+    {% for task in task_tree %}
+        {% include "todo/include_task_list.html" %}
+    {% endfor %}
+</div>

@@ -1,0 +1,42 @@
+<div id="actions" class="w3-modal">
+    <div class="w3-modal-content w3-round-xlarge w3-padding w3-xlarge mt-5">
+        <div class="w3-container">
+            <span onclick="document.getElementById('actions').style.display='none'" class="w3-button w3-display-topright w3-xlarge">&times;</span>
+
+            <p><a class="action" href="{% url 'todo:task_update' 123456 %}">
+                <i class="fa fa-edit w3-text-green"></i> <span rus="Изменить" eng="EDIT">EDIT</span>
+            </a></p>
+
+            <p><a class="action" href="{% url 'todo:task_create' 123456 'before' %}">
+                <i class="fa fa-arrow-circle-up w3-text-indigo"></i> <span rus="Задача до" eng="TASK BEFORE">TASK BEFORE</span>
+            </a></p>
+
+            <p><a class="action" href="{% url 'todo:task_create' 123456 'after' %}">
+                <i class="fa fa-arrow-circle-down w3-text-indigo"></i> <span rus="Задача после" eng="TASK AFTER">TASK AFTER</span>
+            </a></p>
+
+            <p><a class="action" href="{% url 'todo:task_create' 123456 %}">
+                <i class="fa fa-arrow-circle-right w3-text-teal"></i> <span rus="Создать подзадачу" eng="SUBTASK">SUBTASK</span>
+            </a></p>
+
+            <p><a class="action" href="{% url 'todo:task_detail' 123456 %}">
+                <i class="fa fa-eye w3-text-blue"></i> <span rus="Подробности" eng="DETAIL">DETAIL</span>
+            </a></p>
+
+            <p><a class="action" href="{% url 'todo:task_delete' 123456 %}" onclick="return confirm('Are you sure?');">
+                <i class="fa fa-trash w3-text-red"></i> <span rus="Удалить" eng="DELETE">DELETE</span>
+            </a></p>
+
+            <p><a class="action" href="{% url 'todo:task_share' 123456 %}">
+                <i class="fa fa-hand-o-right"></i> <span rus="Поручить" eng="SHARE">SHARE</span>
+            </a></p>
+
+            <a id="accept_btn" class="w3-button w3-white w3-border w3-border-green w3-round-large w3-tiny m-2 p-1" share_id="123456" tid="123456" href="#" rus="ДА" eng="ACCEPT">
+                ACCEPT
+            </a>
+            <a id="reject_btn" class="w3-button w3-white w3-border w3-border-red w3-round-large w3-red w3-tiny m-2 p-1" share_id="123456"  tid="123456" href="#" rus="НЕТ" eng="REJECT">
+                REJECT
+            </a>
+        </div>
+    </div>
+</div>

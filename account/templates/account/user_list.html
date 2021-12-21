@@ -1,0 +1,48 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block title %}USERS{% endblock %}
+
+{% block section %}
+    <div class="px-3">
+        <h2>USERS</h2>
+
+        <table class="andys-table">
+            <tr>
+                <th>image</th>
+                <th>id</th>
+                <th>username</th>
+                <th>email</th>
+                <th>status</th>
+                <th>registred</th>
+                <th>logged in</th>
+                <th>groups</th>
+            </tr>
+            {% for person in object_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'account:user_image_update' person.user.id %}">
+                            {% if person.user.image %}
+                                <img src="{{ person.user.image.url }}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                            {% else %}
+                                <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                            {% endif %}
+                        </a>
+                    </td>
+                    <td>{{ person.user.id }}</td>
+                    <td>{{ person.user.username }}</td>
+                    <td>{{ person.user.email }}</td>
+                    <td>{% if person.user.is_active %}Active{% endif %}</td>
+                    <td>{{ person.user.last_login }}</td>
+                    <td>{{ person.user.date_joined }}</td>
+                    <td>
+                        {% for membership in person.memberships %}
+                            {{ membership.group }} ({{ membership.group.creator }}){% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

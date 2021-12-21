@@ -1,0 +1,53 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <h4>MEETING LIST</h4>
+
+<div class="container-fluid bg-secondary">
+    <section class="d-flex flex-row flex-wrap justify-content-between row bg-secondary">
+        {% for item in meeting_list %}
+        	<div class="p-2 col-lg-4">
+        	    <div class="card">
+                    <div class="card-header">
+            	        <p>{{ item.meeting.start|date:"D j M" }}, {{ item.meeting.start|time:"G:i" }} [{{ item.meeting.start|timeuntil }}]</p>
+            	        <div class="d-flex flex-row justify-content-between">
+                            {% if user == item.meeting.owner or user.is_superuser %}
+                    	        <a class="andys-link-button" href="{% url 'meeting:meeting_update' item.meeting.id %}">{{ item.meeting.name }}</a>
+                    	    {% else %}
+                        	    <a class="andys-link-button" href="{% url 'meeting:meeting_detail' item.meeting.id %}">{{ item.meeting.name }}</a>
+                    	    {% endif %}
+                	        <span class="ml-2">({{ item.meeting.owner.username }}) [{{ item.count }}]</span>
+            	        </div>
+            	   </div>
+            	   <div class="card-body">
+                        <table>
+                            {% for member in item.members %}
+                                <tr>
+                                    <td class="py-2">
+                                        {% if member.image %}
+                                            <img src="{{ member.image.url }}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                        {% else %}
+                                            <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ member.username }}</td>
+                                </tr>
+                            {% endfor %}
+                         </table>
+            		</div>
+        		</div>
+            </div>
+    	{% endfor %}
+    </section>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() { setCurrent('meetings'); });
+</script>
+    <script src="{% static 'meeting/meeting_list.js' %}"></script>
+{% endblock %}

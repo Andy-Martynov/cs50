@@ -1,0 +1,201 @@
+.txt-normal     {color: black;}
+.txt-weak       {color: gray;}
+.txt-hidden     {color: white;}
+.txt-danger     {color: red;}
+.txt-info       {color: blue;}
+.txt-success    {color: green;}
+.txt-warning    {color: orange;}
+.txt-online     {color: LightGreen;}
+
+/* BACKGROUND */
+
+.back-normal    {background-color: LightGray;}
+.back-weak      {background-color: GhostWhite;}
+.back-hidden    {background-color: white;}
+.back-danger    {background-color: red;}
+.back-info      {background-color: LightSkyBlue;}
+.back-success   {background-color: SpringGreen;}
+.back-warning   {background-color: orange;}
+
+/* BORDER */
+
+.bd-normal {
+    border: 1px solid Gray;
+}
+.bd-weak {
+    border: 1px solid LightGray;
+}
+.bd-hidden {
+    border: 1px solid white;
+}
+.bd-danger {
+    border: 1px solid red;
+}
+.bd-info {
+    border: 1px solid LightSkyBlue;
+}
+.bd-success {
+    border: 1px solid SpringGreen;
+}
+.bd-warning {
+    border: 1px solid orange;
+}
+
+/* CONTAINER */
+
+.cnt-normal {
+    background-color: LightGray;
+    color: black;
+    border: 1px solid white;
+}
+.cnt-weak {
+    background-color: GhostWhite;
+    color: gray;
+    border: 1px solid white;
+}
+.cnt-hidden {
+    background-color: white;
+    color: white;
+    border: 1px solid white;
+}
+.cnt-danger {
+    background-color: red;
+    color: white;
+    border: 1px solid white;
+}
+.cnt-info {
+    background-color: LightSkyBlue;
+    color: black;
+    border: 1px solid white;
+}
+.cnt-success {
+    background-color: SpringGreen;
+    color: black;
+    border: 1px solid white;
+}
+.cnt-warning {
+    background-color: orange;
+    color: black;
+    border: 1px solid white;
+}
+
+/* CONTAINER OUTLINE */
+
+.cnt-outline-normal {
+    background-color: white;
+    color: black;
+    border: 1px solid Gray;
+}
+.cnt-outline-weak {
+    background-color: white;
+    color: LightGray;
+    border: 1px solid LightGray;
+}
+.cnt-outline-hidden {
+    background-color: white;
+    color: white;
+    border: 1px solid white;
+}
+.cnt-outline-danger {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+}
+.cnt-outline-info {
+    background-color: white;
+    color: blue;
+    border: 1px solid blue;
+}
+.cnt-outline-success {
+    background-color: white;
+    color: green;
+    border: 1px solid green;
+}
+.cnt-outline-warning {
+    background-color: white;
+    color: orange;
+    border: 1px solid orange;
+}
+
+/* BUTTON */
+
+.button-ok {
+    background-color: green;
+    color: white;
+    border: 1px solid green;
+    border-radius: 5px;
+    padding: 3px;
+}
+.button-cancel {
+    background-color: red;
+    color: white;
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 3px;
+}
+.button-normal {
+    background-color: gray;
+    color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 3px;
+}
+.button-disabled {
+    background-color: LighrGray;
+    color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 3px;
+}
+.button-info {
+    background-color: blue;
+    color: white;
+    border: 1px solid blue;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.modal {
+  display: none; /* Hidden by default
+  position: fixed; /* Stay in place
+  z-index: 1; /* Sit on top
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width
+  height: 100%; /* Full height
+  overflow: auto; /* Enable scroll if needed
+  background-color: rgb(0,0,0); /* Fallback color
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity
+}
+
+ Modal Content/Box
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size
+}
+
+ The Close Button
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+

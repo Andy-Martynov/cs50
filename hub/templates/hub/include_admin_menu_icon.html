@@ -1,0 +1,18 @@
+{% load static %}
+
+{% if user.is_superuser %}
+    <div class="menu-icon">
+        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="{% static 'hub/admin_60.png' %}">
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% block nav_admin_menu %}
+                <a class="dropdown-item" href="{% url 'admin:index' %}">👴 admin</a>
+                <a class="dropdown-item" href="{% url 'account:user_list' %}">👫 users</a>
+                <a class="dropdown-item" href="{% url 'adminboard:files' %}">🀄 Files</a>
+                <a class="dropdown-item" href="{% url 'adminboard:db_clean' %}">🛠 DB Clean</a></a>
+                <a class="dropdown-item" href="{% url 'rtc:index' %}">RTC test</a></a>
+            {% endblock %}
+        </div>
+    </div>
+{% endif %}

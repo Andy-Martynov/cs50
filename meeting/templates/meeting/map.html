@@ -1,0 +1,67 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+<style>
+.custom-select {
+    /*padding: 3px;*/
+    max-width: 45vw;
+}
+</style>
+
+<div class="container-fluid bg-secondary">
+    <section class="d-flex flex-row flex-wrap justify-content-between">
+        <div class="card col-lg-9 mb-1 px-0 bg-secondary">
+            <div class=" card my-2">
+                <div class="card-header d-inline-flex flex-row flex-wrap justify-content-between px-1">
+            		<img id="where" src="{% static 'meeting/me_60.png' %}">
+
+
+<span class="mx-0">
+    <select class="custom-select" id="select_user" aria-label="select users">
+        <option selected>User...</option>
+        {% for user in users %}
+            <option value="{{user.id}}">{{user.username}}</option>
+        {% endfor %}
+    </select>
+</span>
+
+<span class="ml-1">
+    <select class="custom-select" id="select_group" aria-label="select groups">
+        <option selected>Group...</option>
+        {% for group in groups %}
+            <option value="{{group.id}}">{{group.name}}</option>
+        {% endfor %}
+    </select>
+</span>
+
+<span class="ml-1">
+    <select class="custom-select" id="select_location" aria-label="select locations">
+        <option selected>Location...</option>
+        {% for location in locations %}
+            <option value="{{location.id}}">{{location.name}}</option>
+        {% endfor %}
+    </select>
+</span>
+
+<span class="ml-1">
+    <select class="custom-select" id="select_meeting" aria-label="select locations">
+        <option selected>Meeting...</option>
+        {% for meeting in meetings %}
+            <option value="{{meeting.id}}">{{meeting.name}}</option>
+        {% endfor %}
+    </select>
+</span>
+                    </div>
+                </div>
+        		<div class="my-2" style="width: 100%; height: 70vh;" id="mapContainer"></div>
+    		</div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'meeting/map.js' %}"></script>
+{% endblock %}

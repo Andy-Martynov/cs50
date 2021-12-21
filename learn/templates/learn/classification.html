@@ -1,0 +1,40 @@
+{% extends "learn/layout.html" %}
+
+{% load static %}
+
+{% block add_style %}
+<style>
+.graph {
+    max-width: 100%;
+}
+</style>
+{% endblock %}
+
+{% block add_script%}
+    <script src="{% static 'learn/classification.js' %}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <div class="w3-row">
+        <div class="w3-quarter w3-padding">
+            <h2>Classification</h2>
+            <h4 id="message">{{ message }}</h4>
+            <hr>
+            <a id="classification" class="w3-button andy-primary w3-round-xxlarge" href="{% url 'learn:classification' %}">Reset</a>
+            Δ: <input type="number" id="delta" name="delta" min="-50" max="50" step="1" value="{{ delta|default:'0' }}" size="4">
+            <hr>
+            <a id="nnc" class="w3-button andy-primary w3-round-xxlarge" href="{% url 'learn:nnc' %}">Nearest-Neighbor</a>
+            K: <input type="number" id="K" name="K" min="1" max="15" step="2" value="{{ K|default:'1' }}" size="2">
+            <hr>
+            <a id="perceptron" class="w3-button andy-primary w3-round-xxlarge" href="{% url 'learn:perceptron' %}">Perceptron</a>
+            α: <input type="number" id="alpha" name="alpha" min="0.001" max="1" step="0.001" value="{{ alpha|default:'0.01' }}" size="5">
+            γ: <input type="number" id="gamma" name="gamma" min="0.001" max="1" step="0.001" value="{{ gamma|default:'0.01' }}" size="5">
+            <hr>
+        </div>
+        <div class="w3-rest">
+            <img class="graph" src="{{ graph }}">
+            <img class="graph" src="{{ graph1 }}">
+        </div>
+    </div>
+{% endblock %}

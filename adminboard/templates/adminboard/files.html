@@ -1,0 +1,86 @@
+{% extends "adminboard/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+{{ block.super }}
+    <!--<script src="{% static 'todo/task_list.js' %}"></script>-->
+{% endblock %}
+
+{% block section %}
+    <style>
+        .plot {
+            max-width: 250px;
+            max-height: 250px;
+        }
+        .bigplot {
+            max-width: 100%;
+            max-height: 100vh;
+            margin: auto;
+        }
+        .histogram {
+            max-width: 100%;
+            max-height: 80vh;
+            margin: auto;
+        }
+        .fullscreen {
+            z-index: 999999;
+            position:fixed;
+            top:0;
+            left:0;
+            width: 100vw;
+            height: 100vh;
+            display:none;
+            background-color: white;
+        }
+        .zoom {
+            cursor: url('/static/images/icons/zoom_60.png'), auto;
+        }
+    </style>
+
+    <div id="big_files" class="w3-display-container fullscreen">
+        <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_files').style.display='none'">&times;&nbsp;&nbsp;</span>
+        <img class="bigplot" src="{{ files }}">
+    </div>
+
+    <div id="big_dirs" class="w3-display-container fullscreen">
+        <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_dirs').style.display='none'">&times;&nbsp;&nbsp;</span>
+        <img class="bigplot" src="{{ dirs }}">
+    </div>
+
+    <div class="w3-padding">
+        <h1>Files</h1>
+        <!--{{ tree }}-->
+        <table class="w3-table-all">
+            {% for item in tree %}
+                <tr>
+                    <td>{{ item.level }}</td>
+
+                    <td style="padding-left:{{ item.left}}px;">
+                        {% if item.type == 'file' or item.type == 'module' %}
+                            {{ item.name }}
+                        {% else %}
+                            <strong>
+                                {% if item.level == 0%}
+                                    {% for parent in item.parents %}
+                                        {% if forloop.counter > 2 %}
+                                            <a href="{% url 'adminboard:files' parent.link %}">{{ parent.name }}</a>{% if not forloop.last %} /{% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <a href="{% url 'adminboard:files' item.link %}">{{ item.dir }}</a>
+                                {% endif %}
+                            </strong>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ item.size }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div>
+            <img src="{{ files }}" class="plot zoom w3-image w3-center"  onclick="document.querySelector('#big_files').style.display='block'">
+            <img src="{{ dirs }}" class="plot zoom w3-image w3-center"  onclick="document.querySelector('#big_dirs').style.display='block'">
+        </div>
+    </div>
+{% endblock %}

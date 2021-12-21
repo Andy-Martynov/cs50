@@ -1,0 +1,37 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}Animation{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'animation/animation_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block home_link %}
+    {{ block.super }}
+{% endblock %}
+
+{% block nav_add_not_authenticated %}
+    <div class="menu-icon">
+        <a href="{% url 'animation:index' %}">
+            <img class="animate-Menu" src="{% static 'animation/animation_60.png' %}">
+        </a>
+    </div>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'animation:animation_list' %}">ANIMATIONS</a>
+    </li>
+    <li class="nav-item">
+        <a id="download" class="nav-link" href="https://www.w3schools.com/css/css3_animations.asp">TUTORIAL</a>
+    </li>
+{% endblock %}
+
+{% block nav_add %}
+    <li class="nav-item">
+        <a id="view" class="nav-link" href="{% url 'animation:animation_create' %}">NEW</a>
+    </li>
+{% endblock %}
+
+{% block right %}
+{% endblock %}
+

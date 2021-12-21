@@ -1,0 +1,48 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <h2>GROUP {{ group.name }}</h2>
+
+<div class="container-fluid bg-secondary">
+    <section class="d-flex flex-row flex-wrap justify-content-between">
+    	<div class="card col-lg-6 mb-1 px-2 bg-secondary">
+        	<div class="card my-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+        	        {{ group.name }} ({{ group.creator.username }}) [{{ count }}]
+        	   </div>
+        	   <div class="card-body">
+                    <table>
+                        {% for member in members %}
+                            <tr>
+                                <td>{{ member.username }} <i class='fas fa-arrow-alt-circle-right'></i></td>
+                            </tr>
+                        {% endfor %}
+                     </table>
+        		</div>
+            </div>
+        </div>
+
+    	<div class="card col-lg-5 mb-1 px-2 bg-secondary">
+        	<div class="card my-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+        	        Other users [{{ users_count }}]
+        	   </div>
+        	   <div class="card-body">
+                    <table>
+                        {% for user in users_not_in_group %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                            </tr>
+                        {% endfor %}
+                     </table>
+        		</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+{% endblock %}

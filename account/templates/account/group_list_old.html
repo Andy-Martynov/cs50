@@ -1,0 +1,46 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+<div class="container-fluid bg-secondary">
+    <section class="d-flex flex-row flex-wrap justify-content-between row">
+        {% for item in group_list %}
+        	<div class="p-2 col-lg-4">
+        	    <div class="card">
+                    <div class="card-header d-flex flex-row justify-content-between">
+            	        <a class="andys-link-button" href="{% url 'account:group_update' item.group.id %}">{{ item.group.name }}</a>
+            	        <span class="ml-2">({{ item.group.creator.username }}) [{{ item.count }}]</span>
+            	        <a class="andys-link-button" href="{% url 'account:group_update' item.group.id %}">{{ item.group.name }}</a>
+
+            	        <a class="andys-link-button" href="{% url 'account:group_update' item.group.id %}">{{ item.group.name }}</a>
+
+            	   </div>
+            	   <div class="card-body">
+                        <table>
+                            {% for member in item.members %}
+                                <tr>
+                                    <td class="py-2">
+                                        {% if member.image %}
+                                            <img src="{{ member.image.url }}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                        {% else %}
+                                            <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ member.username }}</td>
+                                </tr>
+                            {% endfor %}
+                         </table>
+            		</div>
+            	</div>
+            </div>
+    	{% endfor %}
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { setCurrent('groups'); });
+    </script>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends "othello/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    {% if not gameover %}
+        <script src="{% static 'othello/game_replay.js' %}"></script>
+    {% endif %}
+{% endblock %}
+
+{% block home_link %}
+{% endblock %}
+
+{% block section %}
+    <div class="container">
+        <header class="w3-center pt-3">
+            <strong id="qty1" class="mr-2 w3-xxlarge">2</strong>
+            <img src='/media/othello/images/black_50.png'>
+            <img src="{{ game.first.user.image.url }}" class="avatar"> {{ game.first.name }} : {{ game.second.name }}
+            <img src="{{ game.second.user.image.url }}" class="avatar">
+            <img src='/media/othello/images/white_50.png'>
+            <strong id="qty2" class="ml-2 w3-xxlarge">2</strong>
+        </header>
+        <div class="w3-center">
+            <table class="board mx-auto my-2 w3-round">
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td class="mx-auto">A</td>
+                    <td class="mx-auto">B</td>
+                    <td class="mx-auto">C</td>
+                    <td class="mx-auto">D</td>
+                    <td class="mx-auto">E</td>
+                    <td class="mx-auto">F</td>
+                    <td class="mx-auto">G</td>
+                    <td class="mx-auto">H</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                {% for row in grid %}
+                    <tr>
+                        <td class="mx-auto">{{ forloop.revcounter }}</td>
+                        {% for cell in row %}
+                            <td class="cell" r={{ forloop.parentloop.counter0 }} c={{ forloop.counter0 }} v=0 s=0>
+                                <img src='/media/othello/images/white_50.png' class='w3-hide no'>
+                            </td>
+                        {% endfor %}
+                        <td>{{ forloop.revcounter }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td class="mx-auto">A</td>
+                    <td class="mx-auto">B</td>
+                    <td class="mx-auto">C</td>
+                    <td class="mx-auto">D</td>
+                    <td class="mx-auto">E</td>
+                    <td class="mx-auto">F</td>
+                    <td class="mx-auto">G</td>
+                    <td class="mx-auto">H</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                <tr class="replay-control" style="visibility:hidden">
+                    <td colspan="10">
+                        <span id="step_span">
+                            <span id="step_num">0</span> <input  class="step" type="range" id="step" min="1" max="{{ num_moves }}" step="1"> {{ num_moves }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="replay-control" style="visibility:hidden">
+                    <td colspan="10">
+                        <span id="controls">
+                             <button id="backward"><i class='fas fa-step-backward'></i></button>
+                             <button id="reset"><i class='fas fa-stop'></i></button>
+                             <button id="forward"><i class='fas fa-step-forward'></i></button>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+            <p id="replay-loading" eng="Loading ..." rus="Загружаю игру ...">Loading ...</p>
+
+            <div>
+                <span id="moved_circle"><img src='/media/othello/images/white_50.png' class='empty'></span>
+                <span id="moved_name" style="visibility:hidden">Somebody</span>
+                <strong><span id="move_made" class="w3-xlarge" style="visibility:hidden">moved Z1</span></strong>
+            </div>
+
+            <span id="show_gameover" class="w3-xlarge" style="visibility:hidden">GAME OVER</span>,
+            <span id="show_winner" class="w3-xlarge"></span>
+            <br>
+
+            {% if championship %}
+                <h3>Championship, game {{ current_game }} of {{ max_games }}</h3>
+            {%  endif %}
+
+            <button class="button-cancel w3-margin w3-small"><a href="{% url 'game:new_game' game.kind.id %}" rus="Завершить игру" eng="End the game">End the game</a></button>
+
+            <div {% if not user.is_superuser %}{% endif %}class="w3-hide">
+                response: <p id="response"></p>
+                first_player_name: <p id="first_player_name">{{ game.first.name }}</p>
+                first_mode: <p id="first_mode">{% if game.first.is_bot %}bot{% else %}human{% endif %}</p>
+                second_player_name: <p id="second_player_name">{{ game.second.name }}</p>
+                second_mode: <p id="second_mode">{% if game.second.is_bot %}bot{% else %}human{% endif %}</p>
+                step: <p id="step">{{ step }}</p>
+                gameover: <p id="gameover">{{ gameover }}</p>
+                championship: <p id="championship">{{ championship }}</p>
+                maxgames:<p id="maxgames">{{ max_games }}</p>
+                current_game: <p id="current_game">{{ current_game }}</p>
+                human_num: <p id="human_num">{{ human_num }}</p>
+                game_id: <p id="game_id">{{ game.id }}</p>
+                uid: <p id="uid">{{ uid }}</p>
+                <p id="moves">{{ game.moves }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

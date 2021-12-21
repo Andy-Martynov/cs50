@@ -1,0 +1,19 @@
+{% extends "currency/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <style>
+        .iframe {
+            width: 90%;
+            height: 60vh;
+        }
+    </style>
+
+    <div class="w3-container">
+        <div class="w3-container w3-center">
+            <iframe src="{{ dynamic_plot }}" class="iframe" style="border:1px solid black;">
+            </iframe>
+        </div>
+    </div>
+{% endblock %}

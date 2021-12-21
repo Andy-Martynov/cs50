@@ -1,0 +1,83 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+    {{ block.super }}
+    <script src="{% static 'hub/hub.js' %}"></script>
+{% endblock %}
+
+{% block navbar_add %}
+    <span class="nav-item">
+        <a class="nav-link" onclick="document.getElementById('about').style.display='block'"><i class='fas fa-question-circle'></i> <span rus="О сайте" eng="ABOUT">ABOUT</span></a>
+    </span>
+
+        <div class="w3-container p-0">
+            <div id="about" class="w3-modal w3-animate-zoom" style="z-index: 99;">
+                <div class="w3-modal-content w3-card-4">
+                    <header class="w3-container w3-teal">
+                        <span onclick="document.getElementById('about').style.display='none'"
+                        class="w3-button w3-xlarge w3-display-topright">&times;</span>
+                        <h2>
+                            <span rus="Добро пожаловать на мой учебный сайт!">Welcome to my CS50 page!</span>
+                            <span>
+                                <img id="rus" src="{% static 'hub/rus.png' %}" class="w3-margin w3-image flag">
+                                <img id="eng" src="{% static 'hub/eng.png' %}" class="w3-margin w3-image flag">
+                            </span>
+                        </h2>
+                    </header>
+                    <div class="w3-row-padding w3-margin">
+                        <div class="w3-col l5">
+                            <img src="{% static 'hub/me.jpg' %}" class="w3-round-xlarge w3-image" style="width:100%">
+                        </div>
+                        <div class="w3-col l5">
+                            <p rus="Здравствуйте, меня зовут Андрей Мартынов. Я живу в Москве.">Hello everybody! My name is Andrey Martynov, I live in Moscow, Russia.</p>
+                            <p>
+                                <span rus="Я изучаю программирование в качестве хобби. В 2020 году я закончил два учебных курса">My hobby is programming. In 2020 I completed two courses at </span>
+                                <u><a href="https://www.edx.org/">edX :</a></u>
+                            </p>
+                            <ul>
+                                <li>
+                                    <u><a href="https://www.edx.org/course/cs50s-web-programming-with-python-and-javascript">CS50's Web Programming with Python and JavaScript</a></u>
+                                </li>
+                                <li>
+                                    <u><a href="https://www.edx.org/course/cs50s-introduction-to-artificial-intelligence-with-python">CS50's Introduction to Artificial Intelligence with Python</a></u>
+                                </li>
+                            </ul>
+                            <p>by <a href="https://www.edx.org/school/harvardx"><img src="{% static 'hub/harvard.png' %}"></a></p>
+                            <p rus="На этом сайте я разместил несколько проектов, которые сделал за время обучения, и несколько других учебных проектов.">Here are some educational projects I made while learning and some others.</p>
+                            <p rus="Напишите комментарий (требуется регистрация) или отправьте мне email" eng="">If interested please write a comment (register first) or send me a mail.</p>
+                        </div>
+                    </div>
+                    <footer class="w3-container w3-teal">
+                        <a href="mailto:andymartynovmail@gmail.com"><i class="fa fa-envelope"></i> Send me a mail</a>
+                    </footer>
+                </div>
+            </div>
+        </div>
+
+<div id="help-content" style="display:none">
+    <div><img class="cs50-menu-icon m-2 w3-round" src="{% static 'hub/eng.png' %}"><span rus="Изменить язык">Change language</span></div>
+    <div><img class="cs50-menu-icon m-2" src="{% static 'hub/hub_32.png' %}"><span rus="Домашняя страница">Change language</span></div>
+    <div><img class="cs50-menu-icon m-2" src="{% static 'hub/lamp_32.png' %}"><span rus="Помощь">Help</span></div>
+    <div><img class="cs50-menu-icon m-2" src="{% static 'account/users_32.png' %}"><span rus="Группы пользователей, создавайте группы, добавляйте или удаляйте пользователей">User's groups, create groups, add or remove users</span></div>
+    <hr>
+    <div>
+        <b rus="Кто он-лайн">WHO IS ON-LINE</b> - <span rus="Пользователи сейчас на сайте. Нажмите чтобы начать диалог.">Users on site now. Click to start a chat.</span>
+    </div>
+    <div>
+        <b rus="Группы">GROUPS</b> - <span rus="Ваши группы пользователей и группы, в которые включили вас. GROUP CHAT - открыть групповую переписку.">Your groups (if any) and groups you are in. Clich GROUP CHAT to chat in the group</span>
+    </div>
+    <div>
+        <b rus="Непрочтенное">UNREAD</b> - <span rus="Непрочтенные сообщения, нажмите чтобы прочитать.">Unread messages, click to read.</span>
+    </div>
+    <div>
+        <b rus="Комментарии">COMMENTS</b> - <span rus="Можете оставить Ваш комментарий о сайте.">You may write a comment about the site.</span>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+

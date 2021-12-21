@@ -1,0 +1,27 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+<style>
+#logo {
+  margin-left: 35vw;
+  margin-top: 20vh;
+  width: 30vw;
+  animation-name: spin;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+}
+
+@keyframes spin {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
+}
+</style>
+    <h4 class="m-3 w3-text-red">Hello, please log in or register to use "Meeting point".</h4>
+
+        <div><img id="logo" class="w3-circle" src="{% static 'meeting/meeting_big.png' %}"></div>
+
+{% endblock %}

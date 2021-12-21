@@ -1,0 +1,41 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <div class="w3-bar">
+        {% if active %}
+            <h2 class="page_title w3-bar-item">Active Listings</h2>
+        {% else %}
+            <h2 class="page_title w3-bar-item">Closed Listings</h2>
+        {% endif %}
+        <a href="{% url 'auctions:index' %}"><button class="w3-bar-item w3-button w3-teal w3-right w3-margin-top w3-margin-right">Card View</button></a>
+    </div>
+    {% for category in categories %}
+        <div class="w3-panel w3-light-gray">
+            <h3>Category {{ category.title}}{{ category.category__title }} ({{ category.id__count }})</h3>
+        </div>
+        {% for listing in object_list %}
+            {% if listing.category.id == category.category__id or listing.category.id == category.id %}
+                <div>
+                    &#9899; <a class="w3-xlarge w3-text-gray" href="{% url 'auctions:listing-detail' listing.id %}">{{ listing.title }}</a>
+                    by {{ listing.created_by }}
+                    {% if  listing.current_price > 0 %}
+                        , <span class="w3-text-red">current bid {{ listing.current_price }}</span>
+                    {% endif %}
+                    <hr class="w3-section">
+                    <div class="w3-row">
+                        <div class="w3-col w3-quarter">
+                            <a class="" href="{% url 'auctions:listing-detail' listing.id %}">
+                                <img class="listing_img_xsmall" src="{{ listing.image.url }}">
+                            </a>
+                        </div>
+                        <div class="w3-col w3-threequarter" style="max-height: 100px; overflow: auto;">
+                            {{ listing.description }}
+                        </div>
+                    </div>
+                </div>
+                <hr class="w3-section">
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

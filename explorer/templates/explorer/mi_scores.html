@@ -1,0 +1,15 @@
+{% extends "explorer/filter.html" %}
+
+{% load static %}
+
+{% block data %}
+
+    <img src="{{ mi_scores }}"class="w3-image w3-center">
+    <br>
+    <p>Low scores: {{ low_mi_scores }}</p>
+    <br>
+    <p>Scores: </p>
+    <pre class="px-3">
+        {{ mi_scores_table }}
+    </pre>
+{% endblock %}

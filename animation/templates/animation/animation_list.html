@@ -1,0 +1,35 @@
+{% extends "animation/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <table>
+        <tr>
+            <td>
+                <h1>ANIMATIONS</h1>
+            </td>
+            <td>
+                <a class="w3-button w3-teal w3-round-xxlarge w3-tiny mx-5" href="{% url 'animation:animation_create' %}">NEW</a>
+            </td>
+        </tr>
+    </table>
+
+    <table class="common table"
+        {% for animation in object_list %}
+            {% if animation.user or user.is_superuser or animation.session_key == session_key %}
+                <tr>
+                    <td {% if animation.user == user or animation.session_key == session_key %}class="w3-sand"{% endif %}>{{ animation.user|default:"Anonimous" }}</td>
+                    <td>{{ animation.title }}</td>
+                    <td>{{ animation.duration }}</td>
+                    <td>{{ animation.keyframes }}</td>
+                    <td><a class="w3-button w3-teal w3-round-xxlarge w3-tiny p-1" href="{% url 'animation:animation_detail' animation.id %}">VIEW</a></td>
+                    <td>
+                        {% if animation.user == request.user or request.user.is_superuser or animation.session_key == session_key %}
+                            <a class="w3-button w3-red w3-round-xxlarge w3-tiny p-1" href="{% url 'animation:animation_delete' animation.id %}" onclick="return confirm('Are you sure?');">DELETE</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endblock %}

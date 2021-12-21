@@ -1,0 +1,85 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <style>
+        .subtable td, .subtable th {padding: 0;}
+    </style>
+    <div class="w3-padding">
+        <div>
+            <span class="w3-large w3-margin" eng="Leaderboard" rus="Турнирная таблица">Leaderboard</span>
+            <span onclick="show('bots')"    class="w3-button p-1 w3-border w3-round-large">Bots</span>
+            <span onclick="show('humans')"  class="w3-button p-1 w3-border w3-round-large">Humans</span>
+            <span onclick="show('all')"     class="w3-button p-1 w3-border w3-round-large">All</span>
+        </div>
+        <table class="w3-table" id="leaderboard">
+            <tr class="w3-xlarge">
+                <th>Player</th>
+                <th>Name (click for info)</th>
+                {% for kind in kinds %}
+                    <th>
+                        {% if kind.image %}<img src="{{ kind.image.url }}">{% endif %}
+                        {{ kind.name }}
+                    </th>
+                {% endfor %}
+                <th>Total</th>
+           </tr>
+            {% for item in matrix %}
+                <tr class="w3-border-bottom">
+                    <td><img src="{{ item.player.user.image.url }}" class="avatar"></td>
+                    <td>{% if item.player.is_bot %}<i class='fas fa-robot'></i>{% endif %}<a href="{% url 'game:player_info' item.player.id %}">{{ item.player.name }}</a></td>
+                    {% for kind in item.info %}
+                        <td>
+                            <table class="subtable">
+                                <tr><th>win:</th><td>{{ kind.win|floatformat:"0" }}</td></tr>
+                                <tr><th>loss: </th><td>{{ kind.loss|floatformat:"0" }}</td></tr>
+                                <tr><th>tie:</th><td>{{ kind.tie|floatformat:"0" }}</td></tr>
+                                <tr><th>rating:&nbsp;</th><td>{{ kind.rating|floatformat:"0" }}</td></tr>
+                            </table>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br><br><br>
+
+<script>
+function show(mode) {
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue;
+    filter = 'fas fa-robot';
+    table = document.getElementById("leaderboard");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+            txtValue = td.innerHTML;
+            if (mode == 'bots') {
+                if (txtValue.indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            } else {
+                if (mode == 'humans') {
+                    if (txtValue.indexOf(filter) > -1) {
+                        tr[i].style.display = "none";
+                    } else {
+                        tr[i].style.display = "";
+                    }
+                } else {
+                    tr[i].style.display = "";
+                }
+            }
+        }
+    }
+}
+</script>
+
+
+{% endblock %}
+

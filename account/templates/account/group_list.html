@@ -1,0 +1,33 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <div>
+        {% for item in group_list %}
+            <div>
+            	<details class="w3-margin w3-border w3-border-gray w3-round-xlarge">
+            	    <summary class="w3-padding w3-border-0 w3-border-gray w3-round-xlarge">
+            	        {{ item.group.name }}{% if item.group.creator != user %} by {{ item.group.creator.username }} [{{ item.count }}]{% endif %}
+                    </summary>
+                    <div class="d-flex flex-row justify-content-between w3-padding">
+                        <a class="w3-button w3-white w3-border w3-border-green w3-round-xlarge" href="{% url 'account:group_update' item.group.id %}">EDIT</a>
+                        <a class="w3-button w3-white w3-border w3-border-red w3-round-xlarge" href="{% url 'account:group_delete' item.group.id %}" onclick="return confirm('Are you sure?');">DELETE</a>
+                    </div>
+                    <div>
+                        {% for member in item.members %}
+                            <div class="user">
+                                {% if member.image %}
+                                    <img class="avatar" src="{{ member.image.url }}">
+                                {% else %}
+                                    <img class="avatar" src="{%  static 'account/x.png' %}">
+                                {% endif %}
+                                <span class="username">{{ member.username }}</span>
+                            </div>
+                        {% endfor %}
+                	</div>
+                </details>
+            </div>
+    	{% endfor %}
+    </div>
+{% endblock %}

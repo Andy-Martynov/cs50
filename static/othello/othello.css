@@ -1,0 +1,47 @@
+/*.cell           {padding: 3px 6px; font-size: 4vh;}*/
+/*.empty          {color: white;}*/
+/*.first          {color: DarkCyan;}*/
+/*.second         {color: Crimson;}*/
+/*.both           {color: yellow;}*/
+/*#step_span      {width: 100%;}*/
+/*#step           {width: 80%;}*/
+/*.board          {width: min(95%, 450px); background-image: url("static/othello/images/greenboard.jpg")}*/
+/*.game-opacity   {opacity: 0.5;}*/
+
+
+.cell           {padding: 3px 6px; font-size: 4vh; border: 3px solid black;}
+/*.empty          {visibility: hidden;}*/
+.empty          {opacity: 0;}
+.first          {color: black;}
+.second         {color: white;}
+.both           {color: yellow;}
+#step_span      {width: 100%;}
+#step           {width: 80%;}
+.board          {width: min(95%, 400px);
+                 background-image: url("/static/othello/images/greenboardbr.jpg");
+                 /*-webkit-transform: perspective(450px) rotateX(0deg);*/
+                 /*transform: perspective(450px) rotateX(0deg);*/
+}
+
+.board td       {color: GoldenRod; font: bold;}
+
+.yes {
+    cursor: url('/static/othello/images/yes_40.png') 20 20, auto;
+}
+.no {
+    cursor: url('/static/othello/images/no_40.png') 20 20, auto;
+}
+
+.rolling {
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin {
+0%   {transform: scaleY(1) rotate(0deg);}
+49.5%  {transform: scaleY(0.1) rotate(0deg);}
+51.5%  {transform: scaleY(-0.1) rotate(0deg);}
+100% {transform: scaleY(-1) rotate(0deg);}}

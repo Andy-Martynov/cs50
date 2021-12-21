@@ -1,0 +1,33 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}Admin{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'hub/admin_60.png' %}" type="image/png">
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <!--<script src="{% static 'todo/task_list.js' %}"></script>-->
+    <!--<link href="{% static 'todo/styles.css' %}" rel="stylesheet">-->
+{% endblock %}
+
+{% block home_link %}
+    {{ block.super }}
+    {% include "account/include_account_groups_menu.html" %}
+{% endblock %}
+
+{% block nav_add %}
+    <li class="nav-item">
+        <!--<a class="nav-link" href="{% url 'todo:task_create' %}" rus="Новая задача" eng="New Task">New Task</a>-->
+    </li>
+{% endblock %}
+
+{% block help-content %}
+    <h2>Admin board HELP</h2>
+{% endblock %}
+
+{% block right %}
+{% endblock %}

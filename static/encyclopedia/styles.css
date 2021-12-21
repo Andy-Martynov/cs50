@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    background-color: white;
+}
+
+code {
+    white-space: pre;
+}
+
+h1 {
+    margin-top: 0px;
+    padding-top: 20px;
+}
+
+textarea {
+    height: 90vh;
+    width: 80%;
+}
+
+.main {
+    padding: 10px;
+}
+
+.search {
+    width: 100%;
+    font-size: 15px;
+    line-height: 15px;
+}
+
+.sidebar {
+    background-color: #f0f0f0;
+    /*height: 100vh;*/
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-top: 5px;
+}
+/* If screen size is more than 768px wide, set the font-size of <div> to 80px */
+@media screen and (min-width: 768px) {
+  a {
+    /*font-size: 80px;*/
+  }
+}
+
+/* If screen size is 992px wide, or less, set the font-size of <div> to 30px */
+@media screen and (max-width: 992px) {
+  a, input, button, .search, .btn {
+    font-size: 48px;
+  }
+}

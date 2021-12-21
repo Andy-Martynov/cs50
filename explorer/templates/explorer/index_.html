@@ -1,0 +1,136 @@
+{% extends "explorer/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <div class="p-3">
+        <details class="my-2">
+            <summary class="w3-button w3-small w3-padding-small w3-white w3-border w3-border-green w3-round-large">TRAIN {{ train_shape}}</summary>
+            <p>--<a href="{{ train_link }}" target="_blank">View</a>--</p>
+            <details open>
+                <summary>info</summary>
+                <table class="w3-table-all">
+                    <tr>
+                        <th>name</th>
+                        <th>dtype</th>
+                        <th>notnull</th>
+                        <td>null</td>
+                        <td>% null</td>
+                    </tr>
+                    {% for col in train_info %}
+                        <tr>
+                            <td><a href="{% url 'explorer:column_info' 'train' col.name %}">{{ col.name }}</a></td>
+                            <td style="color: {{ col.dtype_color }}">{{ col.dtype }}</td>
+                            <td>{{ col.notnull_count }}</td>
+                            <td>{% if col.null_count > 0 %}{{ col.null_count }}{% endif %}</td>
+                            <td style="color: {{ col.null_percent_color }}">{{ col.null_percent|floatformat:0 }}%</td>
+                            <td style="color: {{ col.uniques_color }}">{{ col.uniques }}</td>
+                            <td>{{ col.values }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </details>
+            <details>
+                <summary>Select features</summary>
+                <p>Too many null: {{ too_many_null }}</p>
+                <p>Low MI scores: {{ low_mi_scores }}</p>
+                <p>Low correlation with target: {{ low_target_corr }}</p>
+                <p>Integer categorical: {{ int_categorical }}</p>
+            </details>
+            <details>
+                <summary>integer categorical</summary>
+                {{ train_integer_categorical }}
+            </details>
+            <details>
+                <summary>plots</summary>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3" style="text-align: center;">
+                            <img src="{{ hist }}"class="zoom w3-image w3-center"
+                                class="zoom w3-image w3-center"  onclick="document.querySelector('#big_hist').style.display='block'">
+                        </div>
+                        <div class="col-md-3" style="text-align: center;">
+                            <img src="{{ kde }}"class="zoom w3-image w3-center"
+                                class="zoom w3-image w3-center"  onclick="document.querySelector('#big_kde').style.display='block'">
+                        </div>
+                        <div class="col-md-3" style="text-align: center;">
+                            <img src="{{ corr }}"class="zoom w3-image w3-center"
+                                class="zoom w3-image w3-center"  onclick="document.querySelector('#big_corr').style.display='block'">
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </details>
+
+
+        <details class="my-2">
+            <summary class="w3-button w3-small w3-padding-small w3-white w3-border w3-border-green w3-round-large">TEST {{ test_shape}}</summary>
+            <p>--<a href="{{ test_link }}" target="_blank">View</a>--</p>
+        </details>
+
+        <details class="my-2">
+            <summary class="w3-button w3-small w3-padding-small w3-white w3-border w3-border-green w3-round-large">ALL {{ all_shape}}</summary>
+            <p>--<a href="{{ all_link }}" target="_blank">View</a>--</p>
+        </details>
+
+        <details class="my-2">
+            <summary class="w3-button w3-small w3-padding-small w3-white w3-border w3-border-green w3-round-large">PREDICTED {{ predicted_shape}}</summary>
+            <p>--<a href="{{ predicted_link }}" target="_blank">View</a>--</p>
+            <details>
+                <summary>info</summary>
+                <table class="w3-table-all">
+                    <tr>
+                        <th>name</th>
+                        <th>dtype</th>
+                        <th>notnull</th>
+                        <td>null</td>
+                        <td>% null</td>
+                    </tr>
+                    {% for col in predicted_info %}
+                        <tr>
+                            <td><a href="{% url 'explorer:column_info' 'train' col.name %}">{{ col.name }}</a></td>
+                            <td style="color: {{ col.dtype_color }}">{{ col.dtype }}</td>
+                            <td>{{ col.notnull_count }}</td>
+                            <td>{% if col.null_count > 0 %}{{ col.null_count }}{% endif %}</td>
+                            <td style="color: {{ col.null_percent_color }}">{{ col.null_percent|floatformat:0 }}%</td>
+                            <td style="color: {{ col.uniques_color }}">{{ col.uniques }}</td>
+                            <td>{{ col.values }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </details>
+            <details>
+                <summary>plots</summary>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3" style="text-align: center;">
+                            <img src="{{ join }}"class="zoom w3-image w3-center"
+                                class="zoom w3-image w3-center"  onclick="document.querySelector('#big_join').style.display='block'">
+                        </div>
+                        <div class="col-md-3" style="text-align: center;">
+                            <img src="{{ kde2 }}"class="zoom w3-image w3-center"
+                                class="zoom w3-image w3-center"  onclick="document.querySelector('#big_kde2').style.display='block'">
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </details>
+    </div>
+
+    <div id="big_hist" class="w3-display-container fullscreen">
+        <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_hist').style.display='none'">&times;&nbsp;&nbsp;</span>
+        <img class="bigplot" src="{{ hist }}">
+    </div>
+    <div id="big_kde" class="w3-display-container fullscreen">
+        <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_kde').style.display='none'">&times;&nbsp;&nbsp;</span>
+        <img class="bigplot" src="{{ kde }}">
+    </div>
+    <div id="big_kde2" class="w3-display-container fullscreen">
+        <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_kde2').style.display='none'">&times;&nbsp;&nbsp;</span>
+        <img class="bigplot" src="{{ kde2 }}">
+    </div>
+    <div id="big_corr" class="w3-display-container fullscreen">
+        <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_corr').style.display='none'">&times;&nbsp;&nbsp;</span>
+        <img class="bigplot" src="{{ corr }}">
+    </div>
+{% endblock %}

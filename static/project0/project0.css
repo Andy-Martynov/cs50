@@ -1,0 +1,101 @@
+@charset "UTF-8";
+#photos {
+  display: flex;
+  flex-wrap: wrap; }
+
+.small, .pic {
+  width: 100%;
+  border-radius: 20px; }
+
+.thumbnail {
+  visibility: hidden;
+  margin: 20px;
+  border-radius: 20px; }
+  .thumbnail .small {
+    width: 100%;
+    border-radius: 20px;
+    visibility: visible; }
+  .thumbnail .large {
+    width: 90%;
+    position: fixed;
+    top: 15%;
+    right: 5%;
+    border-radius: 40px; }
+  .thumbnail p {
+    visibility: visible; }
+
+.thumbnail:hover {
+  visibility: visible; }
+
+.thumbnail::before {
+  content: "\21d2hover or tap me";
+  color: #800000;
+  visibility: visible; }
+
+.link::before {
+  content: "Wiki \21d2 "; }
+
+.pic {
+  border-radius: 10px; }
+
+td .pic {
+  width: 120px; }
+
+.simple_menu li {
+  display: inline;
+  margin: 0 10px;
+  font: 24px bold; }
+
+.card {
+  margin: 0.5vh 0.5vw; }
+  .card pre {
+    font-size: 0.75em;
+    max-height: 30vh;
+    overflow-y: auto; }
+  .card img {
+    width: 120px;
+    height: 120px;
+    border-radius: 60px; }
+
+.card-body {
+  padding: 5px; }
+
+#languages_table {
+  margin: 16px 0; }
+  #languages_table th, #languages_table td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 0 12px; }
+
+@media (min-width: 1081px) {
+  body {
+    background-color: #ffffcc; }
+
+  .thumbnail, .pic {
+    width: 350px; }
+
+  h2::before {
+    content: "Welcome to my page! Benvenuti! Добро пожаловать! "; } }
+@media (max-width: 1080px) {
+  body {
+    background-color: #ccffff; }
+
+  .thumbnail, .pic {
+    width: 250px; }
+
+  #index_header::before {
+    content: "Welcome to my page!"; } }
+@media (max-width: 800px) {
+  body {
+    background-color: #ffffff; }
+
+  .thumbnail, .pic {
+    width: 150px; }
+
+  #index_header::before {
+    content: "Welcome!"; }
+
+  .wide {
+    display: none; } }
+
+/*# sourceMappingURL=project0.css.map */

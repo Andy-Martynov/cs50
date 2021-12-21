@@ -1,0 +1,140 @@
+{% extends "connect4/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <script src="{% static 'connect4/game.js' %}"></script>
+{% endblock %}
+
+{% block home_link %}
+{% endblock %}
+
+{% block section %}
+    <div class="container">
+        <header class="w3-center mt-3">
+            {% if game.first.is_bot %}<i class='fas fa-robot first'></i>{% else %}<i online="{{ game.first.user.id }}" class='fas fa-user first'></i>{% endif %}
+            <img src="{{ game.first.user.image.url }}" class="avatar"> <small>{{ game.first.name }} : {{ game.second.name }}</small>
+            <img src="{{ game.second.user.image.url }}" class="avatar">
+            {% if game.second.is_bot %}<i class='fas fa-robot second'></i>{% else %}<i online="{{ game.second.user.id }}" class='fas fa-user second'></i>{% endif %}
+        </header>
+        <div class="w3-center">
+            <table class="board mx-auto my-2 w3-round">
+                <tr>
+                    <td class="mx-auto">0</td>
+                    <td class="mx-auto">1</td>
+                    <td class="mx-auto">2</td>
+                    <td class="mx-auto">3</td>
+                    <td class="mx-auto">4</td>
+                    <td class="mx-auto">5</td>
+                    <td class="mx-auto">6</td>
+                </tr>
+                {% for row in matrix %}
+                    <tr>
+                        {% for cell in row %}
+                            <td class="cell" r={{ forloop.parentloop.counter0 }} c={{ forloop.counter0 }} v=0 s=0>
+                                <img src='/media/connect4/images/white.png' class='ball'>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                <tr {% if not user.is_superuser %}class="w3-hide"{% endif %}>
+                    <td id="score0" class="mx-auto"></td>
+                    <td id="score1" class="mx-auto"></td>
+                    <td id="score2" class="mx-auto"></td>
+                    <td id="score3" class="mx-auto"></td>
+                    <td id="score4" class="mx-auto"></td>
+                    <td id="score5" class="mx-auto"></td>
+                    <td id="score6" class="mx-auto"></td>
+                </tr>
+                {% if game.first.is_bot %}
+                    {% if game.second.is_bot %}
+                        <tr>
+                            <td colspan="7">
+                                <span id="controls">
+                                     <button id="pause" onclick="pause()"><i class='fas fa-pause'></i></button>
+                                     <button id="forward" onclick="forward()"><i class='fas fa-step-forward'></i></button>
+                                </span>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            </table>
+
+            <table class="mx-auto">
+                <tr>
+                    <td>
+                        <span id="moved_circle"  {% if user.id == game.first.user.id %}  style="visibility:hidden"{% endif %}><img src='/media/connect4/images/red.png' class='win4'></span>
+                    </td>
+                    <td>
+                        <span id="moved_name"  {% if user.id == game.first.user.id %}  style="visibility:hidden"{% endif %}> </span>
+                        <strong><span id="move_made" class="w3-xlarge" style="visibility:hidden" rus=" думает" eng=" is thinking"> is thinking</span></strong>
+                    </td>
+                </tr>
+                <tr id="show_your_turn" {% if user.id != game.first.user.id %}  style="visibility:hidden"{% endif %}>
+                    <td id="current_circle">
+                        <img src='/media/connect4/images/red.png'>
+                    </td>
+                    <td class="w3-xxxlarge" rus="Ваш ход!" eng="Your turn!">
+                        Your turn!
+                    </td>
+                </tr>
+            </table>
+            <span id="show_gameover" class="w3-xlarge"></span> <span id="show_winner" class="w3-xlarge"></span>
+            <br>
+
+            {% if championship %}
+                <h3>Championship, game {{ current_game }} of {{ max_games }}</h3>
+            {%  endif %}
+
+            <button id="replay" style="visibility:hidden"><a href="{% url 'othello:game_replay' game.id %}"><i class="fab fa-youtube txt-info w3-large"></i></a></button>
+            <button class="button-cancel w3-margin w3-small"><a href="{% url 'game:game_cancel' game.id 'yes' %}" rus="Завершить игру" eng="End the game">End the game</a></button>
+
+            <div {% if not user.is_superuser %}class="w3-hide"{% endif %}>
+                response: <p id="response"></p>
+                first_player_name: <p id="first_player_name">{{ game.first.name }}</p>
+                first_mode: <p id="first_mode">{% if game.first.is_bot %}bot{% else %}human{% endif %}</p>
+                second_player_name: <p id="second_player_name">{{ game.second.name }}</p>
+                second_mode: <p id="second_mode">{% if game.second.is_bot %}bot{% else %}human{% endif %}</p>
+                step: <p id="step">{{ step }}</p>
+                gameover: <p id="gameover">{{ gameover }}</p>
+                championship: <p id="championship">{{ championship }}</p>
+                maxgames:<p id="maxgames">{{ max_games }}</p>
+                current_game: <p id="current_game">{{ current_game }}</p>
+                human_num: <p id="human_num">{{ human_num }}</p>
+                game_id: <p id="game_id">{{ game.id }}</p>
+                uid: <p id="uid">{{ uid }}</p>
+                oid: <p id="oid">{{ oid }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_script %}
+    {{ block.super }}
+    <script>
+        function getGameCanceled(data) {
+            console.log('pusher game canceled', data);
+            if (data != null) {
+                id = data['game_id'];
+                if (id == GAME_ID) {
+                    kind = data['kind'];
+                    location.href = "{% url 'game:game_cancel' game.id 'no' %}";
+                }
+            }
+        }
+
+        var pusher_ng = new Pusher('bbe70803665a7a964619', {
+          cluster: 'eu'
+        });
+        var channel_ng = pusher_ng.subscribe('my-channel');
+        channel.bind('game_canceled', getGameCanceled);
+    </script>
+{% endblock %}
+
+{% block nav_add %}
+{% endblock %}
+
+{% block nav %}
+{% endblock %}
+

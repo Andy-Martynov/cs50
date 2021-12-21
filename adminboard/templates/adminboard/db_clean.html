@@ -1,0 +1,18 @@
+{% extends "adminboard/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+{{ block.super }}
+    <!--<script src="{% static 'todo/task_list.js' %}"></script>-->
+{% endblock %}
+
+{% block section %}
+    <h1>DB CLEAN {{ db }}</h1>
+
+    <h2>{{ count1 }}, {{ count2 }}</h2>
+
+    <h2>{{ anim_count }}, {{ anim_count2 }}</h2>
+
+
+{% endblock %}

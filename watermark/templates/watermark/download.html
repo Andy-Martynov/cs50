@@ -1,0 +1,10 @@
+{% extends "watermark/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <h2 class="w3-center">Your images are ready, please download</h2>
+    {% for src in srcs %}
+        <img class="m-2 w3-round-large" src="{{ src }}" style="max-width: 300px; max-height: 240px;">
+    {% endfor %}
+{% endblock %}

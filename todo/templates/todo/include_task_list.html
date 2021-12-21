@@ -1,0 +1,46 @@
+<span tid="{{ task.id }}" state="{{ task.checked }}" class="task level{{ task.level }} w3-xxlarge">
+    <i cid="{{ task.id }}" class="check fa fa-square-o"></i>
+</span>
+<span class="name show_actions w3-large" tid="{{ task.id }}">{{ task.name }}</span>
+{% if i_share %}
+    {% for share in i_share %}
+        {% if share.task == task %}
+            {% if share.recieved %}
+                {% if share.accepted %}
+                    <i class="fa fa-hand-o-right w3-text-green"></i> {{ share.who }}
+                {% else %}
+                    <i class="fa fa-hand-o-right w3-text-red"></i> {{ share.who }}
+                {% endif %}
+            {% else %}
+                <i class="fa fa-hand-o-right w3-text-blue"></i> {{ share.who }}
+            {% endif %}
+            {% if share.sent %}
+                <i class="reminder fa fa-envelope w3-text-gray"></i>
+                <a href="{% url 'todo:preview' share.id %}">
+                    <i class="preview fa fa-envelope w3-text-blue" share_id="{{ share.id }}"></i>
+                </a>
+            {% else %}
+                <i class="reminder fa fa-envelope w3-text-red" share_id="{{ share.id }}" to_whom="{{ share.who.id }}"></i>
+                <a href="{% url 'todo:preview' share.id %}">
+                    <i class="preview fa fa-envelope w3-text-blue" share_id="{{ share.id }}"></i>
+                </a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% if shared_to_me %}
+    {% for share in shared_to_me %}
+        {% if share.task == task %}
+            {% if share.recieved %}
+                {% if share.accepted %}
+                    <share share_id={{ share.id }} accept="green" reject="white"></share>
+                {% else %}
+                    <share share_id={{ share.id }} accept="white" reject="red"></share>
+                {% endif %}
+            {% else %}
+                <share share_id={{ share.id }} accept="white" reject="white"></share>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<br>

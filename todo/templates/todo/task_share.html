@@ -1,0 +1,59 @@
+{% extends "todo/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <script src="{% static 'todo/task_share.js' %}"></script>
+{% endblock %}
+
+
+{% block section %}
+    <h3 class="w3-margin w3-padding w3-center w3-light-gray"><span rus="Поручить" eng="Share">Share</span> {{ task }}</h3>
+    <div class="container-fluid">
+        <section class="d-flex flex-row flex-wrap justify-content-around">
+        	<div class="card col-6 mb-1 p-0">
+                <div class="card-header d-flex flex-row justify-content-between p-1">
+        	        <span rus="Поручено" eng="Shared to">Shared to</span> {{ shared.count }}
+        	   </div>
+        	   <div id="shared_to" class="card-body p-1">
+                        {% for user in shared %}
+                            <p class="remove" tid="{{ task.id }}" uid="{{ user.id }}">
+                                {% if user.image %}
+                                    <img src="{{ user.image.url }}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                {% else %}
+                                    <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                {% endif %}
+                                {{ user }}
+                            </p>
+                        {% endfor %}
+        		</div>
+            </div>
+
+        	<div class="card col-6 mb-1 p-0">
+                <div class="card-header d-flex flex-row justify-content-between p-1">
+        	        <span rus="Кому поручить" eng="To whom">To whom</span>
+        	   </div>
+        	   <div id="users" class="card-body p-1">
+                    {% for item in group_list %}
+                        <h3>{{ item.group.name }}</h3>
+                        {% for user in item.members %}
+                            {% if not user in shared %}
+                                <p class="add" tid="{{ task.id }}" uid="{{ user.id }}">
+                                    {% if user.image %}
+                                        <img src="{{ user.image.url }}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                    {% else %}
+                                        <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                    {% endif %}
+                                    {{ user }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    {% empty %}
+                        <p class="w3-text-red">У Вас нет групп пользователей. <a href="{% url 'account:group_list' %}">Создайте (<img src="{% static 'account/users_60.png' %}">)</a> свою группу пользователей и Вы сможете назначать задачу пользователям из группы.</p>
+                    {% endfor %}
+        		</div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

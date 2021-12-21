@@ -1,0 +1,65 @@
+{% extends "animation/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+<style>
+.animate-{{ animation.title }} { {{ animation.prefix|default:""  }} animation:{{ animation.title }} {{ animation.duration }}s} @keyframes {{ animation.title }} { {{ animation.keyframes }} }
+
+.content-center {
+    display: grid;
+    place-content: center;
+}
+.place {
+    overflow: hidden;
+}
+</style>
+<script src="{% static 'animation/preview.js' %}"></script>
+{% endblock %}
+
+{% block section %}
+    <div class="w3-row">
+        <div class="w3-col l8 p-3">
+            <div class="place w3-border w3-border-red">
+                <img
+                    id="sample"
+                    class="mySlides w3-image animate-{{ animation.title }}"
+                    amode=".animate-{{ image.animation.title }}"
+                    src="{% static 'animation/sample.jpg' %}"
+                    style="max-height:70vh; display:none;"
+                >
+            </div>
+            <div class="place w3-border w3-border-red">
+                <img
+                    id="sample2"
+                    class="mySlides w3-image animate-{{ animation.title }}"
+                    amode=".animate-{{ image.animation.title }}"
+                    src="{% static 'animation/sample2.jpg' %}"
+                    style="max-height:70vh; display:none;"
+                >
+            </div>
+        </div>
+        <div class="w3-col l3 w3-large">
+            {% if animation.user == request.user or request.user.is_superuser %}
+                <a class="w3-button w3-teal w3-round-xxlarge w3-tiny m-3" href="{% url 'animation:animation_update' animation.id %}">UPDATE</a>
+            {% endif %}
+            <a class="w3-button w3-blue w3-round-xxlarge w3-tiny m-3" href="{% url 'animation:animation_copy' animation.id %}">COPY</a>
+            <input type="range" id="duration" min="0" max="30" step="1">
+            <br>
+            <span class="w3-xlarge" class="ml-3 mt-1">
+                .{{ animation.title }}
+            </span> {<br>
+            {% if animation.prefix %}
+                {{ animation.prefix|default:""  }}
+            {% endif %}
+            <pre>
+    animation:{{ animation.title }} {{ animation.duration }}s
+}
+@keyframes {{ animation.title }} {
+{{ animation.keyframes }}
+}
+            </pre>
+        </div>
+    </div>
+
+{% endblock %}

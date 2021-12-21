@@ -1,0 +1,87 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <div class="w3-padding">
+        <h2 class="w3-center">Game list, total {{ total }}</h2>
+
+    {% if user.is_superuser %}
+        <a class="button-cancel" href="{% url 'game:delete_unfinished_games' %}">Reset all ratings</a>
+    {% endif %}
+
+    <div class="my-3 w3-container w3-center">
+        <span class="">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo;&nbsp;first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="current mr-1">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last&nbsp;&raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+        <table class="w3-table w3-responsive">
+            <tr>
+                <th></th><th></th><th colspan="5">First</th><th>:</th><th colspan="5">Second</th><th></th>
+            </tr>
+            {% for game in page_obj %}
+                <tr><td></td>
+                    <td>{% if game.kind.image %}<img src="{{ game.kind.image.url }}">{% else %}{{ game.kind.name }}{% endif %}</td>
+                    <td>{{ game.timestamp|date:"D d/m/y" }}</td>
+                    <td><img src="{{ game.first.user.image.url }}" class="avatar"></td>
+                    <td>{% if game.first.is_bot %}<i class='fas fa-robot'></i>{% endif %}</td>
+                    <td>{{ game.first.name }}</td>
+                    <td>
+                        {% if game.winner == game.first %}
+                            win
+                        {% elif game.loser == game.first %}
+                            loss
+                        {% else %}
+                            tie
+                        {% endif %}
+                    </td>
+                    <td>{{ game.delta1|floatformat:"0" }}</td>
+                    <td>:</td>
+                    <td><img src="{{ game.second.user.image.url }}" class="avatar"></td>
+                    <td>{% if game.second.is_bot %}<i class='fas fa-robot'></i>{% endif %}</td>
+                    <td>{{ game.second.name }}</td>
+                    <td>
+                        {% if game.winner == game.second %}
+                            win
+                        {% elif game.loser == game.second %}
+                            loss
+                        {% else %}
+                            tie
+                        {% endif %}
+                    </td>
+                    <td>{{ game.delta1|floatformat:"0" }}</td>
+
+                    <td><a href="{% url 'game:game_replay' game.kind.id game.id %}"><i class="fab fa-youtube w3-large"></i></a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="my-3 w3-container w3-center">
+        <span class="">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo;&nbsp;first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="current mr-1">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last&nbsp;&raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <br><br><br>
+{% endblock %}

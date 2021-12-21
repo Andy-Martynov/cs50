@@ -1,0 +1,13 @@
+{% extends "album/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <div class="m-5 p-5">
+        <form method="post">{% csrf_token %}
+            <p>Are you sure you want to delete "{{ object }}"?</p>
+            <input class="w3-button w3-margin w3-red w3-round-xxlarge"type="submit" value="Confirm">
+            <button onclick="window.history.back();" class="w3-button w3-margin w3-green w3-round-xxlarge" type="button">Cancel</button>
+        </form>
+    </div>
+{% endblock %}

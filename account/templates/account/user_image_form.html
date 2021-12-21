@@ -1,0 +1,26 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block section %}
+    <div class="p-3">
+        <h2>{{ person.username }} image update</h2>
+
+        <form class="w3-container w3-xlarge" method="post" action="{% url 'account:user_image_update'  person.id %}" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td class="p-3">Please use 260x260 .png</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><input type="file" id="image" name="image"></td>
+                </tr>
+                <tr>
+                     <td class="p-3"><input class="btn btn-success" type="submit" value="UPDATE"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% load static %}
+
+<style>
+.groupchat {
+    padding: 3px;
+    margin: 3px;
+    border: 1px solid gray;
+    border-radius: 6px;
+    background-color: #e6ffe6;
+}
+.group {
+    padding: 3px;
+    margin: 3px;
+    border: 1px solid gray;
+    border-radius: 6px;
+    background-color: #ffffe6;
+}
+</style>
+
+<details id="GROUPS" class="mt-3" style="display:none;">
+    <summary class="my-2">
+        <b>GROUPS</b>
+    </summary>
+    <details id="my_groups" class="mt-2">
+        <summary class="ml-2">
+            <b>MY GROUPS</b>
+        </summary>
+    </details>
+    <details id="groups_im_in" class="mt-2">
+        <summary class="ml-2">
+            <b>GROUPS I'M IN</b>
+        </summary>
+    </details>
+</details>
+
+<script>
+function formatName(name) {
+    return name.replace('_', ' ');
+}
+
+init();
+
+async function init() {
+    await load_groups({{ user.id }});
+    await console.log("------------ groups loaded ----------------");
+    let groups = document.querySelectorAll('.groupchat');
+    console.log('-------------GROUPS :', groups);
+}
+
+async function load_groups(user_id) {
+    console.log('LOAD GROUPS');
+    info = await fetch(`/account/user_info/${user_id}`)
+    .then (response => response.json());
+
+    console.log('INFO:', info)
+
+    const my_groups = info.my_groups;
+    const my_groups_place = document.getElementById("my_groups");
+
+    if (typeof my_groups != "undefined") {
+        document.getElementById("GROUPS").style.display = "block";
+        for (var i =0; i < my_groups.length; i++) {
+            groupEl = document.createElement("details");
+            groupEl.innerHTML = `<summary>${my_groups[i].name}</summary>`;
+            groupEl.innerHTML += `<div class="groupchat" gid="${my_groups[i].id}"><img src="{% static 'chat/chat_32.png' %}"> GROUP CHAT</div>`;
+            groupEl.id = `my_${my_groups[i].id}`;
+            groupEl.className = 'ml-3 group';
+            my_groups_place.appendChild(groupEl);
+
+            const members = my_groups[i].members;
+            if (typeof members != "undefined") {
+                for (var j =0; j < members.length; j++) {
+                    userEl = document.createElement("div");
+                    userEl.className = 'user m-1 p-1';
+                    userEl.id = "user_"+members[j].id;
+                    userEl.setAttribute('uid', members[j].id);
+
+                    let online = ` <i class="fa fa-circle online_${members[j].id}" style="color:#00ff00; display:none;"></i>`;
+
+                    if (members[j].image != null) {
+                        userEl.innerHTML = `<img src="${members[j].image}" class="avatar"> <span class="username">${formatName(members[j].username)}</span> ${online}`;
+                    } else {
+                        userEl.innerHTML = `<img src="{% static 'account/x.png' %}" class="avatar"> <span class="username">${formatName(members[j].username)}</span> ${online}`;
+                    }
+                    document.getElementById(`my_${my_groups[i].id}`).appendChild(userEl);
+                }
+            }
+        }
+    }
+
+    const groups_im_in = info.groups_im_in;
+    const groups_im_in_place = document.getElementById("groups_im_in");
+
+    if (typeof groups_im_in != "undefined") {
+        document.getElementById("GROUPS").style.display = "block";
+        for (var i =0; i < groups_im_in.length; i++) {
+            groupEl = document.createElement("details");
+            groupEl.innerHTML = `<summary>${groups_im_in[i].name} by ${groups_im_in[i].creator.username}</summary>`;
+            groupEl.innerHTML += `<div class="groupchat" gid="${groups_im_in[i].id}"><img src="{% static 'chat/chat_32.png' %}"> GROUP CHAT</div>`;
+            groupEl.id = `my_${groups_im_in[i].id}`;
+            groupEl.className = 'ml-3 group';
+            groupEl.setAttribute('gid', groups_im_in[i].id);
+            groups_im_in_place.appendChild(groupEl);
+
+            const members = groups_im_in[i].members;
+            if (typeof members != "undefined") {
+                for (var j =0; j < members.length; j++) {
+                    userEl = document.createElement("div");
+                    userEl.className = 'user m-1 p-1';
+                    userEl.id = "user_"+members[j].id;
+                    userEl.setAttribute('uid', members[j].id);
+
+                    let online = ` <i class="fa fa-circle online_${members[j].id}" style="color:#00ff00; display:none;"></i>`;
+
+                    if (members[j].image != null) {
+                        userEl.innerHTML = `<img src="${members[j].image}" class="avatar"> <span class="username">${formatName(members[j].username)}</span> ${online}`;
+                    } else {
+                        userEl.innerHTML = `<img src="{% static 'account/x.png' %}" class="avatar"> <span class="username">${formatName(members[j].username)}</span> ${online}`;
+                    }
+                    document.getElementById(`my_${groups_im_in[i].id}`).appendChild(userEl);
+                }
+            }
+        }
+    }
+    finishEl = document.createElement("hr");
+    finishEl.id = "groups_loading_finish"
+    document.getElementById("GROUPS").appendChild(finishEl);
+}
+</script>
+

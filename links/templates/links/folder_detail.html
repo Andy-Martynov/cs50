@@ -1,0 +1,71 @@
+{% extends "links/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+<style>
+.link small {
+    color: blue;
+}
+.link img {
+    max-width: 20vw;
+    max-height: 20vh;
+}
+</style>
+    <div class="w3-row w3-margin-top w3-padding w3-center w3-round-xlarge w3-light-gray">
+        <span class="w3-left">
+            {% if object.parent %}
+                <a href="{% url 'links:folder_detail' object.parent.id %}">
+            {% else %}
+                <a href="{% url 'links:folder_list' %}">
+            {% endif %}
+                <i class="fa fa-arrow-circle-up w3-large" data-toggle="tooltip" data-placement="right" title="to parent folder"></i>
+            </a>
+        </span>
+        <span><strong>{{ object.name }}</strong></span>
+        <span class="w3-right">
+            <a class="action mx-3" href="{% url 'links:folder_update' object.id %}">
+                <i class="fa fa-edit w3-text-green"></i>
+            </a>
+            <a class="action mx-3" href="{% url 'links:folder_delete' object.id %}" onclick="return confirm('Are you sure?');">
+                <i class="fa fa-trash w3-text-red"></i>
+            </a>
+        </span>
+    </div>
+    <div class="w3-row-padding">
+        {% include "links/include_folder_list.html" %}
+    </div>
+
+    <div class="w3-row-padding">
+        {% for link in links %}
+            <div class="w3-padding-small w3-round-xlarge w3-light-gray w3-border w3-border-gray mb-1">
+                <div class="w3-row w3-padding-small w3-round-xlarge">
+                    <span class="w3-left w3-small">
+                        <span><i>{{ link.created|date:"d.m.y" }}, </i></span>
+                        <span> <i class="fa fa-folder-open-o"></i> {{ link.folder.name }}</span>
+                    </span>
+
+                    <span class="w3-right">
+                        {{ link.tags }}
+                        <a class="action mx-3" href="{% url 'links:link_update' link.id %}">
+                             <i class="fa fa-edit w3-text-green"></i>
+                        </a>
+                        <a class="action mx-3" href="{% url 'links:link_delete' link.id %}" onclick="return confirm('Are you sure?');">
+                             <i class="fa fa-trash w3-text-red"></i>
+                        </a>
+                    </span>
+                </div>
+                <a href="{{ link.url }}" class="w3-text-indigo">{{ link.name|default_if_none:" " }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block nav_add %}
+    {{ block.super }}
+    <li class="nav-item">
+        <a class="nav-link" nav_index="map" href="{% url 'links:link_create' object.id %}" rus="Новая ссылка" eng="New link">New link</a>
+    </li>
+{% endblock %}
+
+

@@ -1,0 +1,31 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    Currency
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block navbar_add %}
+    <span class="nav-item">
+        <a class="nav-link" href="{% url 'currency:index' %}">
+            <img src="{% static 'currency/dollar_32.png' %}"> <span eng="Central Bank of Russia" rus="Курсы ЦБ">Central Bank of Russia</span>
+        </a>
+    </span>
+
+    <span class="nav-item">
+        <a class="nav-link" href="{% url 'currency:coins' %}">
+            <img src="{% static 'currency/bitcoin_32.png' %}"> <span eng="CripoCurrency" rus="Криптовалюты">CripoCurrency</span>
+        </a>
+    </span>
+
+    <span class="nav-item">
+        <a class="nav-link" href="{% url 'currency:about' %}" data-toggle="tooltip" data-placement="top" title="О проекте">
+            <i class="far fa-question-circle txt-info w3-large"></i>&nbsp;<span rus="О&nbsp;приложении" eng="About">About</span>
+        </a>
+    </span>
+{% endblock %}

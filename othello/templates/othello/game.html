@@ -1,0 +1,159 @@
+{% extends "othello/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    {% if not gameover %}
+        <script src="{% static 'othello/game.js' %}"></script>
+    {% endif %}
+{% endblock %}
+
+{% block home_link %}
+{% endblock %}
+
+{% block section %}
+    <div class="container">
+        <header class="w3-center mt-3">
+            <h4 class="m-0">{{ game.kind }} {{ debug }}</h4>
+            <div class="m-0 p-0">
+            <strong id="qty1" class="mr-2 align-bottom w3-xxlarge">2</strong>
+            <img src='/media/othello/images/black_50.png'>
+            <img src="{{ game.first.user.image.url }}" class="avatar"> {{ game.first.name }} : {{ game.second.name }}
+            <img src="{{ game.second.user.image.url }}" class="avatar">
+            <img src='/media/othello/images/white_50.png'>
+            <strong id="qty2" class="ml-2 align-bottom w3-xxlarge">2</strong>
+            </div>
+        </header>
+        <div class="w3-center">
+            <table class="board mx-auto my-2 w3-round">
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td class="mx-auto">A</td>
+                    <td class="mx-auto">B</td>
+                    <td class="mx-auto">C</td>
+                    <td class="mx-auto">D</td>
+                    <td class="mx-auto">E</td>
+                    <td class="mx-auto">F</td>
+                    <td class="mx-auto">G</td>
+                    <td class="mx-auto">H</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                {% for row in grid %}
+                    <tr>
+                        <td class="mx-auto">{{ forloop.revcounter }}</td>
+                        {% for cell in row %}
+                            <td class="cell" r={{ forloop.parentloop.counter0 }} c={{ forloop.counter0 }} v=0 s=0>
+                                <img src='/media/othello/images/white_50.png' class='w3-hide no'>
+                            </td>
+                        {% endfor %}
+                        <td>{{ forloop.revcounter }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td class="mx-auto">A</td>
+                    <td class="mx-auto">B</td>
+                    <td class="mx-auto">C</td>
+                    <td class="mx-auto">D</td>
+                    <td class="mx-auto">E</td>
+                    <td class="mx-auto">F</td>
+                    <td class="mx-auto">G</td>
+                    <td class="mx-auto">H</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
+                {% if game.first.is_bot %}
+                    {% if game.second.is_bot %}
+                        <tr id="pause-tr">
+                            <td colspan="10">
+                                <span id="controls">
+                                     <button id="pause" onclick="pause()"><i class='fas fa-pause'></i></button>
+                                     <button id="forward" onclick="forward()"><i class='fas fa-step-forward'></i></button>
+                                </span>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            </table>
+
+            <table class="mx-auto">
+                <tr>
+                    <td>
+                        <span id="moved_circle"  {% if user.id == game.first.user.id %}  style="visibility:hidden"{% endif %}><img src='/media/othello/images/black_50.png' class="rolling"></span>
+                    </td>
+                    <td>
+                        <span id="moved_name"  {% if user.id == game.first.user.id %}  style="visibility:hidden"{% endif %}> </span>
+                        <strong><span id="move_made" class="w3-xlarge" style="visibility:hidden" rus=" думает" eng=" is thinking"> is thinking</span></strong>
+                    </td>
+                </tr>
+                <tr id="show_your_turn" {% if user.id != game.first.user.id %}  style="visibility:hidden"{% endif %}>
+                    <td id="current_circle">
+                        <img src='/media/othello/images/black_50.png' class="rolling">
+                    </td>
+                    <td class="w3-xxxlarge" rus="Ваш ход!" eng="Your turn!">
+                        Your turn!
+                    </td>
+                </tr>
+            </table>
+
+            <span id="show_gameover" class="w3-xlarge"></span>
+            <span id="show_winner" class="w3-xlarge"></span>
+            <br>
+
+            {% if championship %}
+                <h3>Championship, game {{ current_game }} of {{ max_games }}</h3>
+            {%  endif %}
+
+            <button id="replay" style="visibility:hidden"><a href="{% url 'othello:game_replay' game.id %}"><i class="fab fa-youtube txt-info w3-large"></i></a></button>
+            <button class="button-cancel w3-margin w3-small"><a href="{% url 'game:game_cancel' game.id %}" rus="Завершить игру" eng="End the game">End the game</a></button>
+
+            <div {% if not user.is_superuser %}{% endif %}class="w3-hide">
+                response: <p id="response"></p>
+                first_player_name: <p id="first_player_name">{{ game.first.name }}</p>
+                first_mode: <p id="first_mode">{% if game.first.is_bot %}bot{% else %}human{% endif %}</p>
+                second_player_name: <p id="second_player_name">{{ game.second.name }}</p>
+                second_mode: <p id="second_mode">{% if game.second.is_bot %}bot{% else %}human{% endif %}</p>
+                step: <p id="step">{{ step }}</p>
+                gameover: <p id="gameover">{{ gameover }}</p>
+                championship: <p id="championship">{{ championship }}</p>
+                maxgames:<p id="maxgames">{{ max_games }}</p>
+                current_game: <p id="current_game">{{ current_game }}</p>
+                human_num: <p id="human_num">{{ human_num }}</p>
+                game_id: <p id="game_id">{{ game.id }}</p>
+                uid: <p id="uid">{{ uid }}</p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block bottom_script %}
+    {{ block.super }}
+    <script>
+        function getGameCanceled(data) {
+            console.log('pusher game canceled', data);
+            if (data != null) {
+                id = data['game_id'];
+                if (id == GAME_ID) {
+                    kind = data['kind'];
+                    location.href = "{% url 'game:game_cancel' game.id 'no' %}";
+                }
+            }
+        }
+
+        var pusher_ng = new Pusher('bbe70803665a7a964619', {
+          cluster: 'eu'
+        });
+        var channel_ng = pusher_ng.subscribe('my-channel');
+        channel.bind('game_canceled', getGameCanceled);
+
+    </script>
+{% endblock %}
+
+
+{% block nav_add %}
+{% endblock %}
+
+{% block nav_ %}
+{% endblock %}
+

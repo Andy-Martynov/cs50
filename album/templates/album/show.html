@@ -1,0 +1,118 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+
+    <title>
+        {% block title %}Album{% endblock %}
+    </title>
+
+    {% block icon %}
+        <link rel="shortcut icon" href="{% static 'album/album_32.png' %}" type="image/png">
+    {% endblock %}
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/1482812741.js"></script>
+    <link href="{% static 'hub/w3.css' %}" rel="stylesheet">
+    <link href="{% static 'album/styles.css' %}" rel="stylesheet">
+
+    <script src="{% static 'album/show.js' %}"></script>
+</head>
+<style>
+* {box-sizing: border-box;}
+
+{% for animation in animations %}
+    .animate-{{ animation.title }} { {{ animation.prefix|default:""  }} animation:{{ animation.title }} {{ animation.duration }}s} @keyframes {{ animation.title }} { {{ animation.keyframes }} }
+{% endfor %}
+
+.mySlides {display: none;}
+.title {display: none;}
+
+img {vertical-align: middle;}
+
+#music {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+#controls {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+.control {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+.active {
+  background-color: red; /* #717171; */
+}
+
+.content-center {
+  display: grid;
+  place-content: center;
+}
+</style>
+
+<body>
+
+<div class="w3-container w3-center content-center p-0" style="height:100vh;">
+    {% for image in images %}
+        <div>
+            <img
+                class="mySlides w3-image animate-{% if image.animation %}{{ image.animation.title }}{% else %}{{ image.album.animation.title|default:"_default" }}{% endif %}"
+                amode=".animate-{% if image.animation %}{{ image.animation.title }}{% else %}{{ image.album.animation.title|default:"_default" }}{% endif %}"
+                src="{{ image.file.url }}"
+                style="max-height:100vh;"
+            >
+        </div>
+    {% endfor %}
+</div>
+
+<div id="caption" class="w3-display-topmiddle w3-container w3-sand w3-round-xxlarge my-1 p-2">
+    {{ images }}
+</div>
+
+<div style="text-align:center" class="w3-display-bottommiddle w3-container w3-sand w3-round-xxlarge my-1 p-2">
+    {% for image in images %}
+        <p class="title">{{ image.title }}</p>
+    {% endfor %}
+</div>
+
+<div id="controls" class="w3-display-bottomleft w3-container w3-sand w3-round-xxlarge my-1 p-2">
+    <a href="{% url 'album:number' album.id %}"  class="control w3-text-red"><i class="fa fa-level-up"></i></a>
+    <input type="range" id="delay" name="delay" min="5" max="30" value="10"  data-toggle="tooltip" data-placement="top" title="Продолжительность кадра, сек.">
+    <a href="#"  class="control"><i id="pause" class='fa fa-pause' data-toggle="tooltip" data-placement="top" title="Слайд-шоу Старт/Стоп"></i></a>
+    {% for image in images %}
+        {% if forloop.counter0 < 3 %}
+            <span class="dot"></span>
+        {% endif %}
+    {% endfor %}
+    <a href="#"  class="control"><i id="play" class='fa fa-music' data-toggle="tooltip" data-placement="top" title="Музыка Пауза/Играть"></i></a>
+    <a href="#"  class="control"><i id="f11" class='fas fa-expand' data-toggle="tooltip" data-placement="top" title="FullScreen (F11)"></i></a>
+</div>
+
+{% if album.music %}
+    <audio id="music" class="w3-display-bottommright w3-container w3-sand w3-round-xxlarge p-0 m-0">
+      <source src="{{ album.music.url }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+    </audio>
+{% endif %}
+
+</body>
+</html>

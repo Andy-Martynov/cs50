@@ -1,0 +1,62 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    Meeting Point
+{% endblock %}
+
+{% block head%}
+    {{ block.super }}
+	<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"
+	  type="text/javascript" charset="utf-8"></script>
+	<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"
+	  type="text/javascript" charset="utf-8"></script>
+	<script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"
+		type="text/javascript" charset="utf-8"></script>
+	<script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"
+		type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css"
+		href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <script src="{% static 'meeting/index.js' %}"></script>
+    {% block script %}
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'meeting/meeting_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block home_link_add %}
+    <a class="navbar-brand py-0" href="{% url 'meeting:index' %}">
+        <img class="my-0 ml-2 w3-round-large" src="{% static 'meeting/meeting_60.png' %}">
+    </a>
+{% endblock %}
+
+{% block nav_add %}
+    <li class="nav-item">
+        <a class="nav-link" nav_index="map" href="{% url 'meeting:map' %}">🗺 Map</a>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" nav_index="locations" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        🧭 locations
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'meeting:location_list' %}">📃 list</a>
+            <a class="dropdown-item" href="{% url 'meeting:location_create' %}">📌 New</a>
+        </div>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" nav_index="meetings" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        📅 meetings
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'meeting:meeting_list' %}">📃 list</a>
+            <a class="dropdown-item" href="{% url 'meeting:meeting_create' %}">📌 new</a>
+        </div>
+    </li>
+{% endblock %}

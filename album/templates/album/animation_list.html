@@ -1,0 +1,38 @@
+{% extends "album/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <table>
+        <tr>
+            <td>
+                <h1>ANIMATIONS</h1>
+            </td>
+            <td>
+                <a class="w3-button w3-teal w3-round-xxlarge w3-tiny mx-5" href="{% url 'album:animation_create' %}">NEW</a>
+            </td>
+        </tr>
+    </table>
+
+    <table class="common table"
+        {% for animation in object_list %}
+            <tr>
+                <td>{{ animation.user }}</td>
+                <td>{{ animation.title }}</td>
+                <td>{{ animation.duration }}</td>
+                <td>{{ animation.keyframes }}</td>
+                <td><a class="w3-button w3-teal w3-round-xxlarge w3-tiny" href="{% url 'album:animation_detail' animation.id %}">PREVIEW</a></td>
+                <td>
+                    {% if animation.user == request.user or request.user.is_superuser %}
+                        <a class="w3-button w3-indigo w3-round-xxlarge w3-tiny" href="{% url 'album:animation_update' animation.id %}">UPDATE</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if animation.user == request.user or request.user.is_superuser %}
+                        <a class="w3-button w3-red w3-round-xxlarge w3-tiny" href="{% url 'album:animation_delete' animation.id %}" onclick="return confirm('Are you sure?');">DELEDE</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

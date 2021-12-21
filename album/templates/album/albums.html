@@ -1,0 +1,52 @@
+{% extends "album/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <div class="w3-row">
+        <div class="w3-col w3-margin s5 m2 l1" style="width:{{ min_w }}px;">
+            {% if this_album != None %}
+                {% if this_album.parent %}
+                    <a type="button" class="btn btn-outline-secondary btn-sm" href="{% url 'album:number' this_album.parent.id %}"> .. </a>
+                {% else %}
+                    <a type="button" class="btn btn-outline-secondary btn-sm" href="{% url 'album:user_albums' this_album.user.id %}"> .. </a>
+                {% endif %}
+                <br>
+                {% if this_album.user == request.user or request.user.is_superuser %}
+                    <a type="button" class="btn btn-outline-primary btn-sm my-2" href="{% url 'album:album_create' this_album.id %}">New album</a>
+                    <br>
+                    <a type="button" class="btn btn-outline-primary btn-sm" href="{% url 'album:item_create' this_album.id %}">New item</a>
+                    <br>
+                    <a type="button" class="btn btn-outline-danger btn-sm my-2" href="{% url 'album:youtube_create' this_album.id %}">New YouTube</a>
+                    <br>
+                {% endif %}
+                <a type="button" class="btn btn-outline-primary btn-sm mt-2" href="{% url 'album:show' this_album.id %}">Show</a>
+            {% else %}
+                {% if owner == request.user  or request.user.is_superuser %}
+                    <a type="button" class="btn btn-outline-primary btn-sm" href="{% url 'album:album_create' %}">New album</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        {% for album in albums %}
+            <div class="w3-card-4 w3-col w3-margin s5 m2 l1" style="width:{{ min_w }}px;">
+                <header class="w3-container w3-light-gray p-1">
+                    📂{{ album.title }}
+                </header>
+                <div class="w3-container w3-padding" style="width:{{ min_w }}px; height:{{ min_h }}px;">
+                    <a href="{% url 'album:number' album.id %}">
+                        <img src="{{ album.thumb.url }}" style="max-width:{{ this_album.def_thumb_width }}px; max-height:{{ this_album.def_thumb_height }}px;">
+                    </a>
+                </div>
+                <footer class="w3-container w3-light-gray w3-padding">
+                    {% if owner == request.user  or request.user.is_superuser %}
+                        <a class="w3-text-teal" href="{% url 'album:album_update' album.id %}"><i class='fas fa-edit'></i></a>
+                        <a class="w3-text-red" href="{% url 'album:album_delete' album.id %}" onclick="return confirm('Are you sure?');"><i class='far fa-trash-alt'></i></a>
+                    {% endif %}
+                </footer>
+            </div>
+        {% endfor %}
+        {% block items_place %}
+        {% endblock %}
+    </div>
+{% endblock %}

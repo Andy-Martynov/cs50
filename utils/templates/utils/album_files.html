@@ -1,0 +1,80 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <div class="p-3">
+        <h2>ALBUM'S FILES</h2>
+        <table class="w3-table-all">
+            <tr>
+                <th>FILE</th><th>USED AS</th>
+            </tr>
+            {% for file in album_files %}
+                <tr>
+                    <td>{{ file }}</td>
+                    <td>
+                        {% if file in album_thumbs %}
+                            <span class="w3-text-indigo">THUMB</span>
+                        {% elif file in album_images %}
+                            <span class="w3-text-teal">IMAGE</span>
+                        {% elif file in album_musics %}
+                            <span class="w3-text-blue">MUSIC</span>
+                        {% else %}
+                            <span class="w3-text-red">NOTHING</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br><br>
+        <h2>WATERMARK'S FILES</h2>
+        <table class="w3-table-all">
+            <tr>
+                <th>FILE</th><th>USED AS</th>
+            </tr>
+            {% for file in watermark_files %}
+                <tr>
+                    <td>{{ file }}</td>
+                    <td>
+                        {% if file in album_watermarks %}
+                            <span class="w3-text-indigo">WATERMARK</span>
+                        {% else %}
+                            <span class="w3-text-red">NOTHING</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <h2>ITEM'S FILES</h2>
+        <table class="w3-table-all">
+            <tr>
+                <th>FILE</th><th>USED AS</th>
+            </tr>
+            {% for file in item_files %}
+                <tr>
+                    <td>{{ file }}</td>
+                    <td>
+                        {% if file in item_thumbs %}
+                            <span class="w3-text-indigo">THUMB</span>
+                        {% elif file in item_objects %}
+                            <span class="w3-text-teal">OBJECT FILE</span>
+                        {% else %}
+                            <span class="w3-text-red">NOTHING</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <h2 class="w3-text-red">NOTHING FILES</h2>
+        <table class="w3-table-all">
+            <tr>
+                <th>FILE</th>
+            </tr>
+            {% for file in nothing %}
+                <tr>
+                    <td>{{ file }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

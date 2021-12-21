@@ -1,0 +1,41 @@
+{% load static %}
+
+{% for folder in folder_tree %}
+    {% if object %}
+        {% if folder.parent == object %}
+            <div class="folder w3-cell-top">
+                <a href="{% url 'links:folder_detail' folder.id %}">
+                    <img src="{% static 'folders/folder_60.png' %}">
+                    <p>
+                        {{ folder.name }}.{{ folder.tag }}
+                        {% if i_share %}
+                            {% for share in i_share %}
+                                {% if share.folder == folder %}
+                                    <i class="fa fa-hand-o-right w3-text-red"></i> {{ share.who }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </p>
+                </a>
+            </div>
+        {% endif %}
+    {% else %}
+        {% if folder.level == 0 %}
+            <div class="folder w3-cell-top">
+                <a href="{% url 'links:folder_detail' folder.id %}">
+                    <img src="{% static 'folders/folder_60.png' %}">
+                    <p>
+                        {{ folder.name }}
+                        {% if i_share %}
+                            {% for share in i_share %}
+                                {% if share.folder == folder %}
+                                    <i class="fa fa-hand-o-right w3-text-red"></i> {{ share.who }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </p>
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endfor %}

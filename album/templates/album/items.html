@@ -1,0 +1,80 @@
+{% extends "album/albums.html" %}
+
+{% load static %}
+
+{% block items_place %}
+<style>
+    .iframe {
+        margin: 0;
+        overflow: hidden;
+    }
+</style>
+    {% for item in items %}
+        <div class="w3-card-4 w3-col w3-margin s5 m2 l1" style="width:{{ min_w }}px;">
+            <header class="w3-container w3-pale-yellow p-1">
+                {% if item.title %}{{ item.title }}{% else %}<br>{% endif %}
+            </header>
+            {% if item.mode == 'IMG' %}
+                <div class="w3-container w3-padding" style="width:{{ min_w }}px; height:{{ min_h }}px;">
+                    <a href="{% url 'album:item_detail' item.id %}">
+                        {% if item.thumb %}
+                            <img src="{{ item.thumb }}" style="max-width:{{ item.album.def_thumb_width }}px; max-height:{{ item.album.def_thumb_height }}px;">
+                        {% else %}
+                            <img src="{% static 'album/cat_240.png' %}" style="max-width:{{ item.album.def_thumb_width }}px; max-height:{{ item.album.def_thumb_height }}px;">
+                        {% endif %}
+                    </a>
+                </div>
+            {% endif %}
+            {% if item.mode == 'VID' %}
+                {% if item.file %}
+                    <div class="w3-container w3-padding" style="width:{{ min_w }}px; height:{{ min_h }}px;">
+                        <video width="{{ item.album.def_thumb_width }}" height="{{ item.album.def_thumb_height }}" controls>
+                            <source src="{{ item.file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                </div>
+                {% endif %}
+            {% endif %}
+            {% if item.mode == 'DOC' %}
+                {% if item.file %}
+                    <div class="w3-container w3-padding" style="width:{{ min_w }}px; height:{{ min_h }}px;">
+                        <a href="{{ item.file.url }}">
+                            <img src="{% static 'album/doc_240.png' %}" style="max-width:{{ item.album.def_thumb_width }}px; max-height:{{ item.album.def_thumb_height }}px;">
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% if item.mode == 'YTB' %}
+                {% if item.youtube %}
+                    <div class="w3-container w3-padding" style="width:{{ min_w }}px; height:{{ min_h }}px;">
+                        <iframe width="{{ item.album.def_thumb_width }}" height="{{ item.album.def_thumb_height }}"
+                            src="https://www.youtube.com/embed/{{ item.youtube }}">
+                        </iframe>
+                        <a href="https://youtu.be/{{ item.youtube }}"><u>View on YouTube</u></a>
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% if item.mode == 'UKN' %}
+                {% if item.file %}
+                    <div class="w3-container w3-padding" style="width:{{ min_w }}px; height:{{ min_h }}px;">
+                        <a href="{{ item.file.url }}">
+                            <img src="{% static 'album/question_240.png' %}" style="max-width:{{ item.album.def_thumb_width }}px; max-height:{{ item.album.def_thumb_height }}px;">
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <footer class="w3-container w3-light-gray w3-padding">
+                {% if owner == request.user  or request.user.is_superuser %}
+                    {% if item.mode == 'YTB' %}
+                        <a class="w3-text-teal" href="{% url 'album:youtube_update' item.id %}"><i class='fas fa-edit'></i></a>
+                    {% else %}
+                        <a class="w3-text-teal" href="{% url 'album:item_update' item.id %}"><i class='fas fa-edit'></i></a>
+                    {% endif %}
+                    <a class="w3-text-red" href="{% url 'album:item_delete' item.id %}" onclick="return confirm('Are you sure?');"><i class='far fa-trash-alt'></i></a>
+                {% endif %}
+                <a class="w3-text-indigo" href="{% url 'album:item_detail_info' item.id %}"><i class='fas fa-info-circle'></i></a>
+            </footer>
+        </div>
+    {% endfor %}
+{% endblock %}

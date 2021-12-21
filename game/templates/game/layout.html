@@ -1,0 +1,41 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <link href="{% static 'game/game.css' %}" rel="stylesheet">
+    <script src="{% static 'game/game.js' %}"></script>
+{% endblock %}
+
+{% block navbar_add %}
+    <span class="nav-item">
+        <a class="nav-link" href="{% url 'game:index' %}" data-toggle="tooltip" data-placement="top" title="Новая игра">
+            <i class="fas fa-chess-board w3-large"></i>&nbsp;<span eng="Games" rus="Игры">Games</span>
+        </a>
+    </span>
+    <span class="nav-item">
+        <a class="nav-link" href="{% url 'game:leaderboard' %}" data-toggle="tooltip" data-placement="top" title="Турнирная таблица">
+            <i class="fas fa-list-ol w3-large"></i>&nbsp;<span eng="Leaderboard" rus="Игроки">Leaderboard</span>
+        </a>
+    </span>
+
+    <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" nav_index="locations" href="#" id="gamesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-history w3-large"></i>&nbsp;<span eng="History" rus="История">History</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="gamesDropdown">
+            <a class="dropdown-item" href="{% url 'game:game_list' %}"><span eng="Pages" rus="Постранично">Pages</span></a>
+            <a class="dropdown-item" href="{% url 'game:game_list_all' %}"><span eng="All" rus="Всё на одну страницу">All</span></a>
+            {% if user.is_superuser %}
+                <a class="dropdown-item" href="{% url 'game:kinds_info' %}">Kinds</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <span class="nav-item">
+        <a class="nav-link" href="{% url 'game:about' %}" data-toggle="tooltip" data-placement="top" title="О проекте">
+            <i class="far fa-question-circle w3-large"></i>&nbsp;<span rus="О&nbsp;проекте" eng="About">About</span>
+        </a>
+    </span>
+{% endblock %}

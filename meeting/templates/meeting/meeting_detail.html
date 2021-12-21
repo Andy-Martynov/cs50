@@ -1,0 +1,65 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    MEETINGS
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() { setCurrent('meetings'); });
+</script>
+{% endblock %}
+
+
+{% block body %}
+<style>
+#meeting_table td {
+    padding: 6px;
+}
+</style>
+
+    <div class="p-2">
+        <h2>Meeting {{ meeting.name }}</h2>
+
+        <table id="meeting_table">
+            <tr>
+                <td>Created by :</td><td>{{ meeting.owner.username }}</td>
+            </tr>
+            <tr>
+                <td>Location :</td>
+                <td>
+	                {% if meeting.location.image %}
+	                    <img src="{{ meeting.location.image.url }}"  style="width: 60px; height: 60px;">
+	                {% endif %}
+	                {{ meeting.location.name }}
+                </td>
+            </tr>
+            <tr>
+                <td>Date & time :</td><td>{{ meeting.start|date:"D j M" }}, {{ meeting.start|time:"G:i" }} [{{ meeting.start|timeuntil }}]</td>
+            </tr>
+            <tr>
+                <td>Duration :</td><td>{{ meeting.duration }}</td>
+            </tr>
+            <tr>
+                <td>Memo :</td><td>{{ meeting.memo }}</td>
+            </tr>
+            <tr>
+                <td>Members :</td>
+            </tr>
+            {% for member in members %}
+                <tr>
+                    <td class="py-2">
+                        {% if member.image %}
+                            <img src="{{ member.image.url }}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                        {% else %}
+                            <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                        {% endif %}
+                    </td>
+                    <td>{{ member.username }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

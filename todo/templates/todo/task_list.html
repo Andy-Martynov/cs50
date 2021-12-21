@@ -1,0 +1,20 @@
+{% extends "todo/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+    {{ block.super }}
+    <script src="{% static 'todo/task_list.js' %}"></script>
+{% endblock %}
+
+
+{% block section %}
+    <h3 class="w3-margin w3-padding w3-center w3-light-gray" rus="Мои задачи" eng="My Tasks">My tasks</h3>
+
+    {% include "todo/include_task_tree.html" %}
+
+    {% if shared %}
+        <h3 class="w3-margin w3-padding w3-center w3-light-gray" rus="Общие задачи" eng="Shared tasks">Shared tasks</h3>
+        {% include "todo/include_shared_tree.html" %}
+    {%  endif %}
+{% endblock %}

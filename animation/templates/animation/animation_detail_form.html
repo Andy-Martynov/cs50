@@ -1,0 +1,99 @@
+{% extends "animation/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+<style id="animation_stylesheet">
+.animate-{{ animation.title }} {
+{{ animation.prefix|default:""  }}
+animation-name:{{ animation.title }};
+animation-duration: {{ animation.duration }}s;
+animation-delay: {{ animation.delay|default:"0" }}s;
+animation-iteration-count: infinite;
+}
+
+@keyframes {{ animation.title }} { {{ animation.keyframes }} }
+
+.content-center {
+    display: grid;
+    place-content: center;
+}
+.place {
+    overflow: hidden;
+}
+.info {
+    color: red;
+}
+.line {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left:15px;
+    padding: 0;
+    font-family: "Courier New", monospace;
+}
+input {
+    display: inline;
+    border: none;
+}
+textarea {
+    font-family: "Courier New", monospace;
+    width: 100%;
+}
+</style>
+<script src="{% static 'animation/preview_form.js' %}"></script>
+{% endblock %}
+
+{% block section %}
+    <div class="w3-row">
+        <div class="w3-col l6 p-3">
+            <div class="place w3-border w3-border-red w3-center">
+                <img
+                    id="picture"
+                    class="mySlides w3-image animate-{{ animation.title }}"
+                    amode=".animate-{{ image.animation.title }}"
+                    src="{% static 'animation/moscow_500.png' %}"
+                    style="max-height:70vh;"
+                >
+            </div>
+        </div>
+        <div class="w3-col l6 w3-large">
+            <form class="w3-container w3-xlarge" method="post" novalidate>
+                {% csrf_token %}
+
+                {% if animation.id %}
+                    {% if animation.user == request.user or request.user.is_superuser  or animation.session_key == session_key %}
+                        <input class="w3-button w3-teal w3-round-xxlarge w3-tiny m-3" type="submit" value="SAVE">
+                    {% endif %}
+                    <a class="w3-button w3-blue w3-round-xxlarge w3-tiny m-3" href="{% url 'animation:animation_copy' animation.id %}">COPY</a>
+                    <a class="w3-button w3-khaki w3-round-xxlarge w3-tiny m-3" href="{% url 'animation:animation_clone' animation.id %}">CLONE</a>
+                {% else %}
+                    <input class="w3-button w3-teal w3-round-xxlarge w3-tiny m-3" type="submit" value="SAVE">
+                {% endif %}
+                <br>
+
+                <span class="w3-xlarge" class="ml-3 mt-1">.{{ form.title }}</span> {<br>
+                <p class="w3-sand">{{ form.prefix }}</p>
+                <p class="line">animation-name: {{ animation.title }};</p>
+                <p class="line">animation-duration: <span class="info" id="iduration">{{ animation.duration }}</span>s;<input type="range" id="duration" min="0" max="30" step="1"></p>
+                <p class="line">animation-delay: <span class="info" id="idelay">{{ animation.delay|default:"0" }}</span>s;<input type="range" id="delay" min="0" max="10" step="1" value="0"></p>
+                <p class="line">animation-iteration-count:<span class="info" id="icount">{{ animation.count|default:"infinite" }}</span>;<input type="range" id="count" min="0" max="5" step="1" value="0"></p>
+                <p class="line">animation-direction:<span class="info" id="idirection">{{ animation.direction|default:"normal" }}</span>;<input type="range" id="direction" min="1" max="4" step="1" value="0"></p>
+                <p class="line">animation-timing-function:<span class="info" id="itiming">{{ animation.timing|default:"ease" }}</span>;<input type="range" id="timing" min="1" max="5" step="1" value="0"></p>
+                <p class="line">animation-fill-mode:<span class="info" id="ifill">{{ animation.fill|default:"none" }}</span>;<input type="range" id="fill" min="1" max="4" step="1" value="0"></p>
+                <p>}</p>
+                <p>@keyframes {{ animation.title }} {</p>
+                {{ form.keyframes }}
+                <p>}</p>
+
+                <div style="display:none;">
+                    <input type="number" name="duration" value="{{ animation.duration|default:'10' }}" id="id_duration">
+                    <input type="number" name="delay" value="{{ animation.delay|default:'0' }}" step="any" id="id_delay">
+                    <input type="text" name="count" value="{{ animation.count|default:'infinite' }}" maxlength="20" id="id_count">
+                    <input type="text" name="direction" value="{{ animation.direction|default:'normal' }}" maxlength="20" id="id_direction">
+                    <input type="text" name="timing" value="{{ animation.timing|default:'ease' }}" maxlength="20" id="id_timing">
+                    <input type="text" name="fill" value="{{ animation.fill|default:'none' }}" maxlength="20" id="id_fill">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

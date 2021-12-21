@@ -1,0 +1,60 @@
+{% load static %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	console.log('LOAD UNRECIEVED TASKS');
+	document.querySelectorAll('.accept_btn').forEach(el => el.addEventListener('click', acceptShare));
+	document.querySelectorAll('.reject_btn').forEach(el => el.addEventListener('click', rejectShare));
+});
+
+async function acceptShare() {
+    console.log('ACCEPT', this);
+    share_id = this.getAttribute('share_id');
+    await fetch(`/todo/accept/${share_id}`)
+    .then (response => console.log('Accept:', response));
+
+    this.classList.replace('w3-white', 'w3-green');
+    reject_btn = document.querySelector(`.reject_btn[share_id="${share_id}"`);
+    reject_btn.classList.replace('w3-red', 'w3-white');
+
+}
+
+async function rejectShare() {
+    console.log('REJECT', this);
+    share_id = this.getAttribute('share_id');
+    await fetch(`/todo/reject/${share_id}`)
+    .then (response => console.log('Reject:', response));
+
+    this.classList.replace('w3-white', 'w3-red');
+    accept_btn = document.querySelector(`.accept_btn[share_id="${share_id}"`);
+    accept_btn.classList.replace('w3-green', 'w3-white');
+}
+
+</script>
+
+{% if unrecieved_tasks %}
+    <div id="unrecieved_tasks" class="w3-modal w3-animate-zoom" style="z-index: 99; display: block;">
+        <div class="w3-modal-content w3-round-xlarge">
+            <header class="w3-container">
+                <span onclick="document.getElementById('unrecieved_tasks').style.display='none'"
+                class="w3-button w3-xlarge w3-display-topright">&times;</span>
+                <h2>
+                    <span rus="Вам назначены новые задачи" eng="New tasks are shared to you!">New tasks are shared to you!</span>
+                </h2>
+            </header>
+            <div class="w3-row-padding w3-margin">
+                {% for share in unrecieved_tasks_shares %}
+                    <p><a href="{% url 'todo:task_detail' share.task.id %}">
+                        {{ share.task.name }} <i class="fa fa-hand-o-left w3-text-red"></i> {{ share.task.user.username }} {{ task.share_to_me }}
+                    </a></p>
+                    <a class="accept_btn w3-button w3-white w3-border w3-border-green w3-round-large w3-tiny m-2 p-1" share_id="{{ share.id }}" href="#" rus="Подтвердить" eng="ACCEPT">
+                        ACCEPT
+                    </a>
+                    <a class="reject_btn w3-button w3-white w3-border w3-border-red w3-round-large w3-red w3-tiny m-2 p-1" share_id="{{ share.id }}" href="#" rus="Отклонить" eng="REJECT">
+                        REJECT
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}

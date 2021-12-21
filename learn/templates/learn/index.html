@@ -1,0 +1,22 @@
+{% extends "learn/layout.html" %}
+
+{% load static %}
+
+{% block add_style %}
+<style>
+
+#graph {
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+</style>
+{% endblock %}
+
+
+{% block body %}
+    <div class="w3-center">
+        <h1>Machine learning</h1>
+        <img id="graph" src="{{ graph }}">
+    </div>
+{% endblock %}

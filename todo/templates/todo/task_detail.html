@@ -1,0 +1,20 @@
+{% extends "todo/layout.html" %}
+
+{% load static %}
+
+{% block add_to_head %}
+    {{ block.super }}
+    <script src="{% static 'todo/task_list.js' %}"></script>
+{% endblock %}
+
+{% block section %}
+    <div class="w3-padding">
+        {% if object.cheked %}
+            <h3 class="w3-text-green"><i class="fa fa-check-square-o"></i> <a href="{% url 'todo:task_update' object.id %}"><i class="fa fa-edit"></i></a> {{ object.name }}</h3>
+        {% else %}
+            <h3 class="w3-text-green"><i class="fa fa-check-square-o"></i> <a href="{% url 'todo:task_update' object.id %}"><i class="fa fa-edit"></i></a> {{ object.name }}</h3>
+        {% endif %}
+        <pre>{{ object.text }}</pre>
+        {% include "todo/include_task_tree.html" %}
+    </div>
+{% endblock %}

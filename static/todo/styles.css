@@ -1,0 +1,21 @@
+/* On screens that are 993px or more */
+
+.level0 {margin-left: 0px; margin-top: 3px;}
+.level1 {margin-left: 5vw; margin-top: 2px;}
+.level2 {margin-left: 8vw; margin-top: 1px;}
+
+ /*On screens that are 992px or less */
+/*@media screen and (max-width: 1023px) {*/
+/*    body {background-color: #ffe6ff;}*/
+/*    .level0 {font-size: 3.5em;}*/
+/*    .level1 {font-size: 3.0em;}*/
+/*    .level2 {font-size: 2.5em;}*/
+/*}*/
+
+ /*On screens that are 600px or less */
+/*@media screen and (max-width: 992px) {*/
+/*    body {background-color: #ffffe6;}*/
+/*    .level0 {font-size: 5em;}*/
+/*    .level1 {font-size: 4em;}*/
+/*    .level2 {font-size: 3.5em;}*/
+/*}*/

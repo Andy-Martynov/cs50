@@ -1,0 +1,41 @@
+
+.cell           {width: 60px; height:60px; background-image: url("/static/connect4/images/white.png"); background-position: center; margin:2px; padding:0;}
+.empty          {opacity: 0;}
+.first          {color: red; }
+.second         {color: DarkGoldenRod;}
+.both           {color: green;}
+#step_span      {width: 100%;}
+#step           {width: 80%;}
+.board          {width: min(98%, 400px); background-color: SlateBlue;
+                 /**/
+                 /*-webkit-transform: perspective(450px) rotateX(0deg);*/
+                 transform: perspective(390px) rotateX(0deg);
+}
+/*font-size: 5vh;*/
+.board td       {color: GoldenRod; font: bold;}
+
+.win4 {
+  animation-name: spin;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin {
+0%   {transform: scale(1) rotate(180deg);}
+50%  {transform: scale(0.25) rotate(0deg);}
+100% {transform: scale(1) rotate(-180deg);}}
+
+.drop { position:relative;
+    animation-name: down;
+    animation-duration: 1s;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-timing-function: linear;
+    animation-fill-mode: none;
+}
+@keyframes down {
+0%   {top: -100vh;}
+100% {top:0;}
+}

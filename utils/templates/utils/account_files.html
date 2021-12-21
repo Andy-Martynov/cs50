@@ -1,0 +1,38 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <div class="p-3">
+        <h2>ACCOUNT'S FILES</h2>
+        <table class="w3-table-all">
+            <tr>
+                <th>FILE</th><th>USED AS</th>
+            </tr>
+            {% for file in account_files %}
+                <tr>
+                    <td>{{ file }}</td>
+                    <td>
+                        {% if file in account_images %}
+                            <span class="w3-text-teal">IMAGE</span>
+                        {% else %}
+                            <span class="w3-text-red">NOTHING</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br><br>
+        <h2 class="w3-text-red">NOTHING FILES</h2>
+        <table class="w3-table-all">
+            <tr>
+                <th>FILE</th>
+            </tr>
+            {% for file in nothing %}
+                <tr>
+                    <td>{{ file }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

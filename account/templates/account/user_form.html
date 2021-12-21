@@ -1,0 +1,38 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    {{ user.username }}
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() { setCurrent('user'); });
+</script>
+{% endblock %}
+
+
+{% block section %}
+    <div class="p-3">
+        <h2>{{ person.username }} update</h2>
+
+        <form class="w3-container w3-xlarge" method="post" action="{% url 'account:user_update' %}" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>Name:</td><td class="p-3">{{ form.username }}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td><td class="p-3">{{ form.email }}</td>
+                </tr>
+                <tr>
+                     <td class="p-3"><input class="btn btn-success" type="submit" value="UPDATE"></td>
+                </tr>
+            </table>
+        </form>
+        <br>
+        * To change your avatar image please click on avatar and upload new 260x260 .png file
+
+    </div>
+{% endblock %}

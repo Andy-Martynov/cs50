@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href={% static 'project0/project0.css' %}>
+		<link rel="shortcut icon" href="static/images/project0/ml.png" type="image/png">
+		<title>Project 0</title>
+    </head>
+    <body>
+        <div class="container">
+            <header class="row">
+                <div class="col">
+                    <h2 id="index_header"></h2>
+                </div>
+            </header>
+            <nav class="row">
+                <div class="col">
+                    <ul class="nav nav-tabs">
+                      <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'project0:index' %}">Main</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'project0:languages' %}">Languages</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'project0:poetry' %}">Poetry</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'project0:photos' %}">Photos</a>
+                      </li>
+                    </ul>
+                </div>
+            </nav>
+            <section class="container">
+                    <div class="row justify-content-between mt-3 mr-3">
+                        <div class="col-8  align-self-start">
+<p>My name is Andrey Martynov, I'm from Moscow, Russia.
+I'm 59 now. I graduated from Moscow Power Engineering Institute (MPEI) in 1983.
+Then I worked in <a href="https://en.wikipedia.org/wiki/Institute_of_Radio-engineering_and_Electronics">Institute of Radio-engineering and Electronics</a> (Russian: Институт радиотехники и электроники (ИРЭ)) by the USSR Academy of Sciences till 1991.
+Since 1994 I'm with <a href="http://www.landata.ru">Landata</a>, one of the biggest IT distribution companies in Russia.
+Our vendors are AVAYA, EATON, JUNIPER, LENOVO, VERTIV, OKI, FLUKE etc. I'm responsible for <a href="https://www.oki.com/">OKI</a>, and we distribute OKI since 1996.
+</p>
+                        </div>
+                        <div class="col-4  align-self-start pr-sm-3">
+                            <a href="https://en.wikipedia.org/wiki/Moscow_Power_Engineering_Institute">
+								<img class="pic" src={% static 'project0/images/mpei.png' %} alt="MPEI">
+							</a>
+                        </div>
+                    </div>
+                    <div class="row justify-content-between mt-1 mr-3">
+                        <div class="col-8 align-self-start">
+                            <p>
+Now I live in a countryside near Moscow. You can see my family on the picture beside.
+
+On the next pages I highlight the programm languages I ever learned, also you can find some poems and photos.
+                            </p>
+                            <p></p>
+                        </div>
+                        <div class="col-4 align-self-start pr-sm-3">
+                            <img class="pic" src={% static 'project0/images/village.png' %} alt="Village">
+                        </div>
+                    </div>
+            </section>
+        </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    </body>
+</html>

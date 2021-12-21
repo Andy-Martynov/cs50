@@ -1,0 +1,91 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="shortcut icon" href="{% static 'auctions/auction_32.png' %}" type="image/png">
+    <title>{% block title %}ANDY's Auctions{% endblock %}</title>
+    <link href="{% static 'hub/w3.css' %}" rel="stylesheet">
+    <link href="{% static 'hub/styles.css' %}" rel="stylesheet">
+    <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+
+    <div class="w3-bar w3-white">
+        <h1 id="logo" class="w3-bar-item w3-hide-medium">ANDY'S</h1>
+        <div class="w3-dropdown-hover">
+            <button class="w3-button w3-hide-small w3-large  w3-margin-top w3-hover-text-red">LISTINGS</button>
+            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                <a href="{% url 'auctions:listing-list' 0 %}" class="w3-bar-item w3-button">ACTIIVE LIST VIEW</a>
+                <a href="{% url 'auctions:index' %}" class="w3-bar-item w3-button">ACTIVE CARD VIEW</a>
+                <a href="{% url 'auctions:listing-list' 9999 %}" class="w3-bar-item w3-button">CLOSED</a>
+            </div>
+        </div>
+        <a href="{% url 'auctions:categories' %}" class="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-large w3-margin-top w3-hover-text-red">CATEGORIES</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'auctions:watch-list' user.id %}" class="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-large w3-margin-top w3-hover-text-red">WATCHLIST</a>
+            <a href="{% url 'auctions:listing-create' %}" class="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-large w3-margin-top w3-hover-text-red">CREATE LISTING</a>
+            <a href="{% url 'account:logout' %}" class="w3-bar-item w3-button w3-hide-small w3-large w3-margin-top w3-hover-text-red">LOG OUT</a>
+        {% else %}
+            <a href="{% url 'account:login' %}" class="w3-bar-item w3-button w3-hide-small w3-large w3-margin-top w3-hover-text-red">LOG IN</a>
+            <a href="{% url 'account:register' %}" class="w3-bar-item w3-button w3-hide-small w3-large w3-margin-top w3-hover-text-red">REGISTER</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <div class="w3-right-align w3-bar-item w3-button w3-hide-small w3-hide-medium"><p>Signed in</p><p>as <strong class="w3-text-red">{{ user.username }}</strong></p></div>
+        {% else %}
+            <div class="w3-right-align w3-bar-item w3-button w3-hide-small w3-hide-medium"><p><strong class="w3-text-red">Not signed in</strong></p></div>
+        {% endif %}
+        <a href="javascript:void(0)" class="w3-bar-item w3-button w3-hide-large w3-right w3-xlarge w3-margin-top w3-hover-text-red" onclick="myFunction()">&#9776;</a>
+    </div>
+
+    <div id="hidden_nav" class="w3-bar-block w3-hide">
+        <a href="{% url 'auctions:listing-list' 0 %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">ACTIVE LIST VIEW</a>
+        <a href="{% url 'auctions:index' %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">ACTIVE CARD VIEW</a>
+        <a href="{% url 'auctions:listing-list' 9999 %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">CLOSED</a>
+        <a href="{% url 'auctions:categories' %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">CATEGORIES</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'auctions:watch-list' user.id %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">WATCHLIST</a>
+            <a href="{% url 'auctions:listing-create' %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">CREATE LISTING</a>
+            <a href="{% url 'account:logout' %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-medium w3-hide-large w3-margin-top w3-teal w3-hover-text-red">LOG OUT</a>
+        {% else %}
+            <a href="{% url 'account:login' %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">LOG IN</a>
+            <a href="{% url 'account:register' %}" class="w3-bar-item w3-button w3-xxlarge w3-hide-large w3-margin-top w3-teal w3-hover-text-red">REGISTER</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <div class="w3-center-align w3-bar-item w3-button w3-margin-top w3-teal w3-hide-large"><p class="w3-xxlarge">SIGNED AS <strong class="w3-xxlarge">{{ user.username|upper }}</strong></p></div>
+        {% else %}
+            <div class="w3-center-align w3-bar-item w3-button w3-margin-top w3-teal w3-hide-large"><p class=""><strong class="w3-text-red">NOT SIGNED IN</strong></p></div>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    {% block message %}
+        {% if message %}
+            <div>{{ message}}</div>
+        {% endif %}
+    {% endblock %}
+
+    <section>
+    {% block body %}
+    {% endblock %}
+    </section>
+
+    <footer>
+        <div class="w3-panel w3-light-gray w3-center w3-padding-24">
+        © ANDY'S 2020
+        </div>
+    </footer>
+
+    <script>
+    function myFunction() {
+      var x = document.getElementById("hidden_nav");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+    </script>
+</body>
+</html>

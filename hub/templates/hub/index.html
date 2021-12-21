@@ -1,0 +1,441 @@
+{% extends "hub/layout_hub.html" %}
+
+{% load static %}
+
+{% load hub_extras %}
+
+{% block section %}
+    <style>
+    #animation {
+      animation-name: spin;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+
+    @keyframes spin {
+    0%   {transform: scale(0) rotate(180deg);}
+    50%  {transform: scale(1) rotate(0deg);}
+    100% {transform: scale(0) rotate(-180deg);}}
+
+
+    .certificate-sm {
+        width: 80px;
+        margin: 5px;
+        background-color: white;
+        border: 1px solid red;
+        opacity: 1;
+        transition: width 3s;
+    }
+    .certificate-sm:hover {
+        width: 100%;
+        /*position: relative;*/
+        /*top: 0;*/
+        /*left: 0;*/
+    }
+    .cert-thumb {
+        max-width: 100px;
+    }
+    .big-cert {
+        max-width: 100%;
+        max-height: 100vh;
+        margin: auto;
+    }
+    .fullscreen {
+        z-index: 999999;
+        position:fixed;
+        top:0;
+        left:0;
+        width: 100vw;
+        height: 100vh;
+        display:none;
+        background-color: white;
+    }
+    .border {
+        border: 1px solid red;
+    }
+    .border-shadow {
+        border: 1px solid gray;
+        border-radius: 5px;
+        box-shadow: 5px 5px 5px #e6e6e6;
+        margin: 5px;
+    }
+    .zoom {
+        cursor: url('/static/images/icons/zoom_60.png'), auto;
+    }
+
+
+    .tab {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .cell {
+        flex: 1;
+        border: 1px solid gray;
+        border-radius: 5px;
+        box-shadow: 5px 5px 5px #e6e6e6;
+        max-width: 300px;
+        margin: 5px;
+    }
+
+    .application {
+        display: inline-block;
+        background-color: #e6e6e6;
+        border-radius: 6px;
+        width: 45%;
+        padding: 6px;
+        margin: 6px;
+    }
+
+    .application {
+        width: 90%;
+    }
+
+    .application a{
+        font-size: 18px;
+    }
+
+    .application img {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* medium screens */
+    @media screen and (max-width: 992px) {
+      .app_link {
+          font-size: 12px;
+      }
+    }
+    /* small screens */
+    @media screen and (max-width: 600px) {
+      .tab {
+        display: block;
+        padding: 10px;
+      }
+      .cell {
+        display: block;
+        width: 90%;
+        margin: 10px;
+      }
+    }
+    </style>
+
+    {% include 'todo/include_unrecieved_modal.html' %}
+
+    {# <div class="tab"> #}
+    {#    <div class="w3-card-4 m-1 w3-border w3-border-red w3-round"> #}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-md-4 m-0 p-0">
+                <header class="w3-container w3-light-gray" rus="Учебные проекты курса CS50W" eng="Projects at S50W course">
+                    Projects at S50W course
+                </header>
+                <div class="p-1">
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'project0:index' %}">
+                            <img src="{% static 'hub/html_60.png' %}">
+                            0, HTML/CSS
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'encyclopedia:index' %}">
+                            <img src="{% static 'encyclopedia/wiki_60.png' %}">
+                            1, WIKI
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'auctions:index' %}">
+                            <img src="{% static 'auctions/auction_60.png' %}">
+                            2, AUCTIONS
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'mail:index' %}">
+                            <img src="{% static 'mail/mail_60.png' %}">
+                            3, MAIL
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'network:index' %}">
+                            <img src="{% static 'network/network_60.png' %}">
+                            4, NETWORK
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'meeting:index' %}">
+                            <img src="{% static 'meeting/meeting_60.png' %}">
+                            5, MEETING POINT
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 m-0 p-0">
+                <header class="w3-container w3-light-gray" rus="Другие проекты" eng="OTHER PROJECTS">
+                    OTHER PROJECTS
+                </header>
+                <div class="p-1">
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'todo:index' %}">
+                            <img src="{% static 'todo/todo_60.png' %}">
+                            TO DO
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'watermark:start' %}">
+                            <img src="{% static 'watermark/watermark_60.png' %}">
+                            WATERMARK
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'animation:index' %}">
+                            <img id="animation" src="{% static 'animation/animation_60.png' %}">
+                            ANIMATION
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'sudocu:init' %}">
+                            <img src="{% static 'sudocu/sudocu_60.png' %}">
+                            SUDOKU
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'learn:index' %}">
+                                <img src="{% static 'hub/ml_60.png' %}">
+                            LEARNING
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="http://vissarion.pythonanywhere.com/">
+                                <img src="{% static 'images/icons/pen_60.png' %}">
+                            VISSARION
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 m-0 p-0">
+                <header class="w3-container w3-light-gray" rus="Другие проекты" eng="OTHER PROJECTS">
+                    OTHER PROJECTS
+                </header>
+                <div class="p-1">
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'connect4:index' %}">
+                                <img src="{% static 'images/icons/four.png' %}">
+                            FOUR IN A ROW
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="https://github.com/Andy-Martynov">
+                            <img src="{% static 'hub/github.png' %}">
+                            Github
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link w3-text-blue" href="https://www.kaggle.com/martynovandrey">
+                            <img src="{% static 'images/icons/kaggle.png' %}">
+                            <strong>KAGGLE profile</strong>
+                        </a>
+                    </div>
+
+                    <div class="application">
+                        <a class="app_link" href="{% url 'currency:index' %}">
+                                <img src="{% static 'currency/currency_60.png' %}"><img src="{% static 'currency/bitcoin_60.png' %}">
+                            CURRENCY BOARD
+                        </a>
+                    </div>
+
+                        <div class="application">
+                            <a class="app_link" href="{% url 'othello:index' %}">
+                                    <img src="{% static 'othello/othello_60.png' %}">
+                                OTHELLO
+                            </a>
+                        </div>
+
+                    {% if user.is_superuser %}
+                        <div class="application">
+                            <a href="{% url 'folders:index' %}">
+                                <img src="{% static 'folders/folders_60.png' %}">
+                                FOLDERS
+                            </a>
+                        </div>
+
+                        <div class="application">
+                            <a href="{% url 'links:index' %}">
+                                <img src="{% static 'links/links_60.png' %}">
+                                LINKS
+                            </a>
+                        </div>
+
+                        <div class="application">
+                            <a class="app_link" href="{% url 'album:index' %}">
+                                <img src="{% static 'album/album_60.png' %}">
+                                ALBUM
+                            </a>
+                        </div>
+
+                        <div class="application">
+                            <a class="app_link" href="{% url 'explorer:index' %}">
+                                    <img src="{% static 'explorer/explorer_60.png' %}">
+                                DATA EXPLORER
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <header class="w3-container w3-light-gray">
+            CERTIFICATES
+        </header>
+        <div class="row">
+            {% for cert in certificates %}
+                <div class="m-1">
+                    <img src="{% static cert %}"
+                        class="cert-thumb zoom w3-image w3-border w3-borger-gray w3-margin"
+                        onclick="document.querySelector('#big_{{ forloop.counter }}').style.display='block'">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% for cert in certificates %}
+        <div id="big_{{ forloop.counter }}" class="w3-display-container fullscreen">
+            <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_{{ forloop.counter }}').style.display='none'">&times;&nbsp;&nbsp;</span>
+            <img class="big-cert" src="{% static cert %}">
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block right %}
+    {{ block.super }}
+    <div>
+        <div>
+            <h3 id="comments" rus='Комментарии' eng='COMMENTS'>COMMENTS</h3>
+
+        	{% if user.is_authenticated %}
+        	<div class="mx-4">
+        		<form method="post">
+        		    <table>
+        		        <tr>
+        		            <td>
+                    			{% csrf_token %}
+                    			{{ form.text }}
+                    			{{ form.author }}
+        		            </td>
+        		            <td>
+                    			<input class="w3-button w3-teal w3-round-xxlarge w3-tiny p-1" type="submit" value="&#10095;&#10095;">
+        		            </td>
+        		        </tr>
+        		    </table>
+        		</form>
+        	</div>
+        	{% endif %}
+
+            <table>
+                {% for post in page_obj %}
+    		        <tr>
+    				    <td class="w3-padding">
+    				        {% if post.author.image %}
+        				        <img class="avatar rounded-circle ml-2 mt-0" src="{{ post.author.image.url }}">
+    				        {% endif %}
+    				    </td>
+    			        <td>
+    						<strong>{{ post.author.username|tospace:"_" }}</strong> <i class="mr-1">{{ post.created|date:"D d M Y, G:i:s" }}</i>
+    			        </td>
+    			    </tr>
+    			    <tr>
+    			        <td></td>
+    			        <td class="w3-light-gray px-3 w3-round-xxlarge">
+    					    <p class="card-text" tid="{{ post.id }}">{{ post.text }}</p>
+    			        </td>
+    			    </tr>
+    			    <tr>
+    			        <td></td>
+    			        <td>
+    						<div class="mb-2" fid="{{ post.id }}" style="display:none;">
+    							<textarea aid="{{ post.id }}" class="form-control" name="text" rows="2">{{ post.text }}</textarea>
+    							<button pid="{{ post.id }}" class="save btn btn-outline-danger btn-sm mt-2">Save</button>
+    						</div>
+    						<span class="w3-text-dark-gray">
+    							Likes : <span class="counter" cid="{{ post.id }}">{{ post.like_me__count }}</span>
+    						</span>
+    						{% if user.is_authenticated %}
+    							{% if user != post.author %}
+    							    {% if post in i_like %}
+        								<span pid="{{ post.id }}" class="like">&#128078;</span>
+        							{% else %}
+            							<span pid="{{ post.id }}" class="like">&#128077;</span>
+        							{% endif %}
+    							{% else %}
+    								<a href="#" pid="{{ post.id }}" class="edit">&#9997;</a>
+    							{% endif %}
+    							{% if user.is_superuser %}
+    							    <a href="{% url 'hub:post_delete' post.id %}" class="delete w3-red" onclick="return confirm('Are you sure?');">&#9949;</a>
+    							{% endif %}
+    						{% endif %}
+
+    			        </td>
+    			    </tr>
+    		    {% endfor %}
+    		</table>
+            <br>
+        	<nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="First">
+                            <span aria-hidden="true">&#10094;&#10094;</span>
+                            <span class="sr-only">First</span>
+                        </a>
+                    </li>
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&#10094;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item"><a class="page-link" href="#">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&#10095;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                            <span aria-hidden="true">&#10095;&#10095;</span>
+                            <span class="sr-only">Last</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <hr>
+
+    </div>
+{% endblock %}
+
+

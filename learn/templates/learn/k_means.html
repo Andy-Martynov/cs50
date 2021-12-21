@@ -1,0 +1,32 @@
+{% extends "learn/layout.html" %}
+
+{% load static %}
+
+{% block add_style %}
+<style>
+.graph {
+    max-width: 100%;
+    max-height: 90vh;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="w3-row">
+        <div class="w3-quarter w3-padding">
+            <h2>K-Means Clastering</h2>
+            <h4 id="message">{{ message }}</h4>
+            {% if solution %}<p class="w3-red">Solution found!{% else %}<p class="w3-blue">Finding solution{% endif %}</p>
+            <hr>
+            {% if mode == '2d' %}
+                <a class="w3-button w3-teal w3-round-xxlarge" href="{% url 'learn:k_means_step' %}">Next step</a>
+            {% else %}
+                <a class="w3-button w3-teal w3-round-xxlarge" href="{% url 'learn:k_means_3d_step' %}">Next step</a>
+            {% endif %}
+            <hr>
+        </div>
+        <div class="w3-rest w3-mobile">
+            <img class="graph" src="{{ graph }}">
+        </div>
+    </div>
+{% endblock %}

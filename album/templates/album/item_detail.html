@@ -1,0 +1,59 @@
+{% extends "album/layout.html" %}
+
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block section %}
+<div class="w3-container w3-center p-0" style="max-height:100vh;">
+    {% if item.mode == 'IMG' %}
+        {% if item.file %}
+            <div>
+                <img src="{{ item.file.url }}"  class="w3-image" style="max-height:100vh;">
+            </div>
+        {% endif %}
+    {% endif %}
+    {% if item.mode == 'VID' %}
+        <div class="w3-padding w3-margin">
+            <video width="{{ item.album.def_thumb_width }}" height="{{ item.album.def_thumb_height }}" controls>
+                <source src="{{ item.file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    {% endif %}
+    {% if item.mode == 'DOC' %}
+        <div class="w3-padding w3-margin">
+            MODE DOC
+        </div>
+    {% endif %}
+    {% if item.mode == 'YTB' %}
+        <div class="w3-padding w3-margin">
+            MODE YTB
+        </div>
+    {% endif %}
+    {% if item.mode == 'IMG' %}
+        <div class="w3-display-bottomleft w3-container">
+            <a href="{% url 'album:number' item.album.id %}" class="control w3-red"><i class="fa fa-level-up"></i></a>
+            <a href="{% url 'album:item_detail' previous.id %}" class="control w3-khaki"><i class='fas fa-arrow-left'></i></a>
+            <a href="{% url 'album:item_detail' next.id %}" class="control w3-khaki"><i class='fas fa-arrow-right'></i></a>
+            {% if item.album.user == request.user  or request.user.is_superuser %}
+                <a href="{% url 'album:item_update' item.id %}" class="control w3-teal"><i class="fa fa-edit"></i></a>
+            {% endif %}
+            <a href="{% url 'album:item_detail_info' item.id %}" class="control w3-indigo"><i class="fa fa-info"></i></a>
+        </div>
+        <div class="w3-display-topmiddle w3-container w3-sand w3-round-xxlarge my-1">
+            {% if item.title %}{{ item.title }}{% endif %}
+        </div>
+    {% else %}
+        <a href="{% url 'album:number' item.album.id %}" class="control w3-red"><i class="fa fa-level-up"></i></a
+        <a href="{% url 'album:item_detail_info' item.id %}" class="control w3-indigo"><i class="fa fa-info"></i></a>
+    {% endif %}
+</div>
+
+</div>
+
+{% endblock %}

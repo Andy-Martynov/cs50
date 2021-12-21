@@ -1,0 +1,258 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    	<meta charset="UTF-8">
+    	<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+
+        <title>{% block title %}Андрей Мартынов{% endblock %}</title>
+
+        {% block icon %}
+            <link rel="shortcut icon" href="{% static 'hub/AM.png' %}" type="image/png">
+        {% endblock %}
+
+        <link rel="manifest" href="{% static 'manifest.json' %}">
+        <link rel="apple-touch-icon" href="{% static 'images/icons/manifest/android-icon-192x192-dunplab-manifest-48709' %}">
+        <meta name="theme-color" content="#ff0000"/>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <script src="https://kit.fontawesome.com/dd67fbf992.js" crossorigin="anonymous"></script>
+
+        <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+        <script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
+
+        <link href="{% static 'hub/styles.css' %}" rel="stylesheet">
+        <link href="{% static 'hub/styles2.css' %}" rel="stylesheet">
+
+        {% block head_add %}
+        {% endblock %}
+    {% endblock head %}
+</head>
+
+<body class="no-gutters">
+
+    {% block custom_script %}{% endblock %}
+
+    {% block nav %}
+        <nav class="navbar navbar-expand-md navbar-light sticky-top no-gutters">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'hub/AM_ball.png' %}">
+            </a>
+
+            <div class="collapse navbar-collapse" id="main-menu">
+
+                {% block home_link_add %}
+                {% endblock %}
+
+                {% block home_link %}
+                    {% include "hub/include_admin_menu_icon.html" %}
+                    <span class="nav-item">
+                        <a class="nav-link" href="{% url 'hub:index' %}" data-toggle="tooltip" data-placement="bottom" title="Home page"><i class="fa fa-home w3-large"></i>&nbsp;<span rus="На&nbsp;главую" eng="Home">Home</span></a>
+                    </span>
+                {% endblock %}
+
+                {% block helpers %}
+                    {% include "hub/include_help_menu_icon.html" %}
+                {% endblock %}
+
+                {% block navbar_add %}
+                {% endblock %}
+
+                <ul class="navbar-nav mx-auto">
+                    {% if user.is_authenticated %}
+                        {% block nav_add %}
+                        {% endblock %}
+                    {% endif %}
+
+                    {% block nav_add_not_authenticated %}
+                    {% endblock %}
+                </ul>
+
+                {% if user.is_authenticated %}
+                    <span class="nav-item">
+                        <a class="nav-link{% if user.is_guest %} disbbled{% endif %}" href="{% url 'account:group_list' %}" data-toggle="tooltip" data-placement="bottom" title="Groups">
+                            <i class="fas fa-user-friends w3-large"></i>&nbsp;<span rus="Группы" eng="Groups">Groups</span>
+                        </a>
+                    </span>
+
+                    <span class="nav-item">
+                        <a class="nav-link" href="{% url 'account:logout' %}"><i class="fa fa-power-off w3-large"></i>&nbsp;<span rus="Выход" eng="Log&nbsp;Out">Log&nbsp;Out</span></a>
+                    </span>
+                    <a href="{% if user.is_guest %}#{% else %}{% url 'account:user_image_update' %}{% endif %}">
+                        <img src="{{ user.image.url }}" class="avatar ml-2">
+                    </a>
+
+                    <a href="{% if user.is_guest %}#{% else %}{% url 'account:user_update' %}{% endif %}">
+                        <span class="nav-item">&nbsp;{{ user.username|upper }}</span>
+                    </a>
+
+                    <span id="user_id" class="d-none">{% if user %}{{ user.id }}{% endif %}</span>
+                {% else %}
+                    <span class="nav-item">
+                        <a class="nav-link" href="{% url 'account:login' %}"><i class='far fa-arrow-alt-circle-right w3-large'></i>&nbsp;<span rus="Вход" eng="Login">Login</span></a>
+                    </span>
+                    <span class="nav-item">
+                        <a class="nav-link" href="{% url 'account:guest_login' %}"><i class='fas fa-user-secret w3-large'></i>&nbsp;<span rus="Гость" eng="Guest">Guest</span></a>
+                    </span>
+                    <span class="nav-item">
+                        <a class="nav-link" href="{% url 'account:register' %}"><i class='far fa-check-circle w3-large'></i>&nbsp;<span rus="Регистрация" eng="Register">Register</span></a>
+                    </span>
+                {% endif %}
+            </div>
+
+            {% include "hub/include_lang_menu_icon.html" %}
+        </nav>
+    {% endblock nav %}
+
+    <div id="messages">
+        {% block message %}
+        	{% if messages %}
+        		{% for message in messages %}
+        			<div class="alert {% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show py-0" role="alert">
+        				{{ message }}
+        				<button type="button" class="close py-0" data-dismiss="alert" aria-label="Close">
+        					<span aria-hidden="true">&times;</span>
+        				</button>
+        			</div>
+        		{% endfor %}
+        	{% endif %}
+        {% endblock %}
+    </div>
+
+    {% block body %}
+            <div class="container-fluid no-gutters" style="height:100%;">
+                <div class="row" style="height:100%">
+                    {% block section_container %}
+                        {% if user.is_authenticated %}
+                            <div class="col-12 col-md-9 m-0 p-0">
+                        {% else %}
+                            <div class="col-12 m-0 p-0">
+                        {% endif %}
+
+                            {% block section %}
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block right_container %}
+                        {% if user.is_authenticated %}
+                        <div class="col-12 col-md-3 m-0 w3-border-left w3-border-gray">
+                            {% block right %}
+                                {% include "hub/include_online_users_and_groups.html" %}
+                                <hr>
+                            {% endblock %}
+                        </div>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+
+    {% endblock %}
+
+    <style>
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+    }
+    </style>
+
+
+
+    {% block footer %}
+        <footer class="footer w3-panel w3-light-gray w3-center m-0 w3-border-top w3-border-gray">
+            © ANDY'S 2020, <a href="mailto:andymartynovmail@gmail.com"><i class="fa fa-envelope"></i> <span rus="Напишите мне" eng="Send me a mail">Send me a mail</span></a>
+        </footer>
+    {% endblock %}
+
+    {% block nav_script %}
+        <script>
+        function myFunction() {
+          var x = document.getElementById("hidden_nav");
+          if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+          } else {
+            x.className = x.className.replace(" w3-show", "");
+          }
+        }
+        </script>
+    {% endblock %}
+
+    {% block bottom_script %}
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+        {% if sw %}
+        <script>
+            if (navigator.serviceWorker.controller) {
+              console.log('[PWA Builder] active service worker found, no need to register')
+            } else {
+              navigator.serviceWorker.register('/sw.js', {
+                scope: './'
+              }).then(function(reg) {
+                console.log('Service worker has been registered for scope:'+ reg.scope);
+              });
+            }
+        </script>
+        {% endif %}
+
+        <script>
+                $(function () {
+                  $('[data-toggle="tooltip"]').tooltip()
+                })
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('LOADED');
+                Pusher.logToConsole = true;
+                var pusher = new Pusher('bbe70803665a7a964619', {
+                  cluster: 'eu',
+                  authEndpoint: '/rtc/auth',
+                });
+                const presence_channel = pusher.subscribe('presence-my-channel');
+
+                presence_channel.bind('pusher:subscription_succeeded', () =>
+                    presence_channel.members.each(member => {subscriptionSucceeded(member)} ));
+                presence_channel.bind('pusher:member_added', member => {memberAdded(member)});
+                presence_channel.bind('pusher:member_removed', member => {memberRemoved(member)});
+
+                const online = document.querySelectorAll(`[online]`);
+                online.forEach(el => {el.style.display = 'none'});
+            });
+
+            function subscriptionSucceeded(member) {
+                console.log('pusher:subscription succeeded', member.id, member.info);
+                const online = document.querySelectorAll(`[online='${member.id}']`);
+                online.forEach(el => {el.style.display = ''});
+            }
+
+            function memberAdded(member) {
+                console.log('pusher:member added', member.id, member.info);
+                const online = document.querySelectorAll(`[online='${member.id}']`);
+                online.forEach(el => {el.style.display = ''});
+            }
+
+            function memberRemoved(member) {
+                console.log('pusher:member removed', member.id, member.info);
+                const online = document.querySelectorAll(`[online='${member.id}']`);
+                online.forEach(el => {el.style.display = 'none'});
+            }
+        </script>
+
+        {% include "game/include_invite.html" %}
+
+    {% endblock %}
+</body>
+</html>

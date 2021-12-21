@@ -1,0 +1,98 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}DS Explorer{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'explorer/explorer_60.png' %}" type="image/png">
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <!--<script src="{% static 'todo/task_list.js' %}"></script>-->
+    <!--<link href="{% static 'explorer/styles.css' %}" rel="stylesheet">-->
+{% endblock %}
+
+{% block home_link %}
+    {{ block.super }}
+    <div class="menu-icon">
+        <a href="{% url 'explorer:index' %}">
+            <img src="{% static 'explorer/explorer_60.png' %}">
+        </a>
+    </div>
+{% endblock %}
+
+{% block pusher %}{% endblock %}
+
+{% block custom_script %}
+<style>
+    .plot {
+        max-width: 250px;
+        max-height: 250px;
+    }
+    .bigplot {
+        max-width: 100%;
+        max-height: 100vh;
+        margin: auto;
+    }
+    .histogram {
+        max-width: 100%;
+        max-height: 80vh;
+        margin: auto;
+    }
+    .fullscreen {
+        z-index: 999999;
+        position:fixed;
+        top:0;
+        left:0;
+        width: 100vw;
+        height: 100vh;
+        display:none;
+        background-color: white;
+    }
+    .zoom {
+        cursor: url('/static/images/icons/zoom_60.png'), auto;
+    }
+    .scroll {
+        overflow-y: auto;
+        max-height: 90vh;
+    }
+    .formula  {
+      font-family: "Times New Roman", Times, serif;
+    }
+    summary:first-letter {
+        color: red;
+    }
+</style>
+{% endblock %}
+
+{% block nav_add %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" nav_index="locations" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span rus="Загрузить" eng="Load">Load</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'explorer:load_dataset' %}" rus="Загрузить TRAIN" eng="Load train dataset">Load train dataset</a>
+            <a class="dropdown-item" href="{% url 'explorer:load_dataset' 'test' %}" rus="Загрузить TEST" eng="Load test dataset">Load test dataset</a>
+            <a class="dropdown-item" href="{% url 'explorer:load_dataset' 'predicted' %}" rus="Загрузить PREDICTED" eng="Load predicted dataset">Load predicted dataset</a>
+        </div>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" nav_index="locations" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span rus="Инфа" eng="Info">Info</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'explorer:mi_scores' %}" rus="MI scores" eng="MI scores">MI scores</a>
+            <a class="dropdown-item" href="{% url 'explorer:correlation' %}" rus="correlation" eng="correlation">correlation</a>
+            <a class="dropdown-item" href="{% url 'explorer:get_outliers' %}" rus="outliers" eng="outliers">outliers</a>
+        </div>
+    </li>
+{% endblock %}
+
+{% block help-content %}
+    <h2>To Do HELP</h2>
+{% endblock %}
+
+{% block right %}
+{% endblock %}

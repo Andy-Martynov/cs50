@@ -1,0 +1,31 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block custom_script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() { setCurrent(''{{ current }}); });
+</script>
+{% endblock %}
+
+{% block body %}
+    <section class="d-flex flex-row flex-wrap">
+        <div class="card m-2 p-2">
+            <div class="card-header">
+                DOWNLOADS :
+            </div>
+                {% for file in files %}
+                        <a
+                            class="w3-button w3-white w3-border w3-border-blue w3-hover-blue w3-round-large w3-margin"
+                            href="{{ file.url }}"
+                            download="{{ file.name }}">
+                            📥 {{ file.title }}
+                        </a>
+                {% endfor %}
+        </div>
+    </section>
+{% endblock %}

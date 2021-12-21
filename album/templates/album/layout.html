@@ -1,0 +1,43 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}Album{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'album/album_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <link href="{% static 'album/styles.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block home_link_add %}
+    <div class="menu-icon">
+        <a href="{% url 'album:index' %}">
+            <img src="{% static 'album/album_60.png' %}">
+        </a>
+    </div>
+{% endblock %}
+
+{% block nav_add %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'album:user_albums' %}" rus="МОИ АЛЬБОМЫ" eng="MY ALBUMS">MY ALBUMS</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'album:owners' %}" rus="ДРУГИЕ АЛЬБОМЫ" eng="OTHER ALBUMS">OTHER ALBUMS</a>
+    </li>
+    {% if user.is_superuser %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'album:unused' %}" rus="Неиспользуемые файлы" eng="UNUSED">UNUSED</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'album:unused' 'yes' %}" rus="Удалить неиспользуемые файлы" eng="DELETE UNUSED">DElETE UNUSED</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block right %}
+{% endblock %}

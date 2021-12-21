@@ -1,0 +1,56 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="w3-bar">
+        <h2 class="page_title w3-bar-item w3-center">Active Listings</h2>
+        <a href="{% url 'auctions:listing-list' 0 %}"><button class="w3-bar-item w3-button w3-teal w3-right w3-margin-top w3-margin-right">List View</button></a>
+    </div>
+
+    {% for category in categories %}
+        <div class="w3-panel w3-light-gray">
+            <h3>{{ category.category__title }} ({{ category.id__count }})</h3>
+        </div>
+        <div class="w3-row">
+            {% for item in listings %}
+                {% if item.category.id == category.category__id %}
+                    <div class="w3-card-4 w3-col w3-margin s11 m11 l3" style="min-width:400px;">
+                        <header class="w3-container w3-light-gray" style="min-height:85px">
+                            <h4>{{ item.title }}</h4>
+                        </header>
+                        <div class="w3-container w3-margin-left">
+                            {% if item.image %}
+                                <div class="listing_image_place w3-margin-top">
+                                    <a href="{% url 'auctions:listing-detail' item.id %}">
+                                        <img class="listing_img_small" src="{{ item.image.url }}">
+                                    </a>
+                                </div>
+                            {% else %}
+                                No image
+                            {% endif %}
+                            <div class="w3-paddng" style="height: 100px; overflow:auto;">
+                                {{ item.description }}
+                            </div>
+                            <hr class="w3-section">
+                            <ul>
+                                <li class="w3-large">
+                                    START PRICE : {{ item.start_price }}
+                                </li>
+                                <li class="w3-large">
+                                    CURRENT BID : {{ item.current_price }}
+                                </li>
+                                <li class="w3-large" style="min-height:60px;">
+                                    CONSIGNOR : {{ item.created_by }}
+                                </li>
+                            </ul>
+                        </div>
+                        <footer class="w3-container w3-light-gray w3-padding">
+                            <a href="{% url 'auctions:listing-detail' item.id %}"><button class="w3-button w3-teal">View Details</button></a>
+                        </footer>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <h2>We have no listing yet</h2>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

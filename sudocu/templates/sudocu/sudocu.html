@@ -1,0 +1,118 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    SUDOCU
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <script src="{% static 'sudocu/sudocu.js' %}"></script>
+    <link href="{% static 'sudocu/sudocu.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'sudocu/sudocu_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-row  justify-content-center align-items-center p-3" style="width:100%;">
+        <table class="board">
+                {% for row in matrix %}
+                    {% if forloop.counter in s369 %}
+                        <tr class="hb p-0">
+                    {% elif forloop.counter == 1 %}
+                        <tr class="ht p-0">
+                    {% else %}
+                        <tr class="p-0">
+                    {% endif %}
+                        {% for cell in row %}
+                            {% if forloop.counter in s369 %}
+                                <td r="{{ cell.0 }}" c="{{ cell.1 }}" class="vr p-0 {% if not cell.3 %} tde{% endif %}">
+                            {% elif forloop.counter == 1 %}
+                                <td r="{{ cell.0 }}" c="{{ cell.1 }}" class="vl p-0 {% if not cell.3 %} tde{% endif %}">
+                            {% else %}
+                                <td r="{{ cell.0 }}" c="{{ cell.1 }}" class="p-0 {% if not cell.3 %} tde{% endif %}">
+                            {% endif %}
+                            {% if cell.2 > 0 %}
+                                <input
+                                    class="cell m-1 border-0 border-secondary align-self-center text-center"
+                                    r = "{{ cell.0 }}"
+                                    c = "{{ cell.1 }}"
+                                    name="{{ cell.0 }}{{ cell.1 }}"
+                                    id="cell{{ cell.0 }}{{ cell.1 }}"
+                                    {% if cell.2 > 0 %}
+                                        value="{{ cell.2 }}"
+                                    {% elif cell.2 == 'X' %}
+                                        value="{{ cell.2 }}"
+                                    {% endif %}
+                                     disabled
+                                    {% if cell.3 %}
+                                        style="background-color: lightgray;"
+                                    {% endif %}
+                                    hint="{{ cell.4 }}"
+                                    {% if not cell.5 %}
+                                        style="color: red;"
+                                    {% endif %}
+                                    {% if cell.6 %}
+                                        style="background-color: lightgreen;"
+                                    {% endif %}
+                                >
+                            {% else %}
+                                <div id="hint{{ cell.0 }}{{ cell.1 }}" class='hint {{ cell.7 }}'>
+                                    {{ cell.4|cut:"{"|cut:"}"|cut:","|rjust:"6" }}
+                                </div>
+                            {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+        </table>
+    </div>
+
+
+        <div class="col-12" style="width:100%">
+            <div class="d-flex flex-row  justify-content-center align-items-center">
+                <a href="{% url 'sudocu:ai_move' %}" class="btn btn-sm btn-outline-primary mr-2 mb-1">AI<br><small>move</small></a>
+                <a id="cycle" href="{% url 'sudocu:ai_move' 'AI-cycle' %}" class="btn btn-sm btn-outline-primary mr-2 mb-1">AI<br><small>cycle</small></a>
+                {# <a href="{% url 'sudocu:reduce' %}" class="btn btn-sm btn-outline-primary mr-2 mb-1">X<br><small>hints</small></a> #}
+                <a href="{% url 'sudocu:path' %}" class="btn btn-sm btn-outline-primary mr-2 mb-1">FIND<br><small>classic</small></a>
+                <a href="{% url 'sudocu:recursion' %}" class="btn btn-sm btn-outline-primary mr-2 mb-1">FIND<br><small>by recursion</small></a>
+            </div>
+
+            <div class="input-group my-1 d-flex flex-row  justify-content-center align-items-center">
+                <select class="ml-0 btn btn-outline-success" id="level">
+                    <option selected>new</option>
+                    <option value="29">Easy</option>
+                    <option value="25">Normal</option>
+                    <option value="21">Hard</option>
+                    <option value="17">Insane</option>
+                </select>
+                <a href="{% url 'sudocu:start' %}" class="btn btn-sm btn-outline-secondary mx-2">FIX</a>
+                <a href="{% url 'sudocu:empty' %}" class="btn btn-sm btn-outline-danger">RESET</a>
+                <a id="toggle_hints" href="#" class="btn btn-sm btn-outline-secondary ml-2" style="color: green;">HINTS</a>
+            </div>
+
+            <div class="input-group my-1 d-inline-flex flex-row  justify-content-center align-items-center">
+                <input id="game_name" type="text" class="form-control" placeholder="name">
+                <div class="input-group-append" id="button-addon4">
+                    <button id="btn_save" class="btn btn-outline-primary" type="button">save</button>
+                    <button id="btn_load" class="btn btn-outline-primary ml-2" type="button">load</button>
+                </div>
+            </div>
+            <div class="d-flex flex-row  justify-content-center align-items-center">
+                <span id="mode" class="btn btn-sm btn-outline-primary w3-text-red ml-2 border-0">{{ mode }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="num_pad" class="d-flex flex-row  justify-content-center align-items-center p-3">
+        <table>
+            <tr><td class="np">1</td><td class="np">2</td><td class="np">3</td></tr>
+            <tr><td class="np">4</td><td class="np">5</td><td class="np">6</td></tr>
+            <tr><td class="np">7</td><td class="np">8</td><td class="np">9</td></tr>
+            <tr><td class="np" colspan="3">0</td></tr>
+        </table>
+    </div>
+{% endblock %}

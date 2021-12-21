@@ -1,0 +1,61 @@
+{% load static %}
+
+<script>
+function changeLang() {
+    console.log('changeLang', localStorage.lang);
+
+    flag = document.querySelector('#lang_flag');
+    state = localStorage.lang;
+    if (!state) {
+        let state = 'rus';
+    }
+
+    if (state == 'rus') {
+        localStorage.lang = 'eng';
+        src = flag.getAttribute('src');
+        flag.setAttribute('src', src.replace('rus.png', 'eng.png'));
+        // flag.setAttribute('state', 'eng');
+        document.querySelectorAll('[rus]').forEach(el => el.innerHTML = el.getAttribute('rus'));
+        document.querySelectorAll('[lang="rus"]').forEach(el => el.style.display='block');
+        document.querySelectorAll('[lang="eng"]').forEach(el => el.style.display='none');
+    } else {
+        localStorage.lang = 'rus';
+        src = flag.getAttribute('src');
+        flag.setAttribute('src', src.replace('eng.png', 'rus.png'));
+        // flag.setAttribute('state', 'rus');
+        document.querySelectorAll('[eng]').forEach(el => el.innerHTML = el.getAttribute('eng'));
+        document.querySelectorAll('[lang="rus"]').forEach(el => el.style.display='none');
+        document.querySelectorAll('[lang="eng"]').forEach(el => el.style.display='block');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    state = localStorage.lang;
+    flag = document.querySelector('#lang_flag');
+    src = flag.getAttribute('src');
+	console.log('LANG LOAD', state);
+
+    if (!state) {
+        let state = 'rus';
+    }
+    if (state == 'eng') {
+        document.querySelectorAll('[rus]').forEach(el => el.innerHTML = el.getAttribute('rus'));
+        document.querySelectorAll('[lang="rus"]').forEach(el => el.style.display='block');
+        document.querySelectorAll('[lang="eng"]').forEach(el => el.style.display='none');
+        flag.setAttribute('src', src.replace('rus.png', 'eng.png'));
+    } else {
+        document.querySelectorAll('[eng]').forEach(el => el.innerHTML = el.getAttribute('eng'));
+        document.querySelectorAll('[lang="rus"]').forEach(el => el.style.display='none');
+        document.querySelectorAll('[lang="eng"]').forEach(el => el.style.display='block');
+        flag.setAttribute('src', src.replace('eng.png', 'rus.png'));
+    }
+});
+
+</script>
+
+<img
+    id="lang_flag"
+    class="change_lang cs50-menu-icon mx-2 my-2 w3-round" src="{% static 'hub/rus.png' %}"
+    onclick="changeLang();"
+>
+

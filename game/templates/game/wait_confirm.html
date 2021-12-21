@@ -1,0 +1,22 @@
+{% extends "four/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <div class="w3-padding">
+        <div class="w3-margin w3-center">
+            <h1>{{ kind }}</h1>
+            <h3>Waiting <span uid="{{ opponent.user.id }}" class"online"><i class="fa fa-user w3-xlarge w3-text-green"></i></span> {{ opponent.name }} to confirm/reject your invitation</h3>
+            <br>
+            <button class="button-cancel"><a href="{% url 'game:invite_cancel' kind %}">CANCEL</a></button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block nav_add %}
+{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+

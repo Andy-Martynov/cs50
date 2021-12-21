@@ -1,0 +1,112 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href={% static 'project0/project0.css' %}>
+		<link rel="shortcut icon" href="static/images/project0/ml.png" type="image/png">
+		<title>Project 0</title>
+    </head>
+    <body>
+        <div class="container">
+            <header class="row">
+                <div class="col">
+                    <h1 id="page_header">The languages I'd sometime studied</h1>
+                </div>
+            </header>
+            <nav class="row">
+                <div class="col">
+                    <ul class="nav nav-tabs">
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'project0:index' %}">Main</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'project0:languages' %}">Languages</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'project0:poetry' %}">Poetry</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'project0:photos' %}">Photos</a>
+                      </li>
+                    </ul>
+                </div>
+            </nav>
+            <section>
+                <div class="container">
+                    <div class="row justify-content-start">
+                        <div class="col-6">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="languages_table">
+                                <tbody>
+                                    <tr>
+                                        <th>Language</th><th>Year</th><th  class="wide">Notes</th><th>Links</th>
+                                    </tr>
+                                    <tr>
+                                        <td>ALGOL-60</td>
+                                        <td>1975</td>
+                                        <td class="wide">
+It was my first proramming language, and it was all theoretical, without computer.
+I had a book "Programming in Algol-60" and all my programs were only on paper. The first computer I realy worked with was "Minsk-22", see it's main console beside.
+                                        </td>
+                                        <td>
+                                            <a class="link" href="https://en.wikipedia.org/wiki/ALGOL_60">ALGOL-60</a><br>
+                                            <a class="link" href="https://en.wikipedia.org/wiki/Minsk_family_of_computers#">Minsk-2<br>
+												<img class="pic" src={% static "project0/images/minsk.png" %} alt="Minsk-2">
+											</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>FORTRAN</td>
+                                        <td>1978</td>
+                                        <td  class="wide">This language was learned at MPEI. Programs runned on ES-series, the clone of IBM System-360.</td>
+                                        <td><a class="link" href="https://en.wikipedia.org/wiki/Fortran">FORTRAN</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>BASIC</td>
+                                        <td>1980</td>
+                                        <td  class="wide">I studied it, but never used it in real life</td>
+                                        <td><a class="link" href="https://en.wikipedia.org/wiki/BASIC">BASIC</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>PL/1</td>
+                                        <td>1981</td>
+                                        <td  class="wide">I'd made quite a big proagramm with it</td>
+                                        <td><a class="link" href="https://en.wikipedia.org/wiki/PL/I">PL/1</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>PASCAL</td>
+                                        <td>1982</td>
+                                        <td  class="wide">It was my favorit. Niklaus, thanks a lot! And we had real DEC PDP-11/34</td>
+                                        <td><a class="link" href="https://en.wikipedia.org/wiki/Pascal_(programming_language)">PASCAL</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>MODULA-2</td>
+                                        <td>1986</td>
+                                        <td  class="wide">Interesting< but not very popular.</td>
+                                        <td><a class="link" href="https://en.wikipedia.org/wiki/Modula-2">MODULA-2</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>PYTHON</td>
+                                        <td>2020</td>
+                                        <td  class="wide">It made me love programming again!</td>
+                                        <td><a class="link" href="https://en.wikipedia.org/wiki/Fortran">PYTHON</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                       </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    </body>
+</html>

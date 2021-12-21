@@ -1,0 +1,132 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<section class="w3-row">
+    <div class="w3-col m6 l6 w3-padding-32">
+        {% if listing.image %}
+            <img class="listing_img w3-margin-left" src="{{ listing.image.url }}">
+        {% else %}
+            <h4>No image</h4>
+        {% endif %}
+    </div>
+
+    <div class="w3-col m5 l5">
+        <h4 class="w3-text-gray">LOT {{ listing.id }}</h4>
+        {% if listing.active %}
+            <h2>{{ listing.title }}</h2>
+        {% else %}
+            <h2>{{ listing.title }} <span class="w3-text-red">CLOSED</span></h2>
+        {% endif %}
+        <hr>
+        <h3>Description :</h3>
+        <div>
+            {{ listing.description }}
+        </div>
+        <hr>
+        <p class="w3-large"><strong>Consignor : </strong>{{ listing.created_by }}</p>
+        <hr>
+        <p class="w3-large"><strong>Start price : </strong>{{ listing.start_price }}</p>
+
+        {% if bids %}
+            <div class="w3-panel w3-light-gray w3-center">
+                <h3>Bids :</h3>
+            </div>
+            <div class="w3-padding" style="max-height: 120px; overflow: auto;">
+                {% for bid in bids %}
+                    <p class="w3-large"><strong>{{ bid.price }}</strong> by {{ bid.author }} ({{ bid.created }})</p>
+                {% endfor %}
+            </div>
+            <hr>
+
+            {% if listing.active %}
+                <p class="w3-xlarge w3-text-red w3-section"><strong>Current Bid ({{ bid_count }}) : {{ last_bid.price }}</strong></p>
+            {% else %}
+                <p class="w3-xlarge w3-text-red w3-section"><strong>Hummer Bid ({{ bid_count }}) : {{ last_bid.price }}</strong></p>
+            {% endif %}
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if listing.active %}
+                {% if not consignor %}
+                    {% if form %}
+                        <form class="w3-row" method="post" action="{% url 'auctions:bid-create' listing.id %}">
+                            {% csrf_token %}
+                            <div class="w3-section w3-half w3-border w3-light-grey w3-border-red">
+                                <input  class="w3-input w3-twothird w3-border-0"
+                                        type="number"
+                                        name="price"
+                                        min="{{ min_bid }}"
+                                        placeholder="min {{ min_bid }}"
+                                        required>
+                                <input class="w3-button w3-text-red w3-third" type="submit" value="BID">
+                            </div>
+                        </form>
+                    {% endif %}
+                {% endif %}
+
+
+                <div class="w3-bar w3-section">
+                    {% if not consignor %}
+                        {% if not watch %}
+                            <a href="{% url 'auctions:watch-create' listing.id %}" class="w3-button w3-teal">WATCH ON </a>
+                        {% else %}
+                            <a href="{% url 'auctions:watch-delete' watch.id %}" class="w3-button w3-teal">WATCH OFF</a>
+                        {% endif %}
+                    {% else %}
+                        {% if bids %}
+                            <a class="w3-button w3-teal" href="{% url 'auctions:listing-close' listing.id %}" onclick="return confirm('Are you sure?');">Close</a>
+                        {% else %}
+                            <a class="w3-button w3-red" href="{% url 'auctions:listing-delete' listing.id %}" onclick="return confirm('Are you sure?'");>Delete</a>
+                        {% endif %}
+                        <a class="w3-button w3-teal" href="{% url 'auctions:listing-update' listing.id %}">Edit</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="w3-bar w3-teal w3-section w3-center">
+        <a href="{% url 'auctions:listing-detail' first.id %}" class="w3-button">&#10094;&#10094; First </a>
+        {% if previous %}
+            <a href="{% url 'auctions:listing-detail' previous.id %}" class="w3-button">&#10094; Previous </a>
+        {% endif %}
+        {% if next %}
+            <a href="{% url 'auctions:listing-detail' next.id %}" class="w3-button"> Next &#10095;</a>
+        {% endif %}
+        <a href="{% url 'auctions:listing-detail' last.id %}" class="w3-button"> Last &#10095;&#10095;</a>
+    </div>
+
+    <div class="w3-col">
+        <div class="w3-panel w3-light-gray w3-center">
+            <h2>Comments</h2>
+        </div>
+        <div class="w3-margin">
+            {% if user.is_authenticated %}
+                {% if listing.active %}
+                    {% if comment_form %}
+                        <form class="w3-row" method="post" action="{% url 'auctions:comment-create' listing.id %}">
+                            {% csrf_token %}
+                            <textarea  class="w3-input w3-half w3-border w3-border-gray w3-light-gray w3-round-xxlarge"
+                                    type="text"
+                                    name="text"
+                                    rows="1"
+                                    placeholder="Write a comment"
+                                    ></textarea>
+                            <input class="w3-button w3-text-red w3-light-gray w3-margin-left w3-round-xxlarge" type="submit" value="ADD">
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+            <ul class="w3-ul w3-section">
+            {% for comment in comments %}
+                <li class="w3-display-container w3-round-xxlarge">
+                    {{ comment.created }} by <strong>{{ comment.author }}</strong> : {{ comment.text }}
+                    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-transparent w3-display-right">&times;</span>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

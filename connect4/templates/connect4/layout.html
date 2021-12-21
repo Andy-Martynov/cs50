@@ -1,0 +1,27 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'images/icons/four.png' %}" type="image/png">
+{% endblock %}
+
+{% block title %}
+    CONNECT4
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <link href="{% static 'connect4/connect4.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block nav_add_not_authenticated %}
+    {{ block.super }}
+    <span class="mx-auto">
+        <span class="nav-item">
+            <a class="nav-link" href="{% url 'connect4:about' %}" data-toggle="tooltip" data-placement="top" title="О проекте">
+                <i class="far fa-question-circle w3-large"></i>&nbsp;<span class="d-none d-lg-inline" rus="О&nbsp;проекте" eng="About">About</span>
+            </a>
+        </span>
+    </span>
+{% endblock %}

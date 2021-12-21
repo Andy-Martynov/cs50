@@ -1,0 +1,1165 @@
+{% load static %}
+
+<style>
+.groupchat, .groupedit {
+    padding: 3px;
+    margin: 3px;
+    border: 1px solid gray;
+    border-radius: 6px;
+    /*background-color: #e6ffe6;*/
+}
+.groupedit {
+    /*background-color: #ffe6e6;*/
+}
+.group {
+    padding: 3px;
+    margin: 3px;
+    border: 1px solid gray;
+    border-radius: 6px;
+    /*background-color: #ffffe6;*/
+}
+.message, .mymessage {
+    padding: 0px;
+    margin: 0px;
+}
+.message div, .mymessage div {
+    max-width: 80%;
+    display: inline-block;
+    padding: 6px;
+    margin: 6px;
+    border: 1px solid gray;
+    border-radius: 12px;
+    background-color: #f2f2f2;
+}
+.mymessage {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+}
+.mymessage div {
+    background-color: #e6f7ff;
+    align-self: flex-end;
+}
+.timestamp {
+    text-decoration: underline;
+    color: #000080;
+    font: 0.75em bold;
+}
+#msg_image {
+    max-width: 100%;
+}
+#clip {
+    position: relative;
+    top: -75px;
+}
+.clip {
+    max-height: 40px;
+    position: relative;
+    top: -27px;
+}
+.file {
+    margin-top: 3em;
+}
+.msg_image {
+    max-width: 80%;
+    margin-bottom: 1em;
+}
+
+#userModal section {
+    max-height: 50vh;
+    overflow: auto;
+}
+#userModal header {
+    max-height: 20vh;
+    overflow: auto;
+}
+#userModalContent {
+    max-width: 600px;
+}
+#user_is_typing {
+    height: 1.5em;
+}
+
+.blink {
+animation: blinker 0.6s linear infinite;
+color: #1c87c9;
+}
+@keyframes blinker {
+50% { opacity: 0; }
+}
+.blink-one {
+ animation: blinker-one 1s linear infinite;
+}
+@keyframes blinker-one {
+ 0% { opacity: 0; }
+}
+.blink-two {
+ animation: blinker-two 1.4s linear infinite;
+}
+@keyframes blinker-two {
+ 100% { opacity: 0; }
+}
+
+#fullscreen {
+    width: 100%;
+    height: 100%;
+    color: gray;
+    background-color: #e6e6e6;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 9999;
+}
+#fullscreen img{
+    max-width: 100%;
+    max-height: 100%;
+}
+</style>
+
+<div id="fullscreen" class="w3-display-container" style="display:none; width:100vw; height=100vh;">
+    <img class="w3-animate-zoom" src="">
+    <span onclick="{
+        document.getElementById('fullscreen').style.display='none';
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        }
+    }"
+          class="w3-button w3-margin w3-text-red w3-display-topright w3-xlarge w3-round-xlarge"><b>&times;</b></span>
+</div>
+
+<details open>
+    <summary>
+        <b rus='Кто он-лайн' eng='WHO IS ON-LINE'>WHO IS ON-LINE</b>
+    </summary>
+    <div id="user_list"></div>
+</details>
+
+<details id="GROUPS" class="mt-3" style="display:none;">
+    <summary class="my-2">
+        <b rus='Группы' eng='GROUPS'>GROUPS</b>
+    </summary>
+    <details id="my_groups" class="mt-2" open>
+        <summary class="ml-2">
+            <b rus='Мои группы' eng='MY GROUPS'>MY GROUPS</b>
+        </summary>
+    </details>
+    <details id="groups_im_in" class="mt-2" open>
+        <summary class="ml-2">
+            <b rus='Я в группах' eng='GROUPS I'M IN'>GROUPS I'M IN</b>
+        </summary>
+    </details>
+</details>
+
+<details id="unreads" class="mt-3" style="display:none;" open>
+    <summary class="my-2"><b class="w3-text-red blink" rus='Непрочтенное' eng='.UNREAD'>.UNREAD</b></summary>
+</details>
+
+<div id="userModal" class="w3-modal">
+    <div id="userModalContent" class="w3-modal-content w3-card-6 w3-animate-zoom w3-round-xlarge">
+        <header class="w3-container w3-border-bottom w3-border-red">
+            <div id="user_is_typing" class="w3-margin w3-display-bottomright"></div>
+            <span onclick="{document.getElementById('userModal').style.display='none'; load_unreads();}"
+            class="w3-button w3-display-topright w3-xlarge">&times;</span><br>
+            <header_content>
+
+            </header_content>
+        </header>
+
+        <section class="w3-display-container w3-padding w3-border-bottom w3-border-red"></section>
+
+        <footer class="w3-container w3-padding">
+
+            <div id="imageUploadForm" style="display:none" class='w3-display-container w3-padding w3-margin w3-border w3-round-xlarge'>
+                <span onclick="{document.getElementById('imageUploadForm').style.display='none';}"
+                class="w3-button w3-display-topright w3-xlarge">&times;</span><br>
+
+                <form id="fileUploadForm" method="post" enctype="multipart/form-data" action="{% url 'chat:upload_file' %}" novalidate>
+                    {% csrf_token %}
+                    <input id="file-input" name="file" type="file">
+                </form>
+            </div>
+
+            <input id="message_to" name="to" value="" hidden readonly>
+            <input id="group_id" name="to" value="" hidden readonly>
+
+            <form><input id="img_input" name="image" type="file" style="display: none;" onchange="selectImage();"></form>
+            <form><input id="file_input" name="file" type="file" style="display: none;" onchange="selectFile();"></form>
+
+            <div id="img_div" class="w3-display-container" style="display: none;">
+                <img id="msg_image" src="" class="w3-border w3-border-gray w3-round-xlarge">
+                <span id="msg_image_name"></span>
+                <button
+                    id="img_no"
+                    class="w3-button w3-red  w3-margin-left w3-round-xlarge w3-display-bottomright"
+                    onclick="imageReset()"
+                    >NO</button>
+            </div>
+
+             <div id="file_div" class="w3-display-container w3-padding w3-border w3-border-gray w3-round-xlarge mt-3" style="display: none;">
+                <img src="{% static 'chat/clip.png' %}" id="clip">
+                <br>
+                <span id="msg_file" class="w3-display-middle"></span>
+                <button
+                    id="file_no"
+                    class="w3-button w3-red  w3-margin-left w3-round-xlarge w3-display-bottomright"
+                    onclick="fileReset()"
+                    >NO</button>
+            </div>
+
+            <canvas id="canvas" width="800" height="600" style="display:none">Your browser does not support canvas</canvas>
+
+            <i
+                class="fa fa-image w3-margin w3-large"
+                data-toggle="tooltip" data-placement="top"
+                title="Attach image or video"
+                onclick="selectImage()"
+            ></i>
+
+            <i class="fa fa-paperclip w3-margin w3-large" data-toggle="tooltip" data-placement="top" title="Attach file" onclick="selectFile()"></i>
+
+            <i id="scroll_down" class="fa fa-angle-double-down w3-margin w3-large" data-toggle="tooltip" data-placement="top" title="Scroll down" onclick="scrollDown()"></i>
+
+            <span id="error"></span>
+
+            <textarea id="message_text" autofocus class="w3-light-gray w3-input w3-large w3-round-xlarge" cols="50" rows="2" wrap="hard" onkeypress="ifEnter(event)"></textarea>
+
+            <span id="btn_send" class="w3-button w3-teal w3-margin-left w3-round-xlarge" onclick="sendMessage()" rus="отправить" eng="send" style="visibility:hidden;">send</span>
+        </footer>
+    </div>
+</div>
+
+<script>
+var I_FILE
+var F_FILE
+var I_FILENAME
+
+function uploadImage() {
+    form = document.querySelector('#imageUploadForm');
+    form.style.display = 'block';
+}
+
+function scrollDown() {
+    section = document.querySelector('#userModal section');
+    section.scrollTop = section.scrollHeight;
+}
+
+function imageFullscreen(src) {
+    const div = document.querySelector('#fullscreen');
+    div.style.display='block';
+    const img = document.querySelector('#fullscreen img');
+    img.setAttribute('src', src);
+    if (div.requestFullscreen) {
+        div.requestFullscreen();
+    } else if (div.webkitRequestFullscreen) { /* Safari */
+        div.webkitRequestFullscreen();
+    }
+}
+
+function imageReset() {
+    I_FILE='';
+    I_FILENAME = '';
+    document.getElementById('msg_image').setAttribute('src', '');
+
+    canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.display = 'none';
+
+    document.getElementById('img_div').style.display='none';
+    document.getElementById('file-input').form.reset();
+    document.getElementById('imageUploadForm').style.display='none';
+    btnSend();
+}
+function fileReset() {
+    F_FILE='';
+    document.getElementById('msg_file').innerHTML='';
+    document.getElementById('file_div').style.display='none'
+    document.getElementById('file_input').value='';
+    document.getElementById('file_input').form.reset();
+    btnSend();
+}
+
+function encodeString(text) {
+    return text.replace(/[\u007F-\uFFFF]/g, function (c) {
+            return "\\u" + ("0000" + c.charCodeAt(0).toString(16)).substr(-4);
+        });
+}
+
+async function sendFile(file, filename) {
+    error = document.getElementById('error');
+    filename = encodeString(filename);
+	let response = await fetch('/chat/recieve_file', {
+		method: 'POST',
+		headers: {'name': filename},
+		body: file
+	});
+	json = response.json();
+	if (response.status == '200') {
+	    error.innerHTML = 'OK';
+	    result = true;
+	} else {
+	    error.innerHTML = `error ${response.status} : ${json}`;
+	    result = false;
+	}
+
+	console.log("SEND resopnse:", result, json);
+	return result;
+}
+
+async function uploadFile(file, filename) {
+    error = document.getElementById('error');
+    filename = encodeString(filename);
+    form = document.getElementById('fileUploadForm');
+	let response = await fetch('/chat/upload_file', {
+		method: 'POST',
+		body: new FormData(form)
+	});
+	json = response.json();
+	if (response.status == '200') {
+	    error.innerHTML = 'OK';
+	    result = true;
+	} else {
+	    error.innerHTML = `error ${response.status} : ${json}`;
+	    result = false;
+	}
+	console.log("SEND resopnse:", result, json);
+	return result;
+ }
+
+// async function selectImage() {
+//     const input = document.getElementById('img_input');
+//     input.onchange = e => {
+//       var file = e.target.files[0];
+//       showImage(file);
+//       btnSend();
+//     }
+//     await input.click();
+// }
+async function selectImage() {
+    form = document.querySelector('#imageUploadForm');
+    form.style.display = 'block';
+    const input = document.getElementById('file-input');
+    input.onchange = e => {
+      var file = e.target.files[0];
+      showImage(file);
+      btnSend();
+    }
+}
+
+async function showImage(file) {
+    var src
+    I_FILE = file
+    I_FILENAME = file.name
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = async function (e) {
+            document.getElementById('msg_image').src = e.target.result;
+            setTimeout(function () {
+                modal = document.querySelector('#userModal');
+                modal.scrollTop = modal.scrollHeight;
+                content = document.querySelector('#userModalContent');
+                content.scrollTop = content.scrollHeight;
+            }, 1000);
+        }
+        reader.readAsDataURL(file);
+        document.getElementById('img_div').style.display = 'block';
+        btnSend();
+    }
+}
+
+// async function showImage(file) {
+//     var src
+//     var canvas = document.querySelector("#canvas");
+//     canvas.style.display = 'block';
+//     var ctx = canvas.getContext("2d");
+
+//     I_FILE = file
+//     I_FILENAME = file.name
+
+//     if (file) {
+//         var img = document.createElement("img");
+//         img.onload  = function() {
+//             alert(this.width + 'x' + this.height);
+//             ctx.drawImage(img, 0, 0);
+//             console.log('IMG ----- w h :', img.width, img.height);
+
+//             var MAX_WIDTH = 800;
+//             var MAX_HEIGHT = 600;
+//             var width = this.width;
+//             var height = this.height;
+
+//             if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+
+//                 if (width > height) {
+//                   if (width > MAX_WIDTH) {
+//                     height *= MAX_WIDTH / width;
+//                     width = MAX_WIDTH;
+//                   }
+//                 } else {
+//                   if (height > MAX_HEIGHT) {
+//                     width *= MAX_HEIGHT / height;
+//                     height = MAX_HEIGHT;
+//                   }
+//                 }
+//                 console.log('NEW w h :', width, height);
+//                 canvas.width = width;
+//                 canvas.height = height;
+//                 ctx = canvas.getContext("2d");
+//                 ctx.drawImage(img, 0, 0, width, height);
+
+//                 var dataurl = canvas.toDataURL("image/png");
+//                 I_FILE = dataurl;
+//                 I_FILENAME = file.name
+
+//                 document.getElementById('msg_image').setAttribute('src', dataurl);
+//                 document.getElementById('error').innerHTML = I_FILENAME
+//             }
+//         }
+
+//         var reader = new FileReader();
+//         reader.onload = async function (e) {img.src = e.target.result}
+//         reader.readAsDataURL(file);
+
+//         ctx.strokeRect(100,100,120,120);
+
+//         document.getElementById('img_div').style.display = 'block';
+//         btnSend();
+//     }
+// }
+
+async function selectFile() {
+    const input = document.getElementById('file_input');
+    input.onchange = e => {
+       var file = e.target.files[0];
+       showFile(file);
+       btnSend();
+    }
+    await input.click();
+}
+
+async function showFile(file) {
+    F_FILE = file
+    if (file) {
+        size = Math.round(file.size / 1024);
+        document.getElementById('msg_file').innerHTML = `<b>${file.name}</b> ${size}Kb`;
+        document.getElementById('file_div').style.display = 'block';
+        setTimeout(function () {
+            modal = document.querySelector('#userModal');
+            modal.scrollTop = modal.scrollHeight;
+            content = document.querySelector('#userModalContent');
+            content.scrollTop = content.scrollHeight;
+        }, 500);
+        btnSend();
+    }
+}
+
+function ifEnter(event) {
+    if (event.key == 'Enter') {
+        sendMessage();
+    }
+}
+
+async function displayMessage(el) {
+
+    console.log(el);
+
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
+
+    txt = el.text
+    if (txt != null) {
+        var ss=/(https?:\/\/.+\.[a-z]{2,3})/gi;
+        ss = /(https?:\/\/[^\s]+)/gi;
+        refs = txt.replace(ss, '<a href="$1">$1</a>');
+        // console.log('DISPLAY REFS', txt, ' -> ', refs);
+        el.text = refs;
+    }
+
+    var msg = document.getElementById("message_"+el.id);
+    if (msg == undefined || msg == null) {
+        section = document.querySelector('#userModal section');
+        dts = el.created.toString();
+        dd = parseInt(dts.slice(0, 2));
+        mm = parseInt(dts.slice(3, 5)) - 1;
+        yy = parseInt(dts.slice(6, 8)) + 2000;
+        hh = parseInt(dts.slice(9, 11));
+        mn = parseInt(dts.slice(12, 14));
+        ss = parseInt(dts.slice(15, 17));
+        dt= new Date(Date.UTC(yy, mm, dd, hh, mn, ss, 0));
+        now = new Date();
+        y = now.getFullYear();
+        m = now.getMonth();
+        d = now.getDate();
+
+        year = dt.getFullYear() - 2000;
+        monthnum = dt.getMonth();
+        month = monthNames[monthnum];
+        date = dt.getDate().toString().padStart(2,0);
+        hours = dt.getHours().toString().padStart(2,0);
+        minutes = dt.getMinutes().toString().padStart(2,0);
+
+        var stamp = `${year}.${month}.${date} ${hours}:${minutes}`;
+        if (y == yy) {
+            stamp = `${date} ${month}   ${hours}:${minutes}`;
+        }
+        if (y == yy && mm == m && dd == d) {
+            stamp = `${hours}:${minutes}`;
+        }
+        var read = `<i env="${el.id}" class="fa fa-envelope-o"></i>`;
+        if (el.read) {
+            read = '<i env="${el.id}" class="fa fa-envelope-open-o"></i>';
+        }
+        var message = document.createElement("div");
+        message.setAttribute('mid', el.id);
+        if (el.sender.id == {{ user.id }}) {
+            message.innerHTML += `<div style="text-align: right;">${read} <i class="timestamp">${stamp}</i> <i class="fa fa-trash-o w3-text-red" onclick="deleteMessage(${el.id})"></i></div>`;
+            if (el.image != null) {
+                message.innerHTML += `<div style="text-align: right;"><img class="msg_image w3-border w3-border-gray w3-round-xlarge" src="${el.image}" onclick="imageFullscreen('${el.image}')"></div>`;
+            }
+            if (el.file != null && el.fname != null) {
+                message.innerHTML += `<div class="file w3-display-container  w3-border w3-border-gray w3-round-xlarge"><img src="{% static 'chat/clip.png' %}" class="clip">${el.fname}</div>`;
+            }
+            if (el.text != null) {
+                message.innerHTML += `<div id="message_${el.id}" class="mymessage"><div><i>${el.text}</i></div></div>`;
+            }
+        } else {
+            message.innerHTML += `<div><i class="timestamp">${stamp}</i> <i class="fa fa-trash-o w3-text-red" onclick="deleteMessage(${el.id})"></div>`;
+            if (el.image != null) {
+               message.innerHTML += `<div><img class="msg_image w3-border w3-border-gray w3-round-xlarge" src="${el.image}" onclick="imageFullscreen('${el.image}')"></div>`;
+            }
+            if (el.file != null && el.fname != null) {
+                message.innerHTML += `<div class="file w3-display-container w3-sand w3-border w3-border-gray w3-round-xlarge"><img src="{% static 'chat/clip.png' %}" class="clip"><b>${el.sender.username}: </b><a href="${el.file}" download>${el.fname} <i class="fa fa-download"></i></a></div>`;
+            }
+            if (el.text != null) {
+                message.innerHTML += `<div id="message_${el.id}" class="message"><img class="avatar" src="${el.sender.image}">  <div><b>${el.sender.username}: </b><i>${el.text}</i></div></div>`;
+            }
+        }
+        await section.appendChild(message);
+        scrollDown();
+    }
+}
+
+async function deleteMessage(id) {
+    ok = confirm('Are you sure to delete the message? Удалить сообщение?');
+    if (ok) {
+        const group_id = document.querySelector('#group_id').value;
+        if (group_id == '') {
+            group = 'N';
+        } else {
+            group = 'Y';
+        }
+        await fetch(`/chat/delete_message/${id}/${group}`)
+        .then (response => {
+            console.log('DELETE RESPONSE:', response, response.json());
+            console.log('DELETE STATUS:', response.status);
+            if (response.status == 200) {
+                var message = document.querySelector(`div[mid="${id}"]`);
+                console.log("MESSAGE:", message);
+                message.remove();
+            }
+        });
+    }
+}
+
+async function addMessage(data) {
+    const section = document.querySelector('#userModal section');
+
+    sender_id = data.message.sender.id;
+    reciever_id = data.message.reciever.id;
+    text = data.message.text;
+
+    uid = document.querySelector('#userModal').getAttribute('uid');
+    rid = {{ user.id }};
+
+    if ((sender_id == uid && reciever_id == rid) || (sender_id == rid && reciever_id == uid)) {
+        if (sender_id == uid) {
+            if (document.getElementById('userModal').style.display == 'block') {
+                await fetch(`/chat/clear_sender_unread/{{ user.id }}/${sender_id}`);
+                unreads = document.querySelectorAll(`#unreads .user[uid="${user_id}"]`);
+                unreads.forEach(el => el.remove());
+            }
+        }
+        already_added = document.querySelector(`div[mid="${data.message.id}"]`);
+        if (already_added == null || already_added == undefined) {
+            displayMessage(data.message);
+        }
+    }
+    setTimeout(scrollDown, 1000);
+}
+
+async function addGroupMessage(data) {
+    const section = document.querySelector('#userModal section');
+
+    sender_id = data.message.sender.id;
+    reciever_id = data.message.reciever.id;
+    text = data.message.text;
+
+    rid = document.querySelector('#group_id').value;
+
+    if (reciever_id == rid) {
+        if (document.getElementById('userModal').style.display == 'block') {
+            await fetch(`/chat/clear_group_unread/{{ user.id }}/${rid}`);
+            unreads = document.querySelectorAll(`#unreads .groupchat[gid="${group_id}"]`);
+            unreads.forEach(el => el.remove());
+        }
+        already_added = document.querySelector(`div[mid="${data.message.id}"]`);
+        if (already_added == null || already_added == undefined) {
+            displayMessage(data.message);
+        }
+    }
+    setTimeout(scrollDown, 1000);
+}
+
+async function sendMessage() {
+    document.querySelector('#error').innerHTML = '';
+	const to = document.querySelector('#message_to').value;
+	const text = document.querySelector('#message_text').value;
+	const group_id = document.querySelector('#group_id').value;
+    const token = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+
+    console.log('sendMessage I_FILE:', I_FILE, I_FILENAME);
+    console.log('sendMessage F_FILE:', F_FILE);
+
+    i_name = '';
+    if (I_FILE != undefined && I_FILE != '') {
+        i_name = I_FILENAME
+        // ok = await sendFile(I_FILE, i_name);
+        ok = await uploadFile(I_FILE, i_name);
+        if (ok != true) {
+            i_name = '';
+            console.log('send error');
+            imageReset();
+        }
+    }
+    f_name = '';
+    if (F_FILE != undefined && F_FILE != '') {
+        f_name = F_FILE.name
+        ok = await sendFile(F_FILE, f_name);
+        if (ok != true) {
+            f_name = '';
+            console.log('send error');
+            fileReset();
+        }
+    }
+
+    if(text != '' || i_name != '' || f_name != '') {
+    	if (group_id == "") {
+    	    let post = {
+        	    csrfmiddlewaretoken: token,
+        		to: to,
+        		text: text,
+        		image: i_name, // encodeString(i_name),
+        		file: f_name, // encodeString(f_name),
+        	};
+        	let response = await fetch('/chat/message', {
+        		method: 'POST',
+        	    headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+        		},
+        		body: JSON.stringify(post)
+        	});
+    	} else {
+        	let post = {
+        	    csrfmiddlewaretoken: token,
+        		to: group_id,
+        		text: text,
+        		image: i_name, // encodeString(i_name),
+        		file: f_name, // encodeString(f_name),
+        	};
+        	let response = await fetch('/chat/group_message', {
+        		method: 'POST',
+        	    headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+        		},
+        		body: JSON.stringify(post)
+        	});
+    	}
+    	document.querySelector('#message_text').value = "";
+    	imageReset();
+    	fileReset();
+    	btnSend();
+    }
+}
+
+
+
+init();
+
+
+
+
+async function init() {
+    await load_users();
+    await load_groups({{ user.id }});
+    await load_unreads();
+
+    let users = document.querySelectorAll('.user');
+    let groups = document.querySelectorAll('.groupchat');
+
+    await addModalListeners();
+
+    Pusher.logToConsole = false;
+    var pusher = new Pusher('bbe70803665a7a964619', {
+      cluster: 'eu',
+      authEndpoint: '/rtc/auth',
+    });
+
+    var channel = pusher.subscribe('private-my-channel');
+    channel.bind('sent-to-user', handleSent);
+
+    // const beamsClient = new PusherPushNotifications.Client({
+    //     instanceId: '4db9511e-c5da-4d6f-8f58-9fbee669a07f',
+    // });
+
+    // await beamsClient.start()
+    //     .then(() => beamsClient.addDeviceInterest('hello'))
+    //     .then(() => console.log('Successfully registered and subscribed!'))
+    //     .catch(console.error);
+
+    // beamsClient.start()
+    //     .then(beamsClient => beamsClient.getDeviceId())
+    //     .then(deviceId =>
+    //       console.log('Successfully registered with Beams. Device ID:', deviceId)
+    //     )
+    //     .then(() => beamsClient.addDeviceInterest('hello'))
+    //     .then(() => beamsClient.getDeviceInterests())
+    //     .then(interests => console.log('Current interests:', interests))
+    //     .catch(console.error);
+
+    // const tokenProvider = new PusherPushNotifications.TokenProvider({
+    //     url: 'https://cs50.pythonanywhere.com/rtc/beams-auth',
+    //     queryParams: { userId: '{{ user.id }}' },
+    //     headers: { 'Header': 'cs50' },
+    //     credentials: 'include',
+    // });
+
+//     console.log('tokenProvider', tokenProvider);
+
+//     await beamsClient.start()
+//       .then(() => beamsClient.setUserId('{{ user.id }}', tokenProvider))
+//       .then(() => console.log('User ID has been set'))
+//       .catch(e => console.error('Could not authenticate with Beams:', e));
+
+//     const currentUserId = '{{ user.id }}' // Get this from your auth system
+
+//     await beamsClient.getUserId()
+//       .then(userId => {
+//         // Check if the Beams user matches the user that is currently logged in
+//         if (userId !== currentUserId) {
+//             // Unregister for notifications
+//             return beamsClient.stop();
+//             console.log(`********** STOP ${userId} / ${currentUserId}`)
+//         } else {
+//             console.log(`********** USER OK ${userId} / ${currentUserId}`)
+//         }
+//       })
+//       .catch(console.error);
+
+//     {% if user.is_superuser %}
+//         bell = document.querySelector('#user_message');
+//         if (bell != null) {
+//             bell.addEventListener('click', ringBell);
+//         }
+//     {% endif %}
+
+//     redbell = document.querySelector('#beam_hello');
+//     if (redbell != null) {
+//         redbell.addEventListener('click', ringRedBell);
+//     }
+
+//     greenbell = document.querySelector('#message_hello');
+//     if (greenbell != null) {
+//         greenbell.addEventListener('click', ringGreenBell);
+//     }
+
+
+//     beamsClient.getRegistrationState()
+//         .then(state => {
+//         let states = PusherPushNotifications.RegistrationState
+//         switch(state) {
+//           case states.PERMISSION_DENIED: {
+//               console.log("-----------------Notifications are blocked");
+//             // Notifications are blocked
+//             // Show message saying user should unblock notifications in their browser
+//             break
+//           }
+//           case states.PERMISSION_GRANTED_REGISTERED_WITH_BEAMS: {
+//               console.log("-----------------Ready to receive notifications");
+//             // Ready to receive notifications
+//             // Show "Disable notifications" button, onclick calls '.stop'
+//             break
+//           }
+//           case states.PERMISSION_GRANTED_NOT_REGISTERED_WITH_BEAMS:
+//           case states.PERMISSION_PROMPT_REQUIRED: {
+//               console.log("--------------------Need to call start before we're ready to receive notifications");
+//             // Need to call start before we're ready to receive notifications
+//             // Show "Enable notifications" button, onclick calls '.start'
+//             break
+//           }
+//         }
+//         })
+//         .catch(e => console.error('Could not get registration state', e))
+
+//     beamsClient.getUserId()
+//         .then(userId => {
+//         console.log(`==== BEAMS ======= UDER ID : <${userId}>`, typeof userId) // Will log the current user id
+//         })
+//         .catch(e => console.error('Could not get user id', e));
+//     btnSend();
+//     scrollDown();
+}
+
+// async function ringBell() {
+//     console.log('%%%%%%%%%%%%%%%% BELL %%%%%%%%%%%%%%%%');
+//     response = await fetch(`/beam_user_message/1`)
+//     .then (response => response.json());
+//     console.log("RESPONSE: ", response);
+// }
+// async function ringRedBell() {
+//     console.log('%%%%%%%%%%%%%%%% RED BELL %%%%%%%%%%%%%%%%');
+//     let text = prompt("Push notification for all / Уведомление всем");
+//     if (text != null && text != '') {
+//         response = await fetch(`/beam_hello/${text}`)
+//         .then (response => response.json());
+//         console.log("RESPONSE: ", response);
+//     }
+// }
+// async function ringGreenBell() {
+//     console.log('%%%%%%%%%%%%%%%% GREEN BELL %%%%%%%%%%%%%%%%');
+//     let text = prompt("Message for all on-line/ Сообщение всем, кто сейчас на сайте");
+//     if (text != null && text != '') {
+//         response = await fetch(`/hello/${text}`)
+//         .then (response => response.json());
+//         console.log("RESPONSE: ", response);
+//     }
+// }
+
+function load_users() {
+    Pusher.logToConsole = false;
+    var pusher = new Pusher('bbe70803665a7a964619', {
+      cluster: 'eu',
+      authEndpoint: '/rtc/auth',
+    });
+    const presence_channel = pusher.subscribe('presence-my-channel');
+
+    function addMemberToUserList(memberId, info) {
+        var e = document.getElementById("online_user_"+memberId);
+        if (info != undefined) {
+            if (typeof e == "undefined" || e == null) {
+                userEl = document.createElement("div");
+                userEl.className = 'user m-1 p-1';
+                userEl.id = "online_user_"+memberId;
+                userEl.innerHTML = `<img src="${info.image}" class="avatar"> <span class="username">${info.username}</span>`;
+                document.getElementById("user_list").appendChild(userEl);
+                userEl.addEventListener('click', userModalSetup);
+                userEl.setAttribute('uid', memberId);
+                onlines = document.querySelectorAll(`.online_${memberId}`);
+                onlines.forEach(el => el.style.display='inline');
+            }
+        }
+    }
+
+    presence_channel.bind('pusher:subscription_succeeded', () =>
+        presence_channel.members.each(member => {addMemberToUserList(member.id, member.info); } ));
+    presence_channel.bind('pusher:member_added', member => {addMemberToUserList(member.id, member.info); console.log('added:', member);});
+    presence_channel.bind('pusher:member_removed', member => {
+        // console.log('removed:', member);
+        const userEl = document.getElementById("online_user_"+member.id);
+        userEl.parentNode.removeChild(userEl);
+    });
+}
+
+function formatName(name) {
+    return name.replace('_', ' ');
+}
+
+function createUserEl(u, tag="div") {
+    userEl = document.createElement(tag);
+    userEl.className = 'user m-1 p-1';
+    userEl.id = "user_" + u.id;
+    userEl.setAttribute('uid', u.id);
+
+    let online = ` <i class="fa fa-circle online_${u.id}" style="color:#00ff00; display:none;"></i>`;
+
+    if (u.image != null) {
+        userEl.innerHTML = `<img src="${u.image}" class="avatar"> <span class="username">${u.username}</span> ${online}`;
+    } else {
+        userEl.innerHTML = `<img src="{% static 'account/x.png' %}" class="avatar"> <span class="username">${u.username}</span> ${online}`;
+    }
+    return userEl;
+}
+
+function displayMembers(members, place, tag="div") {
+    if (typeof members != "undefined") {
+        for (var j =0; j < members.length; j++) {
+            userEl = createUserEl(members[j], tag=tag);
+            place.appendChild(userEl);
+        }
+    }
+}
+
+function displayGroups(groups, groups_place) {
+    if (typeof groups != "undefined") {
+        document.getElementById("GROUPS").style.display = "block";
+        for (var i =0; i < groups.length; i++) {
+            groupEl = document.createElement("details");
+
+            if (groups[i].creator.id == {{ user.id }}) {
+                groupEl.innerHTML = `<summary>${groups[i].name}</summary>`;
+            } else {
+                groupEl.innerHTML = `<summary>${groups[i].name} by ${groups[i].creator.username}</summary>`;
+            }
+            // if (groups[i].creator.id == {{ user.id }}) {
+            //     groupEl.innerHTML += `<div class="groupedit" gid="${groups[i].id}"><a href="account/group_update/${groups[i].id}"><i class="fa fa-edit"></i> UPDATE GROUP</a></div>`;
+            // }
+            groupEl.innerHTML += `<div class="groupchat" gid="${groups[i].id}"><img src="{% static 'chat/chat_32.png' %}"> GROUP CHAT</div>`;
+            groupEl.id = `my_${groups[i].id}`;
+            groupEl.className = 'ml-3 group';
+            groups_place.appendChild(groupEl);
+
+            displayMembers(groups[i].members, document.getElementById(`my_${groups[i].id}`));
+        }
+    }
+}
+
+async function load_groups(user_id) {
+    info = await fetch(`/account/user_info/${user_id}`)
+    .then (response => response.json());
+
+    const my_groups = info.my_groups;
+    const my_groups_place = document.getElementById("my_groups");
+    displayGroups(my_groups, my_groups_place);
+
+    const groups_im_in = info.groups_im_in;
+    const groups_im_in_place = document.getElementById("groups_im_in");
+    displayGroups(groups_im_in, groups_im_in_place);
+}
+
+function  handleSent(data) {
+    if (data.user == {{ user.id }}) {
+        load_unreads();
+    }
+}
+
+var timerId;
+var TITLETEXT = document.querySelector('title').text;
+
+async function load_unreads() {
+    unreads = await fetch(`/chat/unread_list`)
+    .then (response => response.json());
+
+    unreads_place = document.getElementById("unreads");
+    unreads_place.style.display = "none";
+    clearInterval(timerId);
+
+    unreads_place.innerHTML = `<summary class="my-2"><b class="w3-text-red blink" rus="Непрочтенное" eng="UNREAD">UNREAD</b></summary>`;
+
+    const title = document.querySelector('title');
+    title.text = TITLETEXT;
+
+    if (typeof unreads != "undefined" && unreads.length > 0) {
+        unreads_place = document.getElementById("unreads");
+        unreads_place.style.display = "block";
+
+        timerId = setInterval(() => blinkMessage(), 1000);
+
+        for (var i =0; i < unreads.length; i++) {
+            // e = document.createElement("div");
+            if (unreads[i].mode == 'group') {
+                unreads_place.innerHTML += `<div class="groupchat" gid="${unreads[i].group.id}"><img src="{% static 'chat/chat_32.png' %}"> ${unreads[i].group.name}</div>`;
+            } else {
+                userEl = createUserEl(unreads[i].sender, tag="div");
+                unreads_place.appendChild(userEl);
+            }
+        }
+    }
+    addModalListeners();
+}
+
+function blinkMessage() {
+    const title = document.querySelector('title');
+    if (title.text == TITLETEXT) {
+        title.text = 'MESSAGE';
+    } else {
+        title.text = TITLETEXT;
+    }
+}
+
+async function userModalSetup() {
+    id = this.id;
+    user_id = this.getAttribute('uid');
+
+    current_user_id = document.querySelector('#user_id').innerHTML;
+
+    console.log('user', user_id);
+    console.log('current_user', current_user_id);
+
+    if (user_id != current_user_id) {
+
+        await fetch(`/chat/clear_sender_unread/{{ user.id }}/${user_id}`);
+        unreads = document.querySelectorAll(`#unreads .user[uid="${user_id}"]`);
+        unreads.forEach(el => el.remove());
+
+        info = await fetch(`/chat/message_list/${user_id}/{{ user.id }}`)
+        .then (response => response.json());
+
+        username = document.querySelector(`#${id} span`).innerText;
+        image = document.querySelector(`#${id} img`).getAttribute('src');
+        modal = document.querySelector('#userModal');
+        modal.setAttribute('uid', user_id);
+        modal.setAttribute('mode', 'user');
+        modal.style.display = 'block';
+        header = document.querySelector('#userModal header_content');
+        section = document.querySelector('#userModal section');
+        footer = document.querySelector('#userModal footer');
+
+        header.innerHTML = `<img class="avatar" src="${image}"> <span class="username">${username}</span>`;
+
+        section.innerHTML = "";
+        await info.forEach(el => displayMessage(el));
+
+        document.querySelector('#message_to').value = user_id;
+        document.querySelector('#group_id').value = "";
+
+        var pusher = new Pusher('bbe70803665a7a964619', {
+          cluster: 'eu',
+          authEndpoint: '/rtc/auth',
+        });
+        var channel = pusher.subscribe('private-my-channel');
+        channel.bind('message-sent', addMessage);
+        channel.bind('typing', somebodyTyping);
+        channel.bind('open-envelope', openEnvelope);
+
+        setTimeout(scrollDown, 3000);
+        btnSend();
+    }
+}
+
+async function groupModalSetup() {
+    id = this.id;
+    group_id = this.getAttribute('gid');
+
+    await fetch(`/chat/clear_group_unread/{{ user.id }}/${group_id}`);
+    unreads = document.querySelectorAll(`#unreads .groupchat[gid="${group_id}"]`);
+    unreads.forEach(el => el.remove());
+
+    info = await fetch(`/account/group_info/${group_id}`)
+    .then (response => response.json());
+
+    modal = document.querySelector('#userModal');
+    modal.setAttribute('mode', 'group');
+    modal.setAttribute('gid', group_id);
+    modal.style.display = 'block';
+    header = document.querySelector('#userModal header_content');
+    section = document.querySelector('#userModal section');
+    footer = document.querySelector('#userModal footer');
+
+    header.innerHTML = `<h5 class="w3-text-blue my-0">${info.groupname}</h5>`;
+    header.innerHTML += '<div id="group_members" class="w3-padding"></div>';
+    group_members = document.querySelector('#group_members');
+    document.querySelector('#group_id').value = group_id;
+    displayMembers(info.members, group_members, tag="span");
+
+    info = await fetch(`/chat/group_message_list/${group_id}`)
+    .then (response => response.json());
+
+    section.innerHTML = "";
+    info.forEach(el => displayMessage(el));
+
+    document.querySelector('#group_id').value = group_id;
+
+    Pusher.logToConsole = false;
+    var pusher = new Pusher('bbe70803665a7a964619', {
+      cluster: 'eu',
+      authEndpoint: '/rtc/auth',
+    });
+    var channel = pusher.subscribe('private-my-channel');
+    channel.bind('group-message-sent', addGroupMessage);
+    channel.bind('typing', somebodyTyping);
+    channel.bind('open-envelope', openEnvelope);
+
+    setTimeout(scrollDown, 3000);
+    btnSend();
+}
+
+function openEnvelope(data) {
+    e = data.envelope;
+    envelope = document.querySelector(`[env="${e}"]`);
+    if(envelope != null && envelope != undefined) {
+        envelope.classList.replace('fa-envelope-o','fa-envelope-open-o');
+    }
+}
+
+function somebodyTyping(data) {
+    var clearInterval = 1900; //1.9 seconds
+    var clearTimerId;
+
+    user_is_typing = document.querySelector('#user_is_typing');
+
+    const mode = document.querySelector('#userModal').getAttribute('mode');
+    const user_id = {{ user.id }};
+    if (mode == 'user') {
+        id = {{ user.id }};
+    } else {
+        id = document.querySelector('#userModal').getAttribute('gid');
+    }
+
+    if(data.to == id && data.from.id != {{ user.id }}) {
+        user_is_typing.innerHTML = `<img src="${data.from.image}" class="avatar"> <span class="username">${data.from.username}</span> <i class="fa fa-spinner fa-spin"></i>`;
+        //restart timeout timer
+        clearTimeout(clearTimerId);
+        clearTimerId = setTimeout(function () {
+            //clear user is typing message
+            user_is_typing.innerHTML = '';
+        }, clearInterval);
+    }
+}
+
+canPublish = true;
+
+function userIsTyping() {
+    var trottleTime = 1000; // 1 sec
+
+    btnSend();
+
+    uid = document.querySelector('#userModal').getAttribute('uid');
+    const mode = document.querySelector('#userModal').getAttribute('mode');
+    const user_id = {{ user.id }};
+    if (mode == 'user') {
+        id = document.querySelector('#userModal').getAttribute('uid');
+    } else {
+        id = document.querySelector('#userModal').getAttribute('gid');
+    }
+    if (canPublish) {
+        info = fetch(`/chat/typing/${user_id}/${mode}/${id}`);
+        canPublish = false;
+        setTimeout(function () { canPublish = true;}, trottleTime)
+    }
+}
+
+function addModalListeners() {
+    let users = document.querySelectorAll('.user');
+    users.forEach(el => el.addEventListener('click', userModalSetup));
+
+    let groups = document.querySelectorAll('.groupchat');
+    groups.forEach(el => el.addEventListener('click', groupModalSetup));
+
+    let message_text = document.querySelector('#message_text');
+    message_text.addEventListener('keyup', userIsTyping);
+}
+
+function btnSend() {
+    const image = document.querySelector('#img_div').style.display;
+    const file = document.querySelector('#file_div').style.display;
+    const text = document.querySelector('#message_text').value;
+    if (image != 'none' || file != 'none' || text != '') {
+        document.querySelector('#btn_send').style.visibility = 'visible';
+    } else {
+        document.querySelector('#btn_send').style.visibility = 'hidden';
+    }
+}
+</script>
+
+

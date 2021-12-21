@@ -1,0 +1,79 @@
+{% extends "currency/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <script src="{% static 'currency/coins.js' %}"></script>
+    <script src="https://cdn.plot.ly/plotly-2.8.0.min.js"></script>
+{% endblock %}
+
+{% block section %}
+    <style>
+        .currency_board td {
+            text-align: right;
+        }
+        .currency_board, .currency_board td, .currency_board th {
+            border: 1px solid gray;
+            padding: 10px;
+        }
+        /*.tickerplotbox {*/
+            /*width: 90%;*/
+        /*    height: 25vh;*/
+        /*}*/
+    </style>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-md-6 m-0 p-0">
+                <header class="w3-container w3-light-gray w3-center" rus="Криптовалюты" eng="COINS">
+                    COINS
+                </header>
+                <div class="w3-center my-2">
+                    <form id="symbols_form" action="" method="post"> {# {% url 'currency:coins' %} #}
+                        {% csrf_token %}
+
+                        <select class="p-2 my-2 w3-round-large" id="symbol_list" name="symbol_list" size="15" multiple>
+                            {% for s in symbol_list %}
+                                <option value="{{ s.symbol }}"{% if s.symbol in selected %} selected{% endif %}>{{ s.baseAsset }}</option>
+                            {% endfor %}
+                        </select>
+                        <button form="symbols_form" class="button-ok ml-5" type="submit" rus="Показать выбранные" eng="Show selected coins">Show selected coins</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 m-0 p-0">
+                <header class="w3-container w3-light-gray w3-center" rus="Курсы, USD" eng="PRICE, USD">
+                    PRICE, USD
+                </header>
+                <div>
+                    <table class="mx-auto currency_board m-2 p-5">
+                        <tr>
+                            <th></th><th>Average price</th><th>Ticker price</th>
+                        </tr>
+                        {% for symbol in symbols_info %}
+                            <tr>
+                                <th>{{ symbol.coin }}</th>
+                                <td class="avg-price">{{ symbol.avgPrice.price }}</td>
+                                <td><span class="ticker" sym="{{ symbol.symbol }}" coin="{{ symbol.coin }}">{{ symbol.ticker.price }}</span></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            {% for symbol in symbols_info %}
+                <div class="w3-border p-1 tickerplotbox col-12 col-md-6 col-lg-4">
+                    <div id="plot{{ symbol.coin }}" class="tickerplot"></div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+

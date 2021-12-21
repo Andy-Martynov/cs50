@@ -1,0 +1,5 @@
+.first {color: DarkCyan;}
+.second {color: Crimson;}
+
+body, .button, .navbar, .game-back      {background-image: url('/static/othello/images/wood.jpg'); background-repeat: repeat; color: GoldenRod; width:100hw; !important}
+.navbar-toggler, .dropdown-menu {background-color: GoldenRod; color: black;}

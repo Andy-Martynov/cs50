@@ -1,0 +1,82 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+<style>
+td {
+    border-bottom: solid gray 2px;
+    padding: 4px;
+}
+</style>
+
+    <div class="px-3"
+        <h4>Hello {{ user.username }}, wellcome to "Meeting point"!</h4>
+        <div id="location" class="my-3">
+            Meeting point needs to know where you are. If you see this your location is unknown ...
+        </div>
+        <table>
+            <tr><td></td><td></td></tr>
+            <tr>
+                <td>
+                   1) Create and edit groups of users, e.g. friends, company employees etc. :
+                </td>
+                <td>
+                    <a class="nav-link" href="#" id="navbarDropdown" aria-haspopup="true" aria-expanded="false">
+                    👯 groups
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   2) Create and edit locations, i.e. places for meetings or events :
+                </td>
+                <td>
+                        <a class="nav-link" href="#" id="navbarDropdown" aria-haspopup="true" aria-expanded="false">
+                        🧭 locations
+                        </a>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   3) Create and edit meetings or events, choose location and people to participate :
+                </td>
+                <td>
+                    <a class="nav-link" href="#" id="navbarDropdown" aria-haspopup="true" aria-expanded="false">
+                    📅 meetings
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   4) See users, groups, locations and meeting points on the map, create and see routes to objects, invite participants to the meeting, see them moving to the meeting point. No more need to call "where are you?".
+                </td>
+                <td>
+                    <span class="nav-item">
+                        <a class="nav-link" href="#">🗺 Map</a>
+                    </span>
+                </td>
+                <tr>
+                    <td colspan="2">
+                        Click/tap on your name <a href="{% url 'account:user_update' %}" style="border: solid gray 1px; background-color: #f2f2f2; padding: 3px;">{{ user.username|upper }}</a> to edit your username and email, click/tap on avatar {% if user.is_authenticated %}
+                            {% if user.image %}
+                                <a href="{% url 'account:user_image_update' %}">
+                                    <img src="{{ user.image.url }}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                </a>
+                            {% else %}
+                                <a href="{% url 'account:user_image_update' %}">
+                                    <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                                </a>
+                            {% endif %}
+                        {% endif %} to change avatar (please have 260x260 .png image file ready).
+                    </td>
+                </tr>
+           </tr>
+        </table>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'meeting/index.js' %}"></script>
+{% endblock %}

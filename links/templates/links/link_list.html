@@ -1,0 +1,34 @@
+{% extends "links/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <h2 rus="Все ссылки" eng="All links">All links</h2>
+
+    <div class="w3-row-padding">
+        {% for link in object_list %}
+            <div class="w3-padding-small w3-round-xlarge w3-light-gray w3-border w3-border-gray mb-1">
+                <div class="w3-row w3-padding-small w3-round-xlarge">
+                    <span class="w3-left w3-small">
+                        <span><i>{{ link.created|date:"d.m.y" }}, </i></span>
+                        <span> <i class="fa fa-folder-open-o"></i> {{ link.folder.name }}</span>
+                    </span>
+
+                    <span class="w3-right">
+                        {{ link.tags|default_if_none:" " }}
+                        <a class="action mx-3" href="{% url 'links:link_update' link.id %}">
+                             <i class="fa fa-edit w3-text-green"></i>
+                        </a>
+                        <a class="action mx-3" href="{% url 'links:link_delete' link.id %}" onclick="return confirm('Are you sure?');">
+                             <i class="fa fa-trash w3-text-red"></i>
+                        </a>
+                    </span>
+                </div>
+                <a href="{{ link.url }}" class="w3-text-indigo">{{ link.name}}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+

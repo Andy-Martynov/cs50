@@ -1,0 +1,47 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="shortcut icon" href="{% static 'encyclopedia/wiki_16.png' %}" type="image/png">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'encyclopedia/styles.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container-fluid">
+        <div class="row">
+            <div class="sidebar col-lg-2 col-md-12">
+                <h2>Wiki</h2>
+                <form action="{% url 'encyclopedia:search' %}" method="post">
+                    {% csrf_token %}
+                    <input class="search" type="text" name="q" placeholder="Search Encyclopedia">
+                </form>
+                <div>
+                    <a href="{% url 'encyclopedia:index' %}">Home</a>
+                </div>
+                <div>
+                    <a href="{% url 'encyclopedia:new_entry' %}">Create New Page</a>
+                </div>
+                <div>
+                    <a href="{% url 'encyclopedia:random_entry' %}">Random Page</a>
+                </div>
+                {% block nav %}
+                {% endblock %}
+            </div>
+            <div class="main col-lg-10 col-md-12">
+                {% block message %}
+                    {% if message %}
+                        <div class="alert alert-{{ message.color }}" role="alert">{{ message.text }}</div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block body %}
+                {% endblock %}
+            </div>
+        </div>
+        </div>
+    </body>
+</html>

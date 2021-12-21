@@ -1,0 +1,22 @@
+{% extends "links/layout.html" %}
+
+{% load static %}
+
+{% block add_to_head %}
+{{ block.super }}
+{# <script src="{% static 'todo/task_list.js' %}"></script> #}
+{% endblock %}
+
+{% block body %}
+<h1>Links</h1>
+{% for link in links %}
+    <h2 class="w3-text-red">{{ link.url }} :</h2>
+    <h3>Status code : {{ link.status_code }}</h3>
+    <h4>Title : {{ link.title }}</h4>
+    <h4>Descruption : {{ link.description }}</h4>
+    <h4>Image : <img src="{{ link.image }}"></h4>
+    <h4>OG : {{ link.og }}</h4>
+
+{% endfor %}
+
+{% endblock %}

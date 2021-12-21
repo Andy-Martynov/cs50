@@ -1,0 +1,69 @@
+{% extends "currency/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <style>
+        .currency_board td {
+            padding: 5px;
+            text-align: right;
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-md-6 m-0 p-0">
+                <header class="w3-container w3-light-gray w3-center" rus="Динамика курсов" eng="Curency dynamics">
+                    Currency dynamics
+                </header>
+                <div class="w3-center my-2">
+                    <form id="currencies_form" action="{% url 'currency:dynamic' %}" method="post">
+                        {% csrf_token %}
+                        <select class="p-2 my-2 w3-round-large" id="currency_list" name="currency_list" size="15" multiple>
+                            {% for c in currency_list %}
+                                <option value="{{ c.iso }}"{% if c.iso in currencies_selected %} selected{% endif %}>{{ c.iso }}, {{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <input class="button-info" type="submit" value="  Select  " formaction="{% url 'currency:index' %}">
+                        <br><br>
+                        <label>Start date</label>
+                        <input type="date" name="start" id="start">
+                        <br><br>
+                        <input class="button-ok" type="submit" value="  Show dynanic, consume a time!  ">
+                        <br>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 m-0 p-0">
+                <header class="w3-container w3-light-gray w3-center" rus="Курсы валют" eng="Curency board">
+                    Currency board
+                </header>
+                <div class="my-2">
+                    <table class="mx-auto currency_board">
+                        <tr>
+                            <th></th><th colspan="2">TOD</th><th colspan="2">TOM</th>
+                        </tr>
+                        {% for curr in currencies %}
+                            <tr class="mb-2">
+                                <th>
+                                    <p class="my-0 p-0 mr-3">{{ curr.iso}}{% if curr.nominal != '1' %}, {{ curr.nominal }}{% endif %}</p>
+                                    <p class="mt-0 mb-2 p-0 mr-3">{{ curr.name }}</p>
+                                </th>
+                                <td>{{ curr.tod }}</td> <td>{{ curr.change_tod|safe }}</td>
+                                {% if curr.tod != curr.tom %}
+                                    <td>{{ curr.tom }}</td> <td>{{ curr.change_tom|safe }}</td>
+                                {% else %}
+                                    <td> - </td><td> - </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

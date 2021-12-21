@@ -1,0 +1,71 @@
+{% extends "animation/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+<style>
+strong {
+    color: blue;
+}
+.animate-Index { position:relative;
+    animation-name: Index;
+    animation-duration: 100s;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: linear;
+    animation-fill-mode: none;
+}
+@keyframes Index {
+0%   {left:0; top:0; opacity:0}
+5%   {left:0; top:0; opacity:1}
+15%  {left:-40vw; top:0}
+20%  {left:40vw; top:0}
+25%  {left:0; top:0}
+30%  {left:0; top:-40vh}
+35%  {left:0; top:40vh}
+40%  {left:0; top:0}
+45%  {left:-40vw; top:-40vh}
+50%  {left:40vw; top:40vh}
+55%  {left:0; top:0}
+60%  {left:-40vw; top:40vh}
+65%  {left:40vw; top:-40vh}
+70%  {left:0; top:0; transform: scale(1)}
+75%  {transform: scale(0)}
+80%  {transform: scale(3)}
+85%  {transform: scale(1) rotate(0deg)}
+90%  {transform: rotate(180deg)}
+95%  {transform: rotate(-180deg); opacity: 1}
+100% {left:0; top:0; opacity:0}
+}
+</style>
+    <h4 class="m-3 w3-text w3-center mb-4">Wecome to ANIMATION!</h4>
+
+    <div class="p-3 mb-2">
+        Here you cat learn how to create <strong>CSS animations</strong>, run animation prewiew and then copy animation to your site.
+    </div>
+
+    <div class="p-3 mb-2">
+        Use <strong>MENU <i class='fas fa-bars'></i></strong> to do it.
+    </div>
+
+    <div class="p-3 mb-2">
+        View <strong><a href="{% url 'animation:animation_list' %}"><u>ANIMATIONS</u></a></strong> created by other user, see source code and use them in your web pages if you like.
+    </div>
+    <div class="w3-center">
+        <img class="animate-Index" src="{% static 'animation/animation_60.png' %}">
+    </div>
+    <div class="p-3 mb-2">
+        Create <strong><a href="{% url 'animation:animation_create' %}">NEW</a></strong> own animations, or <strong>CLONE</strong> existing animations.
+    </div>
+
+    <div class="p-3 mb-2">
+        Read the <strong>TUTORIAL</strong> and learn CSS animations.
+    </div>
+
+    <div class="p-3 mb-2">
+        <strong>Log In</strong> or <strong>Register</strong> to save your animations by your name.
+    </div>
+
+
+{% endblock %}

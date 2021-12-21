@@ -1,0 +1,63 @@
+{% extends "four/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <script src="{% static 'four/game_replay.js' %}"></script>
+{% endblock %}
+
+{% block section %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-md-7 m-0 p-0">
+                <header class="w3-center">
+                    <i class='fas fa-circle first'></i> <img src="{{ game.first.user.image.url }}" class="avatar"> <small>{{ game.first.name }} : {{ game.second.name }}</small> <img src="{{ game.second.user.image.url }}" class="avatar"> <i class='fas fa-circle second'></i>
+                </header>
+                <div class="w3-center">
+                    <table class="board mx-auto my-2">
+                        {% for row in matrix %}
+                            <tr>
+                                {% for cell in row %}
+                                    <td class="cell" r={{ forloop.parentloop.counter0 }} c={{ forloop.counter0 }} v=0 s=0>
+                                        <i class='fas fa-circle empty'></i>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="7">
+                                <span id="step_span">
+                                    <span id="step_num">0</span> <input  class="step" type="range" id="step" min="1" max="{{ num_moves }}" step="1"> {{ num_moves }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                                <span id="controls">
+                                     <button id="backward"><i class='fas fa-step-backward'></i></button>
+                                     <button id="reset"><i class='fas fa-stop'></i></button>
+                                     <button id="forward"><i class='fas fa-step-forward'></i></button>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="w3-hide">
+                <p id="mode">{{ mode }}</p>
+                <p id="first_player_name">{{ game.first.user.username }}</p>
+                <p id="first_mode">{% if game.first.is_bot %}bot{% else %}human{% endif %}</p>
+                <p id="second_player_name">{{ game.second.user.username }}</p>
+                <p id="second_mode">{% if game.second.is_bot %}bot{% else %}human{% endif %}</p>
+                <p id="step">{{ step }}</p>
+                <p id="gameover">{{ gameover }}</p>
+                <p id="championship">{{ championship }}</p>
+                <p id="maxgames">{{ max_games }}</p>
+                <p id="current_game">{{ current_game }}</p>
+                <p id="moves">{{ game.moves }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    {% if invite_send %}
+        <div class="row no-gutters">
+            <div class="col-12 d-flex justify-content-center pt-3">
+                <div class="w3-margin w3-center">
+                    <p id="invite_game_id" class="d-none">{{ game.id }}</p>
+                    <h1>{{ kind }}</h1>
+                    <h3>Waiting <span uid="{{ opponent.user.id }}" class"online"><i class="fa fa-user w3-xlarge w3-text-green"></i></span> {{ opponent.name }} to confirm/reject your invitation</h3>
+                    <br>
+                    <button class="button-cancel"><a href="{ url 'game:cancel_invite' game.id %}">CANCEL</a></button>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+
+        <div class="row no-gutters">
+            <div class="col-6 col-md-12 d-flex justify-content-center pt-3">
+                <form id="game-options" action="{% url 'game:index' %}" method="post">
+                    {% csrf_token %}
+                    <button class="w3-badge w3-green mx-auto" form="game-options" type="submit" eng_="START" rus_="ПОЕХАЛИ!"><img src="{% static 'game/images/green_button.png' %}"></button>
+                </form>
+            </div>
+            <div class="col-6 col-md-3 pl-5">
+                <h3 class="text-center d-none d-md-block" eng="GAMES" rus="ИГРЫ">GAMES</h3>
+                <table>
+                    {% for kind in kinds %}
+                        <tr>
+                            <td>
+                                <h3>{% if kind.image %}<img src="{{ kind.image.url }}">{% endif %}</h3>
+                            </td>
+                            <td class="pl-3">
+                                <input class="w3-radio" type="radio" form="game-options" name="kind_id"  onchange="selectBots({{ kind.id }})" value="{{ kind.id }}" {% if kind == kind_selected %} checked{% endif %}>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="col-12 col-md-6 px-2" id="players_online">
+                <h3 class="text-center d-none d-md-block" eng="PLAYERS" rus="ИГРОКИ">PLAYERS</h3>
+                {% for player in players %}
+                    <div {% if player.is_bot %}
+                        kid="{{ player.kind.id }}" {% if player.kind != kind_selected %}style="display:none"{% endif %}
+                    {% else %}
+                         online="{{ player.user.id }}"
+                    {% endif %}>
+                            <h3>
+                                <input class="w3-radio" type="radio" form="game-options" name="opponent_id" value="{{ player.id }}" {% if player == opponent %} checked{% endif %}>
+                                {% if player.is_bot %}<i class='fas fa-robot'></i>{% endif %}<span class="w3-large">{{ player.name }}</span>
+                                <img src="{{ player.user.image.url }}" class="avatar">
+                           </h3>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-12 col-md-3 pr-5">
+                <h3 class="text-center d-none d-md-block" eng="OPTIONS" rus="ПАРАМЕТРЫ">OPTIONS</h3>
+                <h3>
+                    <input form="game-options" class="w3-check" name="hints" type="checkbox" data-toggle="tooltip" data-placement="top">
+                    <label eng="Hints" rus="Подсказки">Hints</label>
+                </h3>
+            </div>
+        </div>
+        <script>
+            function gameAddPlayer(data) {
+                console.log('new player');
+                list = document.querySelector("#players_online");
+                div = list.querySelector(`[online="${data['uid']}"`);
+                if (div == null){
+                    div = document.createElement("div");
+                    div.setAttribute('online', `${data['uid']}`);
+                    input = document.createElement("input");
+                    input.setAttribute('form', 'game-options');
+                    input.setAttribute('name', 'opponent_id');
+                    input.setAttribute('value', `${data['id']}`);
+                    input.className = 'w3-check';
+                    input.setAttribute('type', 'radio');
+                    div.appendChild(input);
+                    span = document.createElement("span");
+                    text = document.createTextNode(`${data['name']}`);
+                    span.appendChild(text);
+                    span.className = 'w3-large';
+                    div.appendChild(span);
+                    img = document.createElement("img");
+                    img.setAttribute('src', `/media/account/images/${data['image']}`);
+                    img.className = 'avatar';
+                    div.appendChild(img);
+                    console.log('div:', div);
+                    list.appendChild(div);
+                } else {
+                    div.style.display = 'block';
+                }
+            }
+
+            function gameRemovePlayer(data) {
+                list = document.querySelector("players_online");
+                div = list.querySelector(`[online="${data['uid']}"`);
+                if (div != null){
+                    div.remove();
+                }
+            }
+
+            function selectBots(id) {
+                var done = false;
+                rows = document.querySelectorAll('[kid]');
+                for (i=0; i < rows.length; i++) {
+                    kid = rows[i].getAttribute('kid');
+                    if (kid == id) {
+                        rows[i].style.display = 'block';
+                        if (!done) {
+                            rows[i].getElementsByTagName("input")[0].checked = true;
+                            done = true;
+                        }
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+
+            var pusher_index = new Pusher('bbe70803665a7a964619', {
+              cluster: 'eu'
+            });
+            var channel_index = pusher_index.subscribe('my-channel');
+            channel_index.bind('game_new_player', gameAddPlayer);
+
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% if invite_send %}
+    {% block bottom_script %}
+        {{ block.super }}
+        <script>
+
+
+            function playWith(name1, name2) {
+                form = document.getElementById("game-options");
+                first = document.getElementById("first_player");
+                second = document.getElementById("second_player");
+                me = Math.floor(Math.random() * 2) + 1;
+                console.log(name1, name2, first, second, me);
+                if (me == 1) {
+                    first.value = name1;
+                    second.value = name2;
+                } else {
+                    second.value = name1;
+                    first.value = name2;
+                }
+            }
+
+            function gameInviteRejected(data) {
+                console.log('pusher invite rejected', data);
+                if (data != null) {
+                    id = data['game_id'];
+                    el_invite_game_id = document.getElementById("invite_game_id");
+                    if (el_invite_game_id == null) {
+                        console.log('no el_invite_game_id!!!!!!!!!!!!!');
+                    } else {
+                        invite_game_id = el_invite_game_id.innerHTML;
+                        if (id == invite_game_id) {
+                            kind = data['kind'];
+                            location.href = "{% url 'game:new_game' game.kind.id|default:'0' %}";
+                        }
+                    }
+                }
+            }
+
+            function gameInviteConfirmed(data) {
+                console.log('pusher invite confirmed', data);
+                if (data != null) {
+                    id = data['game_id'];
+                    el_invite_game_id = document.getElementById("invite_game_id");
+                    if (el_invite_game_id == null) {
+                        console.log('no el_invite_game_id!!!!!!!!!!!!!');
+                    } else {
+                        invite_game_id = el_invite_game_id.innerHTML;
+                        if (id == invite_game_id) {
+                            kind = data['kind'];
+                            location.href = "{% url 'game:game_go' game.kind.id|default:'0' game.id|default:'0' %}";
+                        }
+                    }
+                }
+            }
+
+            var pusher_ng = new Pusher('bbe70803665a7a964619', {
+              cluster: 'eu'
+            });
+            var channel_ng = pusher_ng.subscribe('my-channel');
+            channel_ng.bind('game_invite_rejected', gameInviteRejected);
+            channel_ng.bind('game_invite_confirmed', gameInviteConfirmed);
+
+        </script>
+    {% endblock %}
+{% endif %}

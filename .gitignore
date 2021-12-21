@@ -1,0 +1,8 @@
+media/
+settings.py
+chat/
+four/
+folders/
+*/__pycache__/
+*.pyc
+

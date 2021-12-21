@@ -1,0 +1,29 @@
+{% extends layout|default:"hub/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+<style>
+    a { text-decoration: underline; }
+    strong { letter-spacing: 5px; }
+</style>
+
+
+    {% if html_rus %}
+        <div class="w3-container w3-padding" lang="rus">
+            {{ html_rus|safe }}
+        </div>
+    {% endif %}
+
+    {% if html_eng %}
+        <div class="w3-container w3-padding" lang="eng">
+            {{ html_eng|safe }}
+        </div>
+    {% endif %}
+
+    {% if html %}
+        <div class="w3-container w3-padding">
+            {{ html|safe }}
+        </div>
+    {% endif %}
+{% endblock %}

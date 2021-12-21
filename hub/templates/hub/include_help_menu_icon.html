@@ -1,0 +1,38 @@
+{#                  CONTEXT HTML HELP BUTTON                                                                                  #}
+{#                                                                                                                            #}
+{# Include this in layout nav as a menu-item                                                                                  #}
+{# Include <div id="help-content" style="display:none"> content in HTML </div> in template                                    #}
+{#                                                                                                                            #}
+{# Icon will appear in the nav, click to show content of the help-content div in modal                                        #}
+
+{% load static %}
+
+<script>
+    function helpSetup() {
+        const btn = document.querySelector('#help-button');
+        const content = document.querySelector('#help-content');
+        const help = document.querySelector('help');
+        // console.log("Content <", content, ">");
+        if (content == null || content == undefined) {
+            btn.style.display = "none";
+        } else {
+            help.innerHTML = content.innerHTML;
+        }
+    }
+</script>
+
+<div id="help-button" class="menu-icon">
+    <img src="{% static 'hub/lamp_60.png' %}" onload="helpSetup();" onclick="document.getElementById('help-modal').style.display='block'">
+</div>
+
+<div id="help-modal" class="w3-modal">
+    <div class="w3-modal-content w3-round-xlarge">
+        <div class="w3-container">
+            <span onclick="document.getElementById('help-modal').style.display='none'" class="w3-button w3-display-topright w3-xlarge">&times;</span>
+            <help></help>
+        </div>
+    </div>
+</div>
+
+
+

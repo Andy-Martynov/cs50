@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if not form.title.value %}
+        <div class="w3-container w3-teal w3-margin-bottom">
+            <h2>CREATE LISTING</h2>
+        </div>
+    {% else %}
+        <div class="w3-container w3-teal w3-margin-bottom">
+            <h2>{{ form.title.value }}</h2>
+        </div>
+    {% endif %}
+    <form class="w3-container w3-xlarge" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="w3-button w3-teal w3-margin-left" type="submit" value="SUBMIT">
+    </form>
+{% endblock %}

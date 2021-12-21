@@ -1,0 +1,37 @@
+<div id="pusher_messages">
+    <div id="pusher_message_to_all" class="w3-panel w3-red w3-padding w3-display-container" style="display: none; margin-top: 0;">
+        <span onclick="this.parentElement.style.display='none'"
+        class="w3-button w3-display-topright">&times;</span>
+        <p class="m-0"></p>
+    </div>
+</div>
+
+<script>
+    Pusher.logToConsole = false;
+
+    var pusher = new Pusher('bbe70803665a7a964619', {
+      cluster: 'eu',
+      authEndpoint: '/pusher/auth',
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('message-to-all', showMessage);
+
+    function showMessage(data) {
+        const text = data; // JSON.stringify(data);
+        console.log('PUSHER MESSAGE To ALL:', text);
+        const messages = document.querySelector('#pusher_messages');
+        const pusher_message_to_all = document.querySelector('#pusher_message_to_all');
+        const message = document.querySelector('#pusher_message_to_all p');
+
+        pusher_message_to_all.style.display = 'block';
+        message.innerHTML = `${text['message']}`;
+        var next = document.createElement("div");
+        next.id  = pusher_message_to_all.id
+        next.className = pusher_message_to_all.className;
+        next.innerHTML = pusher_message_to_all.innerHTML;
+        next.style.display = 'none';
+        messages.appendChild(next);
+        pusher_message_to_all.id = "";
+    }
+</script>

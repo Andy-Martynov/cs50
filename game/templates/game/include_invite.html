@@ -1,0 +1,84 @@
+    <p id="user_id_game_confirm" style="display:none">{{ user.id }}</p>
+    <div class="w3-container w3-margin w3-padding w3-center">
+        <div id="game_modal" class="modal w3-center">
+            <div class="modal-content">
+                <h1 id="kind"></h1>
+                <h3><span id="game_inviter_name">Somebody</span> invites you to play</h3>
+                <div class="w3-margin w3-padding w3-center">
+                    <button class="button-ok w3-margin" onclick="sendGameConfirm('OK')">OK</button>
+                    <button class="button-cancel w3-margin" onclick="sendGameConfirm('CANCEL')">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var game_id = {% if game_id %}{{ game_id }}{% else %}0{% endif %}
+        var inviter_id = 0
+        var kind
+
+        function getGameInvitation(data) {
+            console.log('Get invitation', data);
+            opponent_id = data['opponent_id']
+            inviter_id = data['inviter_id']
+
+            kind = data['kind']
+            document.querySelector("#kind").innerHTML = kind;
+
+            uid = document.querySelector("#user_id_game_confirm").innerHTML;
+            console.log('my?', uid, opponent_id);
+            if (uid == opponent_id) {
+                game_id = data['game_id']
+                document.querySelector("#game_inviter_name").innerHTML = data['inviter_name']
+                console.log('g, i =', game_id, inviter_id);
+                document.querySelector("#game_modal").style.display = 'block';
+            }
+            if (uid == inviter_id) {
+                game_id = data['game_id']
+                console.log('stored game id', game_id);
+            }
+        }
+
+        function sendGameConfirm(confirm) {
+            document.querySelector("#game_modal").style.display = 'none';
+            console.log('sendGameConfirm', kind, confirm, game_id, inviter_id);
+            fetch('/game/confirm', {
+                method: 'POST',
+                body: JSON.stringify({
+                    game_id: game_id,
+                    inviter_id: inviter_id,
+                    confirm: confirm,
+                    })
+            })
+            .then((response) => response.json())
+        }
+
+        function getGameInviteConfirmed(data) {
+            console.log('getInviteConfirmed', game_id, data);
+            game_id = data['game_id'];
+            kind = data['kind'];
+            if (game_id == game_id) {
+                href = `/${kind}/game_go/${game_id}`;
+                console.log('call', href);
+                document.location.href = href;
+            }
+        }
+
+        function getGameInviteCanceled(data) {
+            console.log('getInviteCancel', data);
+            uid = document.querySelector("#user_id_game_confirm").innerHTML;
+            opponent_id = data['opponent_id']
+            id = data['game_id']
+            if (game_id == id) {
+                document.querySelector("#game_modal").style.display = 'none';
+            }
+        }
+
+        var pusher = new Pusher('bbe70803665a7a964619', {
+          cluster: 'eu'
+        });
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('game_invite', getGameInvitation);
+        channel.bind('game_invite_confirmed', getGameInviteConfirmed);
+        channel.bind('game_invite_canceled', getGameInviteCanceled);
+    </script>

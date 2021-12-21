@@ -1,0 +1,18 @@
+{% extends "links/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <h3 class="w3-margin w3-padding w3-center w3-light-gray w3-round-xlarge" rus="Мои папки" eng="My Folders">My folders</h3>
+    <div class="w3-row-padding w3-cell-row">
+        {% include "links/include_folder_list.html" %}
+    </div>
+
+    {% if shared %}
+        <h3 class="w3-margin w3-padding w3-center w3-light-gray w3-round-xlarge" rus="Общие папки" eng="Shared folders">Shared folders</h3>
+        <div class="w3-row-padding w3-cell-row">
+            {% include "links/include_shared_folder_list.html" %}
+        </div>
+    {%  endif %}
+
+{% endblock %}

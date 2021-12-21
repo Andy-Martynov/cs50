@@ -1,0 +1,54 @@
+{% extends "watermark/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+<style>
+#watermark_sample {
+    display: none;
+}
+.image {
+    display: none;
+    max-width: 100%;
+}
+
+.thumb {
+    max-width: 80%;
+    max-height: 180px;
+}
+#place {
+    position: relative;
+    overflow: hidden;
+}
+</style>
+<script src="{% static 'watermark/index.js' %}"></script>
+{% endblock %}
+
+{% block section %}
+    <img id="watermark_sample" class="m-3" src="{{ watermark }}">
+
+    <div class="w3-row">
+        <div class="w3-col m10 p-2">
+            <div id="place">
+                {% for image in images %}
+                    <img class="image w3-round-large" src="{{ image }}">
+                {% endfor %}
+            </div>
+        </div>
+        <div class="w3-col m2 p-2">
+            <div class="p-2">
+                <form>
+                    <label for="opacity">Opacity:</label>
+                    <input type="range" id="opacity" name="opacity" min="0" max="1" step="0.05"><br>
+                    <label for="interval">Interval:</label>
+                    <input type="range" id="interval" name="interval" min="0" max="500" step="10">
+                </form>
+            </div>
+            <div class="p-2">
+                {% for image in images %}
+                    <img class="thumb w3-border w3-border-blue w3-round-large m-1" src="{{ image }}">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

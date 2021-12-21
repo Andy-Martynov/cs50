@@ -1,0 +1,158 @@
+.cell {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    font: 18px bold;
+    border-radius: 15px;
+}
+.hint {
+    width: 40px;
+    height: 40px;
+    font-size: 12px;
+    color: red;
+    visibility: hidden;
+}
+.board {
+    border-collapse: collapse;
+    margin: auto;
+}
+.board, .board td {
+  border: 1px solid black;
+  text-align: center;
+}
+.board td {
+    width: 50px;
+    height: 50px;
+    padding: 0px !important;
+    text-align: center;
+}
+.vr {
+    border-right: 3px solid black !important;
+}
+.vl {
+    border-left: 3px solid black !important;
+}
+.ht {
+    border-top: 3px solid black !important;
+}
+.hb {
+    border-bottom: 3px solid black !important;
+}
+#num_pad {
+    width: 100%;
+    position: fixed;
+    top: 20vh;
+    visibility: hidden;
+}
+#num_pad table td{
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border: 2px solid black;
+    font: 72px bold;
+    color: blue;
+    text-align: center;
+    opacity: 0.7;
+}
+
+
+@media (min-width: 1081px) {
+    body {
+        background-color: white;
+    }
+    .cell {
+        width: 30px;
+        height: 30px;
+        font: 18px bold;
+        border-radius: 15px;
+    }
+    .hint {
+        width: 40px;
+        height: 40px;
+        font-size: 12px;
+    }
+    .board td {
+        width: 50px;
+        height: 50px;
+    }
+    #num_pad table td{
+        width: 80px;
+        height: 80px;
+        font: 72px bold;
+    }
+}
+@media (max-width: 1080px) {
+    body {
+        background-color: white;
+    }
+    .cell {
+        width: 30px;
+        height: 30px;
+        font: 18px bold;
+        border-radius: 15px;
+    }
+    .hint {
+        width: 40px;
+        height: 40px;
+        font-size: 12px;
+    }
+    .board td {
+        width: 50px;
+        height: 50px;
+    }
+    #num_pad table td{
+        width: 80px;
+        height: 80px;
+        font: 72px bold;
+    }
+}
+@media (max-width: 800px) {
+    body {
+        background-color: white;
+    }
+    .cell {
+        width: 24px;
+        height: 24px;
+        font: 18px bold;
+        border-radius: 12px;
+    }
+    .hint {
+        width: 40px;
+        height: 40px;
+        font-size: 12px;
+    }
+    .board td {
+        width: 42px;
+        height: 42px;
+    }
+    #num_pad table td{
+        width: 60px;
+        height: 60px;
+        font: 48px bold;
+    }
+}
+@media (max-width: 600px) {
+    body {
+        background-color: #ffe6e6;
+    }
+    .cell {
+        width: 20px;
+        height: 20px;
+        font: 16px bold;
+        border-radius: 10px;
+    }
+    .hint {
+        width: 32px;
+        height: 32px;
+        font-size: 8px;
+    }
+    .board td {
+        width: 36px;
+        height: 36px;
+    }
+    #num_pad table td{
+        width: 60px;
+        height: 60px;
+        font: 48px bold;
+    }
+}

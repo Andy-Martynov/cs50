@@ -1,0 +1,18 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+
+
+    <div class="w3-container">
+        <h1>kinds = {{ player_kinds }}</h1>
+
+        {% for item in info %}
+            <h2>{{ item.kind.name }} games</h2>
+            <p>{{ item.games }}</p>
+            <p>Bots: {{ item.bots }} </p>
+        {% endfor %}
+
+    </div>
+{% endblock %}

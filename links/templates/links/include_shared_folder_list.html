@@ -1,0 +1,10 @@
+{% load static %}
+
+{% for share in shared %}
+    <div class="folder w3-cell-top">
+        <a href="{% url 'links:folder_detail' share.folder.id %}">
+            <img src="{% static 'folders/folder_60.png' %}">
+            <p>{{ share.folder.name }}.{{ share.folder.tag }} <i class="fa fa-hand-o-left w3-text-red"></i> {{ share.folder.user.username }}</p>
+        </a>
+    </div>
+{% endfor %}

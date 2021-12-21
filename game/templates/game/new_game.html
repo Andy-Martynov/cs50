@@ -1,0 +1,182 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+
+    {% if invite_send %}
+        <div class="w3-padding">
+            <div class="w3-margin w3-center">
+                <p id="invite_game_id" class="d-none">{{ game.id }}</p>
+                <h1>{{ kind }}</h1>
+                <h3>Waiting <span uid="{{ opponent.user.id }}" class"online"><i class="fa fa-user w3-xlarge w3-text-green"></i></span> {{ opponent.name }} to confirm/reject your invitation</h3>
+                <br>
+                <button class="button-cancel"><a href="{% url 'game:cancel_invite' game.id %}">CANCEL</a></button>
+            </div>
+        </div>
+
+    {% else %}
+
+    {# <div class="container-fluid"> #}
+        <div class="w3-row">
+            <div class="w3-half">
+                <div class="w3-margin w3-center">
+                    <h1 id="kind">{{ kind }}</h1>
+                    <form id="game-options" action="{% url 'game:new_game' kind.id %}" method="post">
+                        {% csrf_token %}
+                        <i class='fas fa-circle first'></i> First player<br>
+                        <select  form="game-options" class="first w3-section w3-padding w3-round-large" id="first_player" name="first_player_name" data-toggle="tooltip" data-placement="top" title="Выбор первого игрока">
+                            <optgroup label="You">
+                                <option value="{{ user_player.user.username }}"{% if user_player.user.username == first_player_name %} selected{% endif %}>{{ user_player.user.username }}</option>
+                            </optgroup>
+                            <optgroup label="Bot players">
+                                {% for p in bot_players %}
+                                    <option value="{{ p.user.username }}"{% if p.user.username == first_player_name %} selected{% endif %}>{{ p.user.username }}</option>
+                                {% endfor %}
+                            </optgroup>
+                            {% if user.is_authenticated %}
+                                <optgroup label="Human players online">
+                                    {% for hp in human_players %}
+                                        <option online="{{ hp.user.id }}" value="{{ hp.user.username }}"{% if hp.user.username == first_player_name %} selected{% endif %}>{{ hp.name }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endif %}
+                        </select>
+                        <br>
+                        <i class='fas fa-circle second'></i> Second player<br>
+                        <select  form="game-options" class="second w3-section w3-padding w3-round-large" id="second_player" name="second_player_name" data-toggle="tooltip" data-placement="top" title="Выбор второго игрока">
+                            <optgroup label="You">
+                                <option value="{{ user_player.user.username }}"{% if user_player.user.username == second_player_name %} selected{% endif %}>{{ user_player.user.username }}</option>
+                            </optgroup>
+                            <optgroup label="Bot players">
+                                {% for p in bot_players %}
+                                    <option value="{{ p.user.username }}"{% if p.user.username == second_player_name %} selected{% endif %}>{{ p.user.username }}</option>
+                                {% endfor %}
+                            </optgroup>
+                            {% if user.is_authenticated %}
+                                <optgroup label="Human players online">
+                                    {% for hp in human_players %}
+                                        <option online="{{ hp.user.id }}" value="{{ hp.user.username }}"{% if hp.user.username == second_player_name %} selected{% endif %}>{{ hp.name }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endif %}
+                        </select>
+                        <div class="w3-margin">
+                            <label>Hints: </label>
+                            <input form="game-options" name="hints" {{ hints }} type="checkbox" data-toggle="tooltip" data-placement="top" title="Подсказки"><br>
+                        </div>
+                        <input class="{% if busy == 'busy' %}button-disabled{% else%}button-ok{% endif %} w3-margin" form="game-options" type="submit" value="START" {% if busy == 'busy' %}disabled{% endif %}>
+                    </form>
+                </div>
+            </div>
+
+            <div class="w3-half">
+                <div class="w3-margin w3-center">
+                    <h2 id="kind" rus="Пригласить играть" eng="Play with">Play with</h2>
+                    <table class="mx-auto">
+                        {% for bot in bot_players %}
+                            <tr>
+                                <td><i class='fas fa-robot txt-online'></i></td>
+                                <td>
+                                    <div class="my-1 py-1 px-3 w3-round-xxlarge w3-left" onclick="playWith('{{ user.username }}', '{{ bot.user.username }}')"><img src="{{ bot.user.image.url }}" class="avatar"> {{ bot.name }}</div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% for hp in human_players %}
+                            <tr online="{{ hp.user.id }}">
+                                <td><i class='fas fa-user txt-online'></i></td>
+                                <td>
+                                    <div class="my-1 py-1 px-3 w3-round-xxlarge w3-left" onclick="playWith('{{ user.username }}', '{{ hp.user.username }}')"><img src="{{ hp.user.image.url }}" class="avatar"> {{ hp.name }}</div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+            {% if busy == 'busy' %}
+                <div class="w3-container w3-margin">
+                    <div class="w3-center">
+                        <h2>The game is in progress</h2>
+                        {%  if game_running %}
+                            <p id="game_running_id">{{ game_running.id }}</p>
+                            <p><span>{{ game_running.first }}</span> vs <span>{{ game_running.second }}</span></p>
+
+                            <form id="cancel_game_running" action="{% url 'game:game_cancel' game_running.id %}" method="post">
+                                <input name="game_id" value="{{ game_running.id }}" hidden>
+                                <input class="button-cancel" type="submit" value="Stop the game" %}>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% if invite_send %}
+    {% block bottom_script %}
+        {{ block.super }}
+        <script>
+
+            function playWith(name1, name2) {
+                form = document.getElementById("game-options");
+                first = document.getElementById("first_player");
+                second = document.getElementById("second_player");
+                me = Math.floor(Math.random() * 2) + 1;
+                console.log(name1, name2, first, second, me);
+                if (me == 1) {
+                    first.value = name1;
+                    second.value = name2;
+                } else {
+                    second.value = name1;
+                    first.value = name2;
+                }
+            }
+
+            function gameInviteRejected(data) {
+                console.log('pusher invite rejected', data);
+                if (data != null) {
+                    id = data['game_id'];
+                    el_invite_game_id = document.getElementById("invite_game_id");
+                    if (el_invite_game_id == null) {
+                        console.log('no el_invite_game_id!!!!!!!!!!!!!');
+                    } else {
+                        invite_game_id = el_invite_game_id.innerHTML;
+                        if (id == invite_game_id) {
+                            kind = data['kind'];
+                            location.href = "{% url 'game:new_game' game.kind.id|default:'0' %}";
+                        }
+                    }
+                }
+            }
+
+            function gameInviteConfirmed(data) {
+                console.log('pusher invite confirmed', data);
+                if (data != null) {
+                    id = data['game_id'];
+                    el_invite_game_id = document.getElementById("invite_game_id");
+                    if (el_invite_game_id == null) {
+                        console.log('no el_invite_game_id!!!!!!!!!!!!!');
+                    } else {
+                        invite_game_id = el_invite_game_id.innerHTML;
+                        if (id == invite_game_id) {
+                            kind = data['kind'];
+                            location.href = "{% url 'game:game_go' game.kind.id|default:'0' game.id|default:'0' %}";
+                        }
+                    }
+                }
+            }
+
+            var pusher_ng = new Pusher('bbe70803665a7a964619', {
+              cluster: 'eu'
+            });
+            var channel_ng = pusher_ng.subscribe('my-channel');
+            channel_ng.bind('game_invite_rejected', gameInviteRejected);
+            channel_ng.bind('game_invite_confirmed', gameInviteConfirmed);
+
+        </script>
+    {% endblock %}
+{% endif %}
+
+

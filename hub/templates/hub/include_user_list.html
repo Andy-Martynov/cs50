@@ -1,0 +1,62 @@
+<details open>
+    <summary>
+        <b>WHO IS ON-LINE</b>
+    </summary>
+    <div id="user_list"></div>
+</details>
+
+<script>
+init();
+
+async function init() {
+    await load_users();
+    console.log("------------ users loaded ----------------");
+        let users = document.querySelectorAll('.user');
+        console.log('-------USERS:', users);
+}
+
+function load_users() {
+
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('bbe70803665a7a964619', {
+      cluster: 'eu',
+      authEndpoint: '/pusher/auth',
+    });
+
+    const presence_channel = pusher.subscribe('presence-my-channel');
+
+    function addMemberToUserList(memberId, info) {
+
+        var e = document.getElementById("online_user_"+memberId);
+        console.log(e, info);
+        if (info != undefined) {
+            if (typeof e == "undefined" || e == null) {
+                userEl = document.createElement("div");
+                userEl.className = 'user m-1 p-1';
+                userEl.id = "online_user_"+memberId;
+                userEl.innerHTML = `<img src="${info.image}" class="avatar"> <span class="username">${info.username}</span>`;
+                document.getElementById("user_list").appendChild(userEl);
+                userEl.addEventListener('click', userModalSetup);
+                userEl.setAttribute('uid', memberId);
+                onlines = document.querySelectorAll(`.online_${memberId}`);
+                console.log('ON-Lines:', onlines);
+                onlines.forEach(el => el.style.display='inline');
+            }
+        }
+    }
+
+    presence_channel.bind('pusher:subscription_succeeded', () =>
+        presence_channel.members.each(member => {addMemberToUserList(member.id, member.info); } ));
+
+    presence_channel.bind('pusher:member_added', member => {addMemberToUserList(member.id, member.info); console.log('added:', member);});
+
+    presence_channel.bind('pusher:member_removed', member => {
+        console.log('removed:', member);
+        const userEl = document.getElementById("online_user_"+member.id);
+        userEl.parentNode.removeChild(userEl);
+    });
+}
+</script>
+
+

@@ -1,0 +1,36 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block title %}LOGIN{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'account/login_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block body %}
+    <h3 class="w3-margin-left" eng="LOGIN" rus="ВХОД">LOGIN</h3>
+
+    <h4 class="w3-margin-left w3-text-red">{{ message }}</h4>
+
+    <form class="w3-container" action="{% url 'account:login' %}" method="post">
+        {% csrf_token %}
+        <input autofocus class="w3-light-gray w3-input w3-margin w3-xlarge w3-round-xlarge" type="text" name="username" placeholder="Username">
+        <input class="w3-light-gray w3-input w3-margin w3-xlarge w3-round-xlarge" type="password" name="password" placeholder="Password">
+        <button class="w3-button w3-white w3-border w3-border-red w3-round-xlarge w3-margin-left" type="submit" eng="LOGIN" rus="ВХОД">LOGIN</button>
+    </form>
+
+    <div class="w3-container w3-light-gray w3-section w3-margin-left w3-padding w3-large">
+        <u><a class="w3-xlarge" href="{% url 'account:forgotten' %}" eng="Forgot your password?" rus="Забыли пароль?">Forgot your password?</a></u>
+    </div>
+
+    <div class="w3-container w3-light-gray w3-section w3-margin-left w3-padding w3-large">
+        <span class="w3-xlarge" eng="Don't have an account?" rus="Нет регистрации?">Don't have an account?</span>
+        <a class="w3-button w3-white w3-border w3-border-red w3-round-xlarge w3-margin-left" href="{% url 'account:register' %}" eng="Register here" rus="Зарегистрируйтесь">Register here</a>
+    </div>
+
+    <div class="w3-container w3-light-gray w3-section w3-margin-left w3-padding w3-xlarge">
+        <i class='fas fa-user-secret'></i>
+        <a  href="{% url 'account:guest_login' %}" eng="Guest login" rus="Войти как гость">Guest login</a>
+    </div>
+{% endblock %}

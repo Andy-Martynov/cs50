@@ -1,0 +1,21 @@
+{% load static %}
+
+<div class="menu-icon">
+    <a
+        class="dropdown-toggle"
+        nav_index="groups"
+        href="#"
+        id="navbarDropdown"
+        role="button"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        data-toggle="tooltip" data-placement="right" title="User Groups, create and update"
+        >
+        <img src="{% static 'account/users_60.png' %}">
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="{% url 'account:group_list' %}">GROUP LIST</a>
+        <a class="dropdown-item" href="{% url 'account:group_create' %}">NEW GROUP</a>
+    </div>
+</div>

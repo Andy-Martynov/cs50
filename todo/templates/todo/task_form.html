@@ -1,0 +1,23 @@
+{% extends "todo/layout.html" %}
+
+{% load static %}
+
+{% block add_to_head %}
+    {{ block.super }}
+    <script src="{% static 'todo/task_list.js' %}"></script>
+{% endblock %}
+
+{% block section %}
+    <form class="w3-container w3-xlarge m-0 p-0" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.name }}
+        {{ form.text }}
+        {% if update and task_tree %}
+            {% include "todo/include_task_tree.html" %}
+        {% endif %}
+        To Do:
+        <textarea class="w3-input w3-round-xlarge w3-light-gray p-1 my-1 mx-0" id="todo" name="todo" rows="10">{{ todo|default:'' }}</textarea>
+
+        <input class="w3-button w3-margin w3-teal w3-round-xlarge" type="submit" value="OK">
+    </form>
+{% endblock %}

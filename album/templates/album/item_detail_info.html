@@ -1,0 +1,69 @@
+{% extends "album/layout.html" %}
+
+{% load static %}
+
+{% block footer %}
+{% endblock %}
+
+{% block section %}
+<div class="w3-panel w3-light-gray w3-center w3-padding m-0">
+  <h1>{{ item.title }}</h1>
+</div>
+
+<div class="w3-row m-0 p-0">
+    <div class="w3-half w3-container w3-padding">
+        <div class="w3-container w3-center" style="max-height:80vh;">
+            {% if item.mode == 'IMG' %}
+                {% if item.file %}
+                    <div>
+                        <img src="{{ item.file.url }}"  class="w3-image w3-round-xxlarge" style="max-height:50vh;">
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% if item.mode == 'VID' %}
+                <div class="w3-padding w3-margin">
+                    <video class="w3-round-xxlarge" width="100%" height="100%" controls>
+                        <source src="{{ item.file.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            {% endif %}
+            {% if item.mode == 'DOC' %}
+                <div class="w3-padding w3-margin">
+                    <a href="{{ item.file.url }}">
+                        <img src="{% static 'album/doc_240.png' %}">
+                    </a>
+                    <br>
+                    <a href="{{ item.file.url }}">{{ item.filename }}</a>
+                </div>
+            {% endif %}
+            {% if item.mode == 'YTB' %}
+                {% if item.youtube %}
+                        <iframe class="w3-round-xxlarge item-youtube" width="256px" height="144px" src="https://www.youtube.com/embed/{{ item.youtube }}">
+                        </iframe><br>
+                        <a href="https://youtu.be/{{ item.youtube }}"><u>View on YouTube</u></a>
+                {% endif %}
+            {% endif %}
+            {% if item.mode == 'UKN' %}
+                <div class="w3-padding w3-margin">
+                    <a href="{{ item.file.url }}">
+                        <h3>{{ item.filename }}</h3>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="w3-container">
+            <a href="{% url 'album:number' item.album.id %}" class="control w3-red"><i class="fa fa-level-up"></i></a>
+            <a href="{% url 'album:item_detail_info' previous.id %}" class="control w3-khaki"><i class='fas fa-arrow-left'></i></a>
+            <a href="{% url 'album:item_detail_info' next.id %}" class="control w3-khaki"><i class='fas fa-arrow-right'></i></a>
+            {% if item.album.user == request.user  or request.user.is_superuser %}
+                <a href="{% url 'album:item_update' item.id %}" class="control w3-teal"><i class="fa fa-edit"></i></a>
+            {% endif %}
+            <a href="{% url 'album:item_detail' item.id %}" class="control w3-indigo"><i class="fas fa-eye"></i></a>
+        </div>
+    </div>
+    <div class="w3-half w3-container w3-padding">
+        {{ html|safe }}<br>
+    </div>
+</div>
+{% endblock %}

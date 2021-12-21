@@ -1,0 +1,19 @@
+{% extends "todo/layout.html" %}
+
+{% load static %}
+
+{% block head_add %}
+{{ block.super }}
+<script src="{% static 'todo/task_list.js' %}"></script>
+{% endblock %}
+
+{% block section %}
+    <div class="w3-padding">
+        {% for task in task_tree %}
+            <div tid="{{ task.id }}" state="{{ task.checked }}" class="task level{{ task.level }} w3-bar">
+                <span class="w3-bar-item w3-button"><i class="fa fa-square-o"></i></span>
+                <a class="w3-bar-item" href="{% url 'todo:task_update' task.id %}">{{ task.name }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

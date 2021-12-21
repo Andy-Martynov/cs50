@@ -1,0 +1,22 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}GROUPS{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'account/users_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block head_add %}
+    {{ block.super }}
+    <script src="{% static 'account/group_update.js' %}"></script>
+{% endblock %}
+
+{% block nav_add %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'account:group_create' %}" rus="Новая группа" eng="New Group">New Group</a>
+    </li>
+{% endblock %}
+
+{% block md-title %}groups/md/groups.md{% endblock %}

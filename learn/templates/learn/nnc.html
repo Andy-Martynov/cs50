@@ -1,0 +1,21 @@
+{% extends "learn/layout.html" %}
+
+{% load static %}
+
+{% block add_style %}
+<style>
+#graph {
+    max-width: 90vw;
+    max-height: 85vh;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="w3-center">
+        <span>Nearest-Neighbor Clallification {{ message }} </span>
+        {% if solution %}<span class="w3-red">Solution found!{% else %}<span class="w3-blue">Finding solution{% endif %}</span><br>
+        <a class="w3-button w3-teal w3-round-xxlarge" href="{% url 'learn:k_means_step' %}">Find solution</a>
+        <img id="graph" src="{{ graph }}">
+    </div>
+{% endblock %}

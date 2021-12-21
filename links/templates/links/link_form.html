@@ -1,0 +1,21 @@
+{% extends "links/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <form class="w3-container w3-xlarge m-2 p-2" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="w3-table">
+            <tr>
+                <td>URL :</td><td>{{ form.url }}</td>
+            </tr>
+            <tr>
+                <td>Name:</td><td>{{ form.name }}</td>
+            </tr>
+            <tr>
+                <td>Tags:</td><td>{{ form.tags}}</td>
+            </tr>
+        </table>
+        <input class="btn-ok w3-margin" type="submit" value="OK">
+    </form>
+{% endblock %}

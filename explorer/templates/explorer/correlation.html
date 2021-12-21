@@ -1,0 +1,22 @@
+{% extends "explorer/filter.html" %}
+
+{% load static %}
+
+{% block data %}
+    <div class="mx-4">
+        <p>Low target correlation: {{ low_target_corr }}</p>
+        <details>
+            <summary>Correlation with {{ target }}</summary>
+            <table>
+                {% for feature, value in correlations.items %}
+                    <tr>
+                        <td>{{ feature }}</td>
+                        <td>{{ value|floatformat:3 }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </details>
+        <br>
+        <img src="{{ corr }}"class="w3-image w3-center">
+    </div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}WaterMark{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'watermark/watermark_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block home_link %}
+    {{ block.super }}
+    <div class="menu-icon">
+        <a href="{% url 'watermark:reset' %}">
+            <img src="{% static 'watermark/watermark_60.png' %}">
+        </a>
+    </div>
+{% endblock %}
+
+{% block nav_add %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'watermark:load' %}" rus="ЗАГРУЗИТЬ" eng="LOAD">LOAD</a>
+    </li>
+
+    <li class="nav-item">
+        <a id="view" class="nav-link disabled" href="{% url 'watermark:view' 'none' '0.5' 300 %}" rus="ПРОСМОТР" eng="VIEW">VIEW</a>
+    </li>
+
+    <li class="nav-item">
+        <a id="download" class="nav-link disabled" href="{% url 'watermark:download' %}" rus="РУЗУЛЬТАТ" eng="DOWNLOAD">DOWNLOAD</a>
+    </li>
+{% endblock %}
+
+{% block right %}
+{% endblock %}
+
+{% block help-content %}
+    <h4 class="m-3 w3-text w3-center mb-4">Wecome to WATERMARK!</h4>
+
+    <div class="p-3 mb-2">
+        I can insert <strong>watermarks</strong> to your image to protect your copyright.
+    </div>
+
+    <div class="p-3 mb-2">
+        Use <strong>MENU <i class='fas fa-bars'></i></strong> to do it.
+    </div>
+
+    <div class="p-3 mb-2">
+        <strong>LOAD</strong> your images and watermark (image usualy with transparent background).
+    </div>
+
+    <div class="p-3 mb-2">
+        <strong>VIEW</strong> your images with watermarks.
+    </div>
+
+    <div class="p-3 mb-2">
+        <strong>DOWNLOAD</strong> your images with watermarks.
+    </div>
+
+{% endblock %}

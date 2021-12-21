@@ -1,0 +1,30 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}REGISTRATION{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'account/login_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block body %}
+    <div class="p-3">
+        <h3 class="w3-margin-left" eng="REGISTRATION" rus="РЕГИСТРАЦИЯ">REGISTRATION</h3>
+
+        <h4 class="w3-margin-left w3-text-red">{{ message }}</h4>
+
+        <form class="w3-container" action="{% url 'account:register' %}" method="post">
+            {% csrf_token %}
+            <input class="w3-light-gray w3-input w3-margin w3-large" autofocus type="text" name="username" placeholder="Username">
+            <input class="w3-light-gray w3-input w3-margin w3-large" type="email" name="email" placeholder="Email address">
+            <p eng="* please use your real e-mail to confirm your registration" rus="* пожалуйста укажите действующий адрес электронной почты для подтверждения регистрации">* please use your real e-mail to confirm your registration</p>
+            <input class="w3-light-gray w3-input w3-margin w3-large" type="password" name="password" placeholder="Password">
+            <input class="w3-light-gray w3-input w3-margin w3-large" type="password" name="confirmation" placeholder="Confirm Password">
+            <button class="w3-button w3-white w3-border w3-border-red w3-round-xlarge w3-margin-left" type="submit" eng="REGISTER" rus="Зарегистрироваться">REGISTER</button>
+        </form>
+        <div class="w3-container w3-light-gray w3-section w3-margin-left w3-padding w3-large">
+            <u><a href="{% url 'account:login' %}" eng="Already have account? Welcome!" rus="Уже есть регистрация? Заходите!">Already have account? Welcome!</a></u>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <style>
+        .iframe {
+            width: 98%;
+            height: 30vh;
+        }
+    </style>
+
+    kinds = {{ player_kinds }}
+
+    <div class="w3-container">
+        <div class="w3-container w3-center">
+            <img src="{{ player.user.image.url }}" class="avatar"> <span w3-xlarge>{{ player.name }}</span>
+            {% if opponent %} vs <img src="{{ opponent.user.image.url }}" class="avatar"> <span w3-xlarge>{{ opponent.name }}</span>{% endif%}
+        </div>
+
+        {% if ratings_plot %}
+            <details open>
+                <summary>Rating progress</summary>
+                <div class="w3-container w3-center">
+                    <iframe src="{{ ratings_plot }}" class="iframe" style="border:1px solid black;">
+                    </iframe>
+                </div>
+            </details>
+        {% endif %}
+
+        {% if scores_plot %}
+            <details open>
+                <summary>Win/loss/tie progress</summary>
+                <div class="w3-container w3-center">
+                    <iframe src="{{ scores_plot }}" class="iframe" style="border:1px solid black;">
+                    </iframe>
+                </div>
+            </details>
+        {% endif %}
+
+        <details open>
+            <summary>Results total</summary>
+            <div class="w3-responsive">
+                <table id="myTable" class="w3-table w3-responsive">
+                    <tr>
+                        <th>GAME</th><th>DATE</th><th></th><th>OPPONENT</th><th>RESULT</th><th></th><th></th><th></th>
+                    </tr>
+                    <tr>
+                        <th><input type="text" id="myInput0" onkeyup="filter(0)" size="10"></th>
+                        <th><input type="text" id="myInput1" onkeyup="filter(1)" size="12"></th>
+                        <th><input type="text" id="myInput2" onkeyup="filter(2)" size="2"></th>
+                        <th><input type="text" id="myInput3" onkeyup="filter(3)" size="2"></th>
+                        <th><input type="text" id="myInput4" onkeyup="filter(4)" size="20"></th>
+                        <th></th>
+                        {% if user.is_superuser %}
+                            <th><input type="checkbox" id="checkall" onchange="toggleChecks()"></th>
+                            <th><i class='far fa-trash-alt txt-danger' onclick="delAllChecked()"></i></th>
+                        {% endif %}
+                    </tr>
+
+                    {% for game in games %}
+                        <tr gid="{{ game.id }}" class="w3-hover-red">
+                            <td>{% if game.kind.image %}<img src="{{ game.kind.image.url }}">{% endif %} {{ game.kind.name }}</td>
+                            <td>{{ game.timestamp|date:"D d/m/y" }}</td>
+                            <td>
+                                {% if game.first == player and game.second.is_bot %}bot{% endif %}{% if game.second == player and game.first.is_bot %}bot{% endif %}
+                            </td>
+                            <td>
+                                {% if player == game.first %}
+                                    <a href="{% url 'game:player_info' game.second.id %}">{{ game.second.name }}</a>
+                                {% else %}
+                                    <a href="{% url 'game:player_info' game.first.id %}">{{ game.first.name }}</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if game.winner == player %}
+                                    win
+                                {% elif game.loser == player %}
+                                    loss
+                                {% else %}
+                                    tie
+                                {% endif %}
+                            </td>
+                            <td><a href="{% url 'game:game_replay' game.kind.id game.id %}"><i class="fab fa-youtube w3-large"></i></a></td>
+
+                            {% if user.is_superuser %}
+                                <td><input class="chkdel" type="checkbox" g="{{ game.id }}" v="y"></td>
+                                <td><i class='far fa-trash-alt txt-danger' onclick="delGame({{ game.id }})"></i></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </details>
+    </div>
+
+    <script>
+
+    function toggleChecks() {
+        checkall = document.querySelector("#checkall");
+        checks = document.querySelectorAll(".chkdel");
+        console.log('toggle checks', checkall, checks);
+        for (i = 0; i < checks.length; i++) {
+            v = checks[i].getAttribute('v');
+            console.log(i, v, checkall.checked);
+            if(v == 'y') {
+                checks[i].checked = checkall.checked;
+            }
+        }
+    }
+
+    function delAllChecked() {
+        checks = document.querySelectorAll(".chkdel");
+        console.log('del all checked', checkall, checks);
+        for (i = 0; i < checks.length; i++) {
+            console.log(i, checks[i].checked);
+            if(checks[i].checked) {
+                gid = checks[i].getAttribute('g');
+                delGame(gid);
+            }
+        }
+    }
+
+    function delGame(id) {
+        fetch('/game/delete_game', {
+            method: 'POST',
+            body: JSON.stringify({
+                game_id: id,
+                })
+            })
+        .then((response) => response.json())
+        .then(error => {
+            console.log(error);
+        });
+        row = document.querySelector(`tr[gid="${id}"]`);
+        row.style.display = 'none';
+        row.style.color = 'red';
+    }
+
+
+    function filter(col) {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById(`myInput${col}`);
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[col];
+            if (td) {
+                tdc = tr[i].getElementsByTagName("td")[6];
+                console.log('check', i, tdc);
+                check = tdc.getElementsByTagName("input")[0];
+                console.log('check', i, check);
+
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    check.setAttribute('v', 'y');
+                } else {
+                      tr[i].style.display = "none";
+                      check.setAttribute('v', 'n');
+                }
+            }
+        }
+    }
+    </script>
+
+{% endblock %}

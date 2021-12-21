@@ -1,0 +1,15 @@
+{% extends "account/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    GROUPS
+{% endblock %}
+
+{% block section %}
+    <form class="w3-container w3-xlarge" method="post">
+        {% csrf_token %}
+        {{ form.as_table}}
+        <input class="w3-button w3-white w3-border w3-border-red w3-round-xlarge w3-small w3-margin" type="submit" value="SAVE">
+    </form>
+{% endblock %}

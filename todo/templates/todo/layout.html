@@ -1,0 +1,28 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}To Do{% endblock %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'todo/todo_32.png' %}" type="image/png">
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <link href="{% static 'todo/styles.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block home_link %}
+    <div class="menu-icon">
+        <a href="{% url 'todo:index' %}"><img src="{% static 'todo/todo_60.png' %}"></a>
+    </div>
+    {{ block.super }}
+{% endblock %}
+
+{% block navbar_add %}
+    <span class="nav-item">
+        <a class="nav-link" href="{% url 'todo:task_create' %}"><i class='fas fa-check-square'></i> <span rus="Новая задача" eng="New Task">New Task</span></a>
+    </span>
+{% endblock %}
+

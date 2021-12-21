@@ -1,0 +1,27 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block icon %}
+    <link rel="shortcut icon" href="{% static 'othello/othello_40.png' %}" type="image/png">
+{% endblock %}
+
+{% block title %}
+    OTHELLO
+{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <link href="{% static 'othello/othello.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block nav_add_not_authenticated %}
+    {{ block.super }}
+    <span class="mx-auto">
+        <span class="nav-item">
+            <a class="nav-link" href="{% url 'four:about' %}" data-toggle="tooltip" data-placement="top" title="О проекте">
+                <i class="far fa-question-circle txt-info w3-large"></i>&nbsp;<span class="d-none d-lg-inline" rus="О&nbsp;проекте" eng="About">About</span>
+            </a>
+        </span>
+    </span>
+{% endblock %}

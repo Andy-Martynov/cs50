@@ -1,0 +1,35 @@
+{% extends "animation/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+<script>
+function copy() {
+    pre1 = document.getElementById("pre1");
+    pre2 = document.getElementById("pre2");
+    pre3 = document.getElementById("pre3");
+    text = pre1.innerHTML + pre2.innerHTML + '\n' + pre3.innerHTML;
+    navigator.clipboard.writeText(text);
+}
+</script>
+    <h4>Your animation is ready :</h4>
+    <div class="w3-border px-3 mx-3">
+<pre id="pre1" class="m-0 p-0">
+.animate-{{ animation.title }} { {{ animation.prefix|default:""  }}
+    animation-name: {{ animation.title }};
+    animation-duration: {{ animation.duration }}s;
+    animation-delay: {{ animation.delay|default:"0" }}s;
+    animation-iteration-count: {{ animation.count|default:"infinite" }};
+    animation-direction: {{ animation.direction|default:"normal" }};
+    animation-timing-function: {{ animation.timing|default:"ease" }};
+    animation-fill-mode: {{ animation.fill|default:"none" }};
+}
+@keyframes {{ animation.title }} {
+</pre><pre id="pre2" class="pl-3 py-0 m-0">{{ animation.keyframes }}</pre>
+<pre id="pre3" class="m-0 p-0">}</pre>
+    </div>
+    <div class="m-3">
+        <button class="w3-button w3-teal w3-round-xxlarge w3-tiny mx-3" onclick="copy()">COPY</button> it and insert into your CSS.
+    </div>
+{% endblock %}
+

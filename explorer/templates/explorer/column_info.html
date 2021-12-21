@@ -1,0 +1,49 @@
+{% extends "explorer/filter.html" %}
+
+{% load static %}
+
+{% block data %}
+    <div class="p-3">
+        <details open>
+            <summary class="w3-button w3-small w3-padding-small w3-white w3-border w3-border-green w3-round-large">{{ name }}</summary>
+            <ul>
+                <li>{{ notnull }} of {{ total }} ({{ percent }}%)</li>
+                <li>dtype: {{ dtype }}</li>
+                {% if dtype == 'object' %}
+                    <li>most frequent: {{ mode }}</li>
+                {% else %}
+                    <li>min: {{ min }}</li>
+                    <li>mean: {{ mean }}</li>
+                    <li>max: {{ max }}</li>
+                    <li>std: {{ std }}</li>
+                {% endif %}
+                <li>value counts:</li>
+                <pre>{{ value_counts }}</pre>
+            </ul>
+        </details>
+
+        <details open>
+            <summary>plots</summary>
+                <div class="container">
+                    <div class="row">
+                        {% for plot in plots %}
+                            <div class="col-md-3" style="text-align: center;">
+                                <img src="{{ plot }}"class="zoom w3-image w3-center"
+                                    class="zoom w3-image w3-center"  onclick="document.querySelector('#big_{{ forloop.counter }}').style.display='block'">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </details>
+    </div>
+{% endblock %}
+
+{% block big_plots %}
+    {% for plot in plots %}
+        <div id="big_{{ forloop.counter }}" class="w3-display-container fullscreen">
+            <span class="w3-display-topright w3-text-red w3-xxxlarge" onclick="document.querySelector('#big_{{ forloop.counter }}').style.display='none'">&times;&nbsp;&nbsp;</span>
+            <img class="bigplot" src="{{ plot }}">
+        </div>
+    {% endfor %}
+{% endblock %}

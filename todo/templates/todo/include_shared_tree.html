@@ -1,0 +1,24 @@
+{% include "todo/include_task_modal.html" %}
+
+<div class="w3-padding">
+    {% for share in shared %}
+        {% for task in share %}
+            {% if forloop.counter == 1 %}
+                {% for sh in shared_to_me %}
+                    {% if sh.task == task %}
+                        {% if sh.recieved %}
+                            {% if sh.accepted %}
+                                <h4>{{ task.user.username }} <i class="fa fa-hand-o-right w3-text-green" tid="{{ task.id }}"></i></h4>
+                            {% else %}
+                                <h4>{{ task.user.username }} <i class="fa fa-hand-o-right w3-text-red" tid="{{ task.id }}"></i></h4>
+                            {% endif %}
+                        {% else %}
+                            <h4>{{ task.user.username }} <i class="fa fa-hand-o-right w3-text-blue" tid="{{ task.id }}"></i></h4>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% include "todo/include_task_list.html" %}
+        {% endfor %}
+    {% endfor %}
+</div>

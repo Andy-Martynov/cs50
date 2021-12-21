@@ -1,0 +1,76 @@
+{% load static %}
+
+<div id="userModal" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+        <header class="w3-container w3-teal w3-padding">
+            <span onclick="document.getElementById('userModal').style.display='none'"
+            class="w3-button w3-display-topright">&times;</span>
+            <header_content>
+
+            </header_content>
+        </header>
+
+        <section class="w3-container w3-padding">
+
+        </section>
+
+        <footer class="w3-container w3-padding"></footer>
+    </div>
+</div>
+
+<script>
+    function userModalSetup() {
+        console.log("userModalSetup", this);
+        id = this.id;
+        user_id = this.getAttribute('uid');
+        username = document.querySelector(`#${id} span`).innerText;
+        image = document.querySelector(`#${id} img`).getAttribute('src');
+        modal = document.querySelector('#userModal');
+        modal.style.display = 'block';
+        header = document.querySelector('#userModal header_content');
+        section = document.querySelector('#userModal section');
+        footer = document.querySelector('#userModal footer');
+
+        header.innerHTML = `<img class="avatar" src="${image}"> <span class="username">${username}</span>`;
+
+        section.innerHTML = `<p>id: ${user_id}</p>`;
+
+        footer.innerHTML = 'FOOTER';
+    }
+
+    function groupModalSetup() {
+        console.log("groupModalSetup", this);
+        id = this.id;
+        group_id = this.getAttribute('gid');
+        // groupname = document.querySelector(`#${id} summary`).innerText;
+
+        modal = document.querySelector('#userModal');
+        modal.style.display = 'block';
+        header = document.querySelector('#userModal header_content');
+        section = document.querySelector('#userModal section');
+        footer = document.querySelector('#userModal footer');
+
+        header.innerHTML = `<h1>GROUP</h1>`;
+
+        section.innerHTML = `<p>id: ${group_id}</p>`;
+
+        footer.innerHTML = 'FOOTER';
+    }
+
+    function addModalListeners() {
+
+        // while (document.querySelector('#groups_loading_finish') == undefined || document.querySelector('#groups_loading_finish') == null) {
+        //     console.log('--------------------- waiting groups ----------------------------------')
+        // }
+
+        let users = document.querySelectorAll('.user');
+        console.log('USERS:', users);
+        users.forEach(el => el.addEventListener('click', userModalSetup));
+
+        let groups = document.querySelectorAll('.groupchat');
+        console.log('GROUP :', groups);
+        groups.forEach(el => el.addEventListener('click', groupModalSetup));
+    }
+
+    document.addEventListener('DOMContentLoaded', addModalListeners);
+</script>

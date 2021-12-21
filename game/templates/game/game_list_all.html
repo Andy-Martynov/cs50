@@ -1,0 +1,169 @@
+{% extends "game/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <div class="w3-padding">
+        <h2 class="w3-center"> Game list, total {{ total }}</h2>
+
+        {% if user.is_superuser %}
+            <a class="button-cancel" href="{% url 'game:delete_unfinished_games' %}">Delete unfinished</a>
+        {% endif %}
+
+        <table id="myTable" class="w3-table w3-responsive">
+            <tr>
+                <th></th><th></th><th colspan="5">First</th><th>:</th><th colspan="5">Second</th><th></th>
+            </tr>
+            <tr>
+                <th><input type="text" id="myInput0" onkeyup="filter(0)" size="12"></th>
+                <th><input type="text" id="myInput1" onkeyup="filter(1)" size="12"></th>
+                <th></th>
+                <th><input type="text" id="myInput3" onkeyup="filter(3)" size="2"></th>
+                <th><input type="text" id="myInput4" onkeyup="filter(4)" size="20"></th>
+                <th><input type="text" id="myInput5" onkeyup="filter(5)" size="4"></th>
+                <th><input type="text" id="myInput6" onkeyup="filter(6)" size="3"></th>
+                <th></th>
+                <th></th>
+                <th><input type="text" id="myInput9" onkeyup="filter(9)" size="2"></th>
+                <th><input type="text" id="myInput10" onkeyup="filter(10)" size="20"></th>
+                <th><input type="text" id="myInput11" onkeyup="filter(11)" size="4"></th>
+                <th><input type="text" id="myInput12" onkeyup="filter(12)" size="3"></th>
+                <th></th>
+                {% if user.is_superuser %}
+                    <th><input type="checkbox" id="checkall" onchange="toggleChecks()"></th>
+                    <th><i class='far fa-trash-alt txt-danger' onclick="delAllChecked()"></i></th>
+                {% endif %}
+            </tr>
+
+            {% for game in games %}
+                <tr gid="{{ game.id }}" class="w3-hover-red">
+                    <td>{% if game.kind.image %}<img src="{{ game.kind.image.url }}">{% endif %} {{ game.kind.name }}</td>
+                    <td>{{ game.timestamp|date:"D d/m/y" }}</td>
+                    <td><img src="{{ game.first.user.image.url }}" class="avatar"></td>
+                    <td>{% if game.first.is_bot %}bot{% endif %}</td>
+                    <td>{{ game.first.name }}</td>
+                    <td>
+                        {% if game.winner == game.first %}
+                            win
+                        {% elif game.loser == game.first %}
+                            loss
+                        {% else %}
+                            tie
+                        {% endif %}
+                    </td>
+                    <td>{{ game.delta1|floatformat:"0" }}</td>
+                    <td>:</td>
+                    <td><img src="{{ game.second.user.image.url }}" class="avatar"></td>
+                    <td>{% if game.second.is_bot %}bot{% endif %}</td>
+                    <td>{{ game.second.name }}</td>
+                    <td>
+                        {% if game.winner == game.second %}
+                            win
+                        {% elif game.loser == game.second %}
+                            loss
+                        {% else %}
+                            tie
+                        {% endif %}
+                    </td>
+                    <td>{{ game.delta2|floatformat:"0" }}</td>
+
+                    <td><a href="{% url 'game:game_replay' game.kind.id game.id %}"><i class="fab fa-youtube w3-large"></i></a></td>
+
+                    {% if user.is_superuser %}
+                        <td><input class="chkdel" type="checkbox" g="{{ game.id }}" v="y"></td>
+                        <td><i class='far fa-trash-alt txt-danger' onclick="delGame({{ game.id }})"></i></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+<script>
+
+    function toggleChecks() {
+        checkall = document.querySelector("#checkall");
+        checks = document.querySelectorAll(".chkdel");
+        console.log('toggle checks', checkall, checks);
+        for (i = 0; i < checks.length; i++) {
+            v = checks[i].getAttribute('v');
+            console.log(i, v, checkall.checked);
+            if(v == 'y') {
+                checks[i].checked = checkall.checked;
+            }
+        }
+    }
+
+    function delAllChecked() {
+        checks = document.querySelectorAll(".chkdel");
+        console.log('del all checked', checkall, checks);
+        for (i = 0; i < checks.length; i++) {
+            console.log(i, checks[i].checked);
+            if(checks[i].checked) {
+                gid = checks[i].getAttribute('g');
+                delGame(gid);
+            }
+        }
+    }
+
+    function delGame(id) {
+        fetch('/game/delete_game', {
+            method: 'POST',
+            body: JSON.stringify({
+                game_id: id,
+                })
+            })
+        .then((response) => response.json())
+        .then(error => {
+            console.log(error);
+        });
+        row = document.querySelector(`tr[gid="${id}"]`);
+        row.style.display = 'none';
+        row.style.color = 'red';
+    }
+
+
+    function filter(col) {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById(`myInput${col}`);
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[col];
+        td10 = tr[i].getElementsByTagName("td")[10];
+        if (td) {
+            tdc = tr[i].getElementsByTagName("td")[14];
+            console.log('check', i, tdc);
+            check = tdc.getElementsByTagName("input")[0];
+            console.log('check', i, check);
+
+          txtValue = td.textContent || td.innerText;
+          txtValue10 = td10.textContent || td10.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+            check.setAttribute('v', 'y');
+          } else {
+            if (col == 4) {
+              if (txtValue10.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+                check.setAttribute('v', 'y');
+              } else {
+                tr[i].style.display = "none";
+                check.setAttribute('v', 'n');
+              }
+            } else {
+              tr[i].style.display = "none";
+              check.setAttribute('v', 'n');
+            }
+          }
+        }
+      }
+    }
+</script>
+
+{% endblock %}
+
+
+
+
+

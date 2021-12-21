@@ -1,0 +1,23 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+    <h1>Location Form</h1>
+
+    <section class="p-4">
+
+		<div id="location">...</div>
+
+		<div style="width: 640px; height: 480px" id="mapContainer"></div>
+
+	</section>
+{% endblock %}
+
+{% block script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { setCurrent('locations'); });
+    </script>
+    <script src="{% static 'meeting/location.js' %}"></script>
+{% endblock %}

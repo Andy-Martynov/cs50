@@ -1,0 +1,145 @@
+{% extends "meeting/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    MEETINGS
+{% endblock %}
+
+{% block body %}
+<style>
+.gm {
+    display: none;
+}
+</style>
+    <div class="container-fluid bg-secondary">
+
+        <section class="d-flex flex-row flex-wrap justify-content-between bg-secondary">
+
+        	<div class="card col-lg-6 my-1 px-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+        	        <i class='fas fa-edit'></i>
+        	   </div>
+        	   <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <table>
+                            <tr><td>Location:</td><td>{{ form.location }}</td></tr>
+                            <tr><td>Name:</td><td>{{ form.name }}</td></tr>
+                            <tr><td>Start:</td><td>{{ form.start }}</td></tr>
+                            <tr><td>Duration:</td><td>{{ form.duration }}</td></tr>
+                            <tr><td>Memo:</td><td>{{ form.memo }}</td></tr>
+                            <tr><td style="display: none;">{{ form.members }}</td></tr>
+                        </table>
+                        <input class="btn btn-primary my-2" type="submit" value="SAVE">
+                    </form>
+                </div>
+            </div>
+
+        	<div class="card col-lg-5 my-1 px-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+        	        <i class='fas fa-info-circle'></i>
+        	   </div>
+        	   <div class="card-body">
+                    <table>
+                        <tr>
+                            <td><i class='fas fa-arrow-alt-circle-left' style='font-size:24px;color:green'></i></td>
+                            <td>- add user or group members to meeting list</td>
+                        </tr>
+                        <tr>
+                            <td><i class='fas fa-arrow-alt-circle-right' style='font-size:24px;color:red'></i></td>
+                            <td>- remove user or group members from meeting list</td>
+                        </tr>
+                        <tr><td></td><td></td></tr>
+                        <tr><td></td></tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="d-flex flex-row flex-wrap justify-content-between">
+        	<div class="card col-lg-4 my-1 px-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+        	        In meeting [{{ count }}]
+        	   </div>
+        	   <div class="card-body">
+                    <table>
+                        {% for user in users_not_in_meeting %}
+                            {% if not user in members %}
+                                <tr>
+                                    <td t="td" mid="{{ user.id }}" style="display: none;">
+                                        <i t="i" class='fas fa-arrow-alt-circle-right remove' mid="{{ user.id }}" style='font-size:24px;color:red'></i>
+                                        <span id="name_{{ user.id }}">{{ user.username }}</span>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td t="td" mid="{{ user.id }}">
+                                        <i t="i" class='fas fa-arrow-alt-circle-right remove' mid="{{ user.id }}" style='font-size:24px;color:red'></i>
+                                        <span id="name_{{ user.id }}">{{ user.username }}</span>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                     </table>
+        		</div>
+            </div>
+
+        	<div class="card col-lg-4 my-1 px-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+                    Groups
+                </div>
+                <div class="card-body">
+                    <table>
+                        {% for item in group_list %}
+                            <tr>
+                                <td>
+                                    <i t="i" class='fas fa-arrow-alt-circle-left gr_add' gid="{{ item.group.id }}" style='font-size:24px;color:green'></i>
+                                        {{ item.group.name }} ({{ item.count }})
+                                    <i t="i" class='fas fa-arrow-alt-circle-right gr_remove' gid="{{ item.group.id }}" style='font-size:24px;color:red'></i>
+                                    {% for member in item.members %}
+                                        <span class="gm" gid="{{ item.group.id }}">{{ member.id }}</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                     </table>
+                </div>
+            </div>
+
+        	<div class="card col-lg-4 my-1 px-2">
+                <div class="card-header d-flex flex-row justify-content-between">
+        	        Other users [{{ users_count }}]
+        	    </div>
+        	    <div class="card-body">
+                    <table>
+                        {% for user in users_not_in_meeting %}
+                            {% if user in members %}
+                                <tr>
+                                    <td t="td" uid="{{ user.id }}" style="display: none;">
+                                        <i t="i" class='fas fa-arrow-alt-circle-left add' uid="{{ user.id }}" style='font-size:24px;color:green'></i>
+                                        {{ user.username }}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td t="td" uid="{{ user.id }}">
+                                        <i t="i" class='fas fa-arrow-alt-circle-left add' uid="{{ user.id }}" style='font-size:24px;color:green'></i>
+                                        {{ user.username }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                     </table>
+        		</div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block script %}
+    document.addEventListener('DOMContentLoaded', function() { setCurrent('meetings'); });
+    <script>document.addEventListener('DOMContentLoaded', function() { setCurrent('meetings'); });</script>
+    <script src="{% static 'meeting/meeting_update.js' %}"></script>
+{% endblock %}
+

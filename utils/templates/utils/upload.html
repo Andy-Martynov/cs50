@@ -1,0 +1,28 @@
+{% extends "hub/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+    UPLOAD
+{% endblock %}
+
+{% block custom_script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() { setCurrent('UPDATE'); });
+</script>
+{% endblock %}
+
+{% block body %}
+    <h3 class="m-3">{{ title }}</h3>
+    {% if form %}
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {{ form.as_table }}
+            <button class="w3-button w3-white w3-border w3-border-blue w3-hover-blue w3-round-large w3-margin" type="submit">Upload</button>
+        </form>
+    {% endif %}
+
+    {% if uploaded_file_url %}
+        <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+    {% endif %}
+{% endblock %}

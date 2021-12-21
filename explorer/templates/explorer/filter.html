@@ -1,0 +1,44 @@
+{% extends "explorer/layout.html" %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <script src="{% static 'explorer/filter.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    {% block big_plots %}
+    {% endblock %}
+
+    <div class="row pl-3">
+        <div class="col-sm-12 col-lg-2 px-2 pt-0 scroll w3-border-right w3-border-red">
+            <p>PARAMS:</p>
+            <form>
+                <p>Target:</p>
+                <select class="input w3-input w3-border" id="target" name="target">
+                   <option value="{{ target }}">---</option>
+                    {% for column in columns %}
+                        <option value="{{ column }}"{% if column == target %} selected{% endif %}>{{ column }}</option>
+                    {% endfor %}
+                </select>
+                <p>Hue:</p>
+                <select class="input w3-input w3-border" id="hue" name="hue">
+                   <option value="{{ hue }}">---</option>
+                    {% for column in columns %}
+                        <option value="{{ column }}"{% if column == hue %} selected{% endif %}>{{ column }}</option>
+                    {% endfor %}
+                </select>
+                {% for param, value in params.items %}
+                    <p>{{ param }}:</p>
+                    <input class="input" name="{{ param }}" value="{{ value }}" size="7"><br>
+                {% endfor %}
+            </form>
+        </div>
+
+        <div class="col-sm-12 col-lg-10 p-2 scroll">
+            {% block data %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

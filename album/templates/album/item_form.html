@@ -1,0 +1,12 @@
+{% extends "album/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <form class="w3-container w3-xlarge" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_table}}
+        <input class="w3-button w3-margin w3-teal w3-round-xlarge" type="submit" value="SAVE">
+    </form>
+{% endblock %}
+

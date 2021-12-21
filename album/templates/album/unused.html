@@ -1,0 +1,18 @@
+{% extends "album/albums.html" %}
+
+{% load static %}
+
+{% block items_place %}
+    <p>Folder:</p>
+    {{ dir }}, {{ path }}
+    <p>Item files:</p>
+    {{ item_files }}
+    <p>Item thumbs:</p>
+    {{ thumbs }}
+    <p>Files:</p>
+    {{ files }}
+    <p>Unused:</p>
+    {{ unused }}
+    <p>Deleted:</p>
+    {{ deleted }}
+{% endblock %}

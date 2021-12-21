@@ -1,0 +1,22 @@
+:root {
+    --andy-primary-bg: #009688;
+    --andy-primary-txt: #ffffff;
+    --andy-secondary-bg: #fdf5e6;
+    --andy-secondary-txt: #000000;
+}
+.andy-primary {
+    /*background-image: linear-gradient(var(--andy-primary-bg) 60%, var(--andy-secondary-bg) 85%, var(--andy-secondary-bg) 90%, var(--andy-primary-bg));*/
+    background-color: var(--andy-primary-bg);
+    color: var(--andy-primary-txt);
+    box-shadow: 4px 4px 4px grey;
+}
+.andy-secondary {
+    background-color: var(--andy-secondary-bg);
+    color: var(--andy-secondary-txt);
+    box-shadow: 4px 4px 4px grey;
+}
+.andy-shadow {
+    box-shadow: 4px 4px 4px grey;
+}
+
+

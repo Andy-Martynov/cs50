@@ -1,0 +1,19 @@
+{% extends "album/layout.html" %}
+
+{% load static %}
+
+{% block section %}
+    <div class="p-3">
+        <h2>ALBUM OWNERS</h2>
+            {% for owner in owners %}
+                <a class="nav-link" href="{% url 'album:user_albums' owner.id %}">
+                    {% if owner.image %}
+                        <img src="{{ owner.image.url }}" class="rounded-circle m-3" style="width: 60px; height: 60px;">
+                    {% else %}
+                        <img src="{%  static 'account/x.png' %}" class="rounded-circle ml-2" style="width: 60px; height: 60px;">
+                    {% endif %}
+                    {{ owner.username }}
+                </a>
+            {% endfor %}
+    </div>
+{% endblock %}
